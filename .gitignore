@@ -89,9 +89,6 @@ astro
 # npm publishing
 .npmrc
 
-# ai, ethereal and auto generated
-AGENTS.md
-
 # project specific: wrangler
 wrangler.toml
 

@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "scripts": {
     "test": "bun test",
-    "test:w": "bun test --watch"
+    "test:w": "bun test --watch",
+    "taski": "bun run src/cli/index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
