@@ -1,11 +1,12 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { deleteTask } from "@/cli/core/tasks"
+import { readTasks } from "@/cli/core/readTasks"
 
-export const tasksDeleteCommand = buildCommand({
+export const tasksReadCommand = buildCommand({
 	func(this: CommandContext, _: {}, id: string) {
-		const deleted = deleteTask(id)
-		if (deleted) {
-			this.process.stdout.write(`Task "${id}" deleted successfully`)
+		const tasks = readTasks()
+		const task = tasks.find((t) => t.id === id)
+		if (task) {
+			this.process.stdout.write(JSON.stringify(task, null, 2))
 		} else {
 			throw new Error(`Task "${id}" not found`)
 		}
@@ -23,6 +24,6 @@ export const tasksDeleteCommand = buildCommand({
 		},
 	},
 	docs: {
-		brief: "Delete a task by ID",
+		brief: "Read a task by ID",
 	},
 })

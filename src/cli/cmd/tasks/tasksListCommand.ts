@@ -1,5 +1,5 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { readTasks } from "@/cli/core/tasks"
+import { readTasks } from "@/cli/core/readTasks"
 
 export const tasksListCommand = buildCommand({
 	func(this: CommandContext, _: {}) {

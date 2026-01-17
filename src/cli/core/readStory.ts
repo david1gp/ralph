@@ -1,18 +1,7 @@
-import { readFileSync, writeFileSync, existsSync, unlinkSync, readdirSync } from "node:fs"
-import { getStoriesFolderPath } from "@/cli/core/config"
-import { parseStory } from "@/cli/data/validators"
-import type { Story } from "@/cli/data/types"
-
-export function listStories(): string[] {
-	const storiesPath = getStoriesFolderPath()
-	if (!existsSync(storiesPath)) {
-		return []
-	}
-	const files = readdirSync(storiesPath)
-	return files
-		.filter((f: string) => f.endsWith(".md"))
-		.map((f: string) => f.replace(/^.*[\\/]/, ""))
-}
+import { readFileSync, existsSync } from "node:fs"
+import { getStoriesFolderPath } from "@/cli/core/getStoriesFolderPath"
+import { parseStory } from "@/cli/data/parseStory"
+import type { Story } from "@/cli/data/StoryType"
 
 export function readStory(filename: string): Story {
 	const storiesPath = getStoriesFolderPath()
@@ -27,25 +16,6 @@ export function readStory(filename: string): Story {
 		throw new Error(`Invalid story structure: ${result.issues}`)
 	}
 	return result.data
-}
-
-export function createStory(filename: string, content: string): void {
-	if (!filename.endsWith(".md")) {
-		filename = `${filename}.md`
-	}
-	const storiesPath = getStoriesFolderPath()
-	const filePath = `${storiesPath}/${filename}`
-	writeFileSync(filePath, content)
-}
-
-export function deleteStory(filename: string): boolean {
-	const storiesPath = getStoriesFolderPath()
-	const filePath = `${storiesPath}/${filename}`
-	if (!existsSync(filePath)) {
-		return false
-	}
-	unlinkSync(filePath)
-	return true
 }
 
 function parseMarkdownToStory(content: string): Partial<Story> {

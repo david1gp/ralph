@@ -1,6 +1,6 @@
 import { buildApplication, buildRouteMap } from "@stricli/core"
-import { tasksCommands } from "@/cli/cmd/tasks"
-import { storiesCommands } from "@/cli/cmd/stories"
+import { tasksCommands } from "@/cli/cmd/tasks/tasksCommands"
+import { storiesCommands } from "@/cli/cmd/stories/storiesCommands"
 
 const routes = buildRouteMap({
 	routes: {

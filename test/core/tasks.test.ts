@@ -1,7 +1,11 @@
 import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
 import { writeFileSync, readFileSync, rmSync, existsSync } from "node:fs"
-import { readTasks, createTask, updateTask, findNextTask, deleteTask } from "@/cli/core/tasks"
-import type { Task } from "@/cli/data/types"
+import { readTasks } from "@/cli/core/readTasks"
+import { createTask } from "@/cli/core/createTask"
+import { updateTask } from "@/cli/core/updateTask"
+import { findNextTask } from "@/cli/core/findNextTask"
+import { deleteTask } from "@/cli/core/deleteTask"
+import type { Task } from "@/cli/data/TaskType"
 
 const testTasksPath = "/home/david/Coding/personal-taski-cli/tasks/tasks.test.json"
 const originalTasksPath = "/home/david/Coding/personal-taski-cli/tasks/tasks.json"

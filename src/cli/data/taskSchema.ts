@@ -11,17 +11,6 @@ export const taskSchema = object({
 	notes: optional(string()),
 })
 
-export const storySchema = object({
-	title: string(),
-	introduction: string(),
-	goals: array(string()),
-	userTasks: array(string()),
-})
-
 export function validateTask(input: unknown) {
 	return parse(taskSchema, input)
-}
-
-export function validateStory(input: unknown) {
-	return parse(storySchema, input)
 }

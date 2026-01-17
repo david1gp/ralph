@@ -1,6 +1,9 @@
 import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
 import { writeFileSync, readFileSync, rmSync, existsSync } from "node:fs"
-import { listStories, readStory, createStory, deleteStory } from "@/cli/core/stories"
+import { listStories } from "@/cli/core/listStories"
+import { readStory } from "@/cli/core/readStory"
+import { createStory } from "@/cli/core/createStory"
+import { deleteStory } from "@/cli/core/deleteStory"
 
 const testStoriesPath = "/home/david/Coding/personal-taski-cli/stories"
 const testStoryFilename = "test_story.md"

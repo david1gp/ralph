@@ -1,6 +1,6 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { updateTask } from "@/cli/core/tasks"
-import type { Task } from "@/cli/data/types"
+import { updateTask } from "@/cli/core/updateTask"
+import type { Task } from "@/cli/data/TaskType"
 
 interface UpdateFlags {
 	passes?: boolean

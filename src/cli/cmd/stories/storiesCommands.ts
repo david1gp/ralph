@@ -1,8 +1,8 @@
 import { buildRouteMap } from "@stricli/core"
-import { storiesListCommand } from "./list.js"
-import { storiesReadCommand } from "./read.js"
-import { storiesCreateCommand } from "./create.js"
-import { storiesDeleteCommand } from "./delete.js"
+import { storiesListCommand } from "./storiesListCommand"
+import { storiesReadCommand } from "./storiesReadCommand"
+import { storiesCreateCommand } from "./storiesCreateCommand"
+import { storiesDeleteCommand } from "./storiesDeleteCommand"
 
 export const storiesCommands = buildRouteMap({
 	routes: {

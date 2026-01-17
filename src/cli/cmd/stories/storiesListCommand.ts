@@ -1,5 +1,5 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { listStories } from "@/cli/core/stories"
+import { listStories } from "@/cli/core/listStories"
 
 export const storiesListCommand = buildCommand({
 	func(this: CommandContext, _: {}) {

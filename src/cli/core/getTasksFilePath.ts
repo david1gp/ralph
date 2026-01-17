@@ -11,24 +11,6 @@ export function getTasksFilePath(): string {
 	return result[1].trim()
 }
 
-export function getStoriesFolderPath(): string {
-	validateEnvFile()
-	const envPath = getEnvFilePath()
-	const content = readFileSync(envPath, "utf-8")
-	const result = content.match(/TASKI_STORIES_FOLDER=(.+)/)
-	if (!result || !result[1]) {
-		throw new Error("TASKI_STORIES_FOLDER not found in .env file")
-	}
-	return result[1].trim()
-}
-
-export function getConfig(): { tasksFile: string; storiesFolder: string } {
-	return {
-		tasksFile: getTasksFilePath(),
-		storiesFolder: getStoriesFolderPath(),
-	}
-}
-
 function getEnvFilePath(): string {
 	return ".env"
 }
