@@ -2,9 +2,9 @@
   "name": "taski-cli",
   "version": "0.1.0",
   "scripts": {
+    "taski": "bun run src/cli/index.ts",
     "test": "bun test",
-    "test:w": "bun test --watch",
-    "taski": "bun run src/cli/index.ts"
+    "test:w": "bun test --watch"
   },
   "devDependencies": {
     "@types/bun": "latest"

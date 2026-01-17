@@ -1,18 +1,18 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { updateTask } from "@/cli/core/updateTask"
+import { taskUpdate } from "@/cli/core/taskUpdate"
 import type { Task } from "@/cli/data/TaskType"
 
 interface UpdateFlags {
 	passes?: boolean
 }
 
-export const tasksUpdateCommand = buildCommand({
+export const taskUpdateCommand = buildCommand({
 	func(this: CommandContext, flags: UpdateFlags, id: string) {
 		const updates: Partial<Task> = {}
 		if (flags.passes !== undefined) {
 			updates.passes = flags.passes
 		}
-		const updated = updateTask(id, updates)
+		const updated = taskUpdate(id, updates)
 		this.process.stdout.write(`Task "${updated.id}" updated successfully`)
 	},
 	parameters: {

@@ -1,10 +1,10 @@
 import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
 import { writeFileSync, readFileSync, rmSync, existsSync } from "node:fs"
-import { readTasks } from "@/cli/core/readTasks"
-import { createTask } from "@/cli/core/createTask"
-import { updateTask } from "@/cli/core/updateTask"
-import { findNextTask } from "@/cli/core/findNextTask"
-import { deleteTask } from "@/cli/core/deleteTask"
+import { tasksRead } from "@/cli/core/tasksRead"
+import { taskCreate } from "@/cli/core/taskCreate"
+import { taskUpdate } from "@/cli/core/taskUpdate"
+import { taskFindNext } from "@/cli/core/taskFindNext"
+import { taskDelete } from "@/cli/core/taskDelete"
 import type { Task } from "@/cli/data/TaskType"
 
 const testTasksPath = "/home/david/Coding/personal-taski-cli/tasks/tasks.test.json"
@@ -29,22 +29,22 @@ beforeEach(() => {
 	writeFileSync(originalTasksPath, originalContent)
 })
 
-test("readTasks returns all tasks from tasks.json", () => {
-	const tasks = readTasks()
+test("tasksRead returns all tasks from tasks.json", () => {
+	const tasks = tasksRead()
 	expect(tasks.length).toBe(10)
 	expect(tasks[0]!.id).toBe("T-001")
 	expect(tasks[1]!.id).toBe("T-002")
 	expect(tasks[3]!.id).toBe("T-004")
 })
 
-test("readTasks returns empty array when file does not exist", () => {
+test("tasksRead returns empty array when file does not exist", () => {
 	rmSync(originalTasksPath, { force: true })
-	const tasks = readTasks()
+	const tasks = tasksRead()
 	expect(tasks).toEqual([])
 })
 
-test("createTask appends new task to tasks array", () => {
-	const initialTasks = readTasks()
+test("taskCreate appends new task to tasks array", () => {
+	const initialTasks = tasksRead()
 	const initialCount = initialTasks.length
 	const newTask: Task = {
 		id: "T-NEW",
@@ -56,60 +56,60 @@ test("createTask appends new task to tasks array", () => {
 		passes: false,
 		notes: "",
 	}
-	const result = createTask(newTask)
+	const result = taskCreate(newTask)
 	expect(result.id).toBe("T-NEW")
-	const tasks = readTasks()
+	const tasks = tasksRead()
 	expect(tasks.length).toBe(initialCount + 1)
 	expect(tasks[tasks.length - 1]!.id).toBe("T-NEW")
 })
 
-test("updateTask updates existing task", () => {
-	const updated = updateTask("T-004", { title: "Updated Title", passes: true })
+test("taskUpdate updates existing task", () => {
+	const updated = taskUpdate("T-004", { title: "Updated Title", passes: true })
 	expect(updated.id).toBe("T-004")
 	expect(updated.title).toBe("Updated Title")
 	expect(updated.passes).toBe(true)
-	const tasks = readTasks()
+	const tasks = tasksRead()
 	const found = tasks.find((t) => t.id === "T-004")
 	expect(found!.title).toBe("Updated Title")
 	expect(found!.passes).toBe(true)
 })
 
-test("updateTask throws error for non-existent task", () => {
-	expect(() => updateTask("NON-EXISTENT", { title: "Test" })).toThrow(
+test("taskUpdate throws error for non-existent task", () => {
+	expect(() => taskUpdate("NON-EXISTENT", { title: "Test" })).toThrow(
 		'Task with id "NON-EXISTENT" not found',
 	)
 })
 
-test("findNextTask returns first task with passes=false", () => {
-	const next = findNextTask()
+test("taskFindNext returns first task with passes=false", () => {
+	const next = taskFindNext()
 	expect(next).not.toBeUndefined()
 	expect(next!.passes).toBe(false)
 	expect(next!.id).toBe("T-007")
 })
 
-test("findNextTask returns undefined when all tasks pass", () => {
-	updateTask("T-004", { passes: true })
-	updateTask("T-005", { passes: true })
-	updateTask("T-006", { passes: true })
-	updateTask("T-007", { passes: true })
-	updateTask("T-008", { passes: true })
-	updateTask("T-009", { passes: true })
-	updateTask("T-010", { passes: true })
-	const next = findNextTask()
+test("taskFindNext returns undefined when all tasks pass", () => {
+	taskUpdate("T-004", { passes: true })
+	taskUpdate("T-005", { passes: true })
+	taskUpdate("T-006", { passes: true })
+	taskUpdate("T-007", { passes: true })
+	taskUpdate("T-008", { passes: true })
+	taskUpdate("T-009", { passes: true })
+	taskUpdate("T-010", { passes: true })
+	const next = taskFindNext()
 	expect(next).toBeUndefined()
 })
 
-test("deleteTask removes task by ID", () => {
-	const initialTasks = readTasks()
+test("taskDelete removes task by ID", () => {
+	const initialTasks = tasksRead()
 	const initialCount = initialTasks.length
-	const result = deleteTask("T-004")
+	const result = taskDelete("T-004")
 	expect(result).toBe(true)
-	const tasks = readTasks()
+	const tasks = tasksRead()
 	expect(tasks.length).toBe(initialCount - 1)
 	expect(tasks.find((t) => t.id === "T-004")).toBeUndefined()
 })
 
-test("deleteTask returns false for non-existent task", () => {
-	const result = deleteTask("NON-EXISTENT")
+test("taskDelete returns false for non-existent task", () => {
+	const result = taskDelete("NON-EXISTENT")
 	expect(result).toBe(false)
 })

@@ -1,12 +1,12 @@
-import { readFileSync, existsSync } from "node:fs"
+import { existsSync, readFileSync } from "node:fs"
 
-export function getStoriesFolderPath(): string {
+export function taskFilePathGet(): string {
 	validateEnvFile()
 	const envPath = getEnvFilePath()
 	const content = readFileSync(envPath, "utf-8")
-	const result = content.match(/TASKI_STORIES_FOLDER=(.+)/)
+	const result = content.match(/TASKI_TASKS_FILE=(.+)/)
 	if (!result || !result[1]) {
-		throw new Error("TASKI_STORIES_FOLDER not found in .env file")
+		throw new Error("TASKI_TASKS_FILE not found in .env file")
 	}
 	return result[1].trim()
 }

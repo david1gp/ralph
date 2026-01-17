@@ -7,6 +7,6 @@ export const storySchema = object({
 	userTasks: array(string()),
 })
 
-export function validateStory(input: unknown) {
+export function storyValidate(input: unknown) {
 	return parse(storySchema, input)
 }

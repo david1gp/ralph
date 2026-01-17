@@ -1,9 +1,9 @@
 import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
 import { writeFileSync, readFileSync, rmSync, existsSync } from "node:fs"
-import { listStories } from "@/cli/core/listStories"
-import { readStory } from "@/cli/core/readStory"
-import { createStory } from "@/cli/core/createStory"
-import { deleteStory } from "@/cli/core/deleteStory"
+import { storiesList } from "@/cli/core/storiesList"
+import { storyRead } from "@/cli/core/storyRead"
+import { storyCreate } from "@/cli/core/storyCreate"
+import { storyDelete } from "@/cli/core/storyDelete"
 
 const testStoriesPath = "/home/david/Coding/personal-taski-cli/stories"
 const testStoryFilename = "test_story.md"
@@ -44,14 +44,14 @@ beforeEach(() => {
 })
 
 test("listStories returns all markdown filenames in stories folder", () => {
-	const stories = listStories()
+	const stories = storiesList()
 	expect(Array.isArray(stories)).toBe(true)
 	expect(stories.length).toBeGreaterThanOrEqual(1)
 	expect(stories.includes(existingStoryFilename)).toBe(true)
 })
 
 test("readStory parses existing story correctly", () => {
-	const story = readStory(existingStoryFilename)
+	const story = storyRead(existingStoryFilename)
 	expect(story.title).toBe("Taski CLI Tool")
 	expect(story.introduction).toContain("CLI tool")
 	expect(Array.isArray(story.goals)).toBe(true)
@@ -61,54 +61,54 @@ test("readStory parses existing story correctly", () => {
 })
 
 test("readStory throws error for non-existent story", () => {
-	expect(() => readStory("non_existent_story.md")).toThrow(
+	expect(() => storyRead("non_existent_story.md")).toThrow(
 		'Story "non_existent_story.md" not found',
 	)
 })
 
 test("createStory creates new story file", () => {
-	const storiesBefore = listStories()
-	createStory(testStoryFilename, testStoryContent)
-	const storiesAfter = listStories()
+	const storiesBefore = storiesList()
+	storyCreate(testStoryFilename, testStoryContent)
+	const storiesAfter = storiesList()
 	expect(storiesAfter.length).toBe(storiesBefore.length + 1)
 	expect(storiesAfter.includes(testStoryFilename)).toBe(true)
 
-	const story = readStory(testStoryFilename)
+	const story = storyRead(testStoryFilename)
 	expect(story.title).toBe("Test Story")
 	expect(story.introduction).toContain("test story")
 })
 
 test("createStory appends .md extension if missing", () => {
 	const filenameWithoutExt = "another_test"
-	createStory(filenameWithoutExt, testStoryContent)
-	const stories = listStories()
+	storyCreate(filenameWithoutExt, testStoryContent)
+	const stories = storiesList()
 	expect(stories.includes(`${filenameWithoutExt}.md`)).toBe(true)
-	deleteStory(`${filenameWithoutExt}.md`)
+	storyDelete(`${filenameWithoutExt}.md`)
 })
 
 test("deleteStory removes story file", () => {
-	createStory(testStoryFilename, testStoryContent)
-	const storiesBefore = listStories()
-	const result = deleteStory(testStoryFilename)
+	storyCreate(testStoryFilename, testStoryContent)
+	const storiesBefore = storiesList()
+	const result = storyDelete(testStoryFilename)
 	expect(result).toBe(true)
-	const storiesAfter = listStories()
+	const storiesAfter = storiesList()
 	expect(storiesAfter.length).toBe(storiesBefore.length - 1)
 	expect(storiesAfter.includes(testStoryFilename)).toBe(false)
 })
 
 test("deleteStory returns false for non-existent story", () => {
-	const result = deleteStory("non_existent_story.md")
+	const result = storyDelete("non_existent_story.md")
 	expect(result).toBe(false)
 })
 
 test("readStory parses goals correctly", () => {
-	const story = readStory(existingStoryFilename)
+	const story = storyRead(existingStoryFilename)
 	expect(story.goals).toContain("Create a fully functional CLI tool for task/story management")
 	expect(story.goals).toContain("Implement type-safe schemas with valibot validation")
 })
 
 test("readStory parses userTasks correctly", () => {
-	const story = readStory(existingStoryFilename)
+	const story = storyRead(existingStoryFilename)
 	expect(story.userTasks).toContain("S-001")
 	expect(story.userTasks).toContain("S-002")
 	expect(story.userTasks).toContain("S-003")

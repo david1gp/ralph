@@ -1,9 +1,9 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { findNextTask } from "@/cli/core/findNextTask"
+import { taskFindNext } from "@/cli/core/taskFindNext"
 
-export const tasksNextCommand = buildCommand({
+export const taskNextCommand = buildCommand({
 	func(this: CommandContext, _: {}) {
-		const next = findNextTask()
+		const next = taskFindNext()
 		if (next) {
 			this.process.stdout.write(JSON.stringify(next, null, 2))
 		} else {

@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test"
-import { parseTask } from "@/cli/data/parseTask"
-import { parseStory } from "@/cli/data/parseStory"
+import { taskParse } from "@/cli/data/taskParse"
+import { storyParse } from "@/cli/data/storyParse"
 
-test("parseTask returns success for valid data", () => {
+test("taskParse returns success for valid data", () => {
 	const validTask = {
 		id: "T-001",
 		dir: "/home/david/Coding/project",
@@ -12,43 +12,43 @@ test("parseTask returns success for valid data", () => {
 		priority: 1,
 		passes: false,
 	}
-	const result = parseTask(validTask)
+	const result = taskParse(validTask)
 	expect(result.success).toBe(true)
 	if (result.success) {
 		expect(result.data.id).toBe("T-001")
 	}
 })
 
-test("parseTask returns failure for invalid data", () => {
+test("taskParse returns failure for invalid data", () => {
 	const invalidTask = {
 		id: "T-001",
 	}
-	const result = parseTask(invalidTask)
+	const result = taskParse(invalidTask)
 	expect(result.success).toBe(false)
 	if (!result.success) {
 		expect(result.issues).toBeDefined()
 	}
 })
 
-test("parseStory returns success for valid data", () => {
+test("storyParse returns success for valid data", () => {
 	const validStory = {
 		title: "Test Story",
 		introduction: "An introduction",
 		goals: ["Goal 1"],
 		userTasks: ["S-001"],
 	}
-	const result = parseStory(validStory)
+	const result = storyParse(validStory)
 	expect(result.success).toBe(true)
 	if (result.success) {
 		expect(result.data.title).toBe("Test Story")
 	}
 })
 
-test("parseStory returns failure for invalid data", () => {
+test("storyParse returns failure for invalid data", () => {
 	const invalidStory = {
 		title: "Test Story",
 	}
-	const result = parseStory(invalidStory)
+	const result = storyParse(invalidStory)
 	expect(result.success).toBe(false)
 	if (!result.success) {
 		expect(result.issues).toBeDefined()

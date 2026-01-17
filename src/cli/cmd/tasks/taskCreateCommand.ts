@@ -1,11 +1,11 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { createTask } from "@/cli/core/createTask"
-import { readTasks } from "@/cli/core/readTasks"
+import { taskCreate } from "@/cli/core/taskCreate"
+import { tasksRead } from "@/cli/core/tasksRead"
 import type { Task } from "@/cli/data/TaskType"
 
-export const tasksCreateCommand = buildCommand({
+export const taskCreateCommand = buildCommand({
 	func(this: CommandContext, _: {}, title: string) {
-		const tasks = readTasks()
+		const tasks = tasksRead()
 		const maxPriority = Math.max(...tasks.map((t) => t.priority))
 		const newTask: Task = {
 			id: `T-${String(tasks.length + 1).padStart(3, "0")}`,
@@ -17,7 +17,7 @@ export const tasksCreateCommand = buildCommand({
 			passes: false,
 			notes: "",
 		}
-		const created = createTask(newTask)
+		const created = taskCreate(newTask)
 		this.process.stdout.write(`Task "${created.id}" created successfully`)
 	},
 	parameters: {

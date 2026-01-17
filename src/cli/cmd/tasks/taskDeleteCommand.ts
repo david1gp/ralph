@@ -1,9 +1,9 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { deleteTask } from "@/cli/core/deleteTask"
+import { taskDelete } from "@/cli/core/taskDelete"
 
-export const tasksDeleteCommand = buildCommand({
+export const taskDeleteCommand = buildCommand({
 	func(this: CommandContext, _: {}, id: string) {
-		const deleted = deleteTask(id)
+		const deleted = taskDelete(id)
 		if (deleted) {
 			this.process.stdout.write(`Task "${id}" deleted successfully`)
 		} else {

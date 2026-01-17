@@ -11,6 +11,6 @@ export const taskSchema = object({
 	notes: optional(string()),
 })
 
-export function validateTask(input: unknown) {
+export function taskValidate(input: unknown) {
 	return parse(taskSchema, input)
 }

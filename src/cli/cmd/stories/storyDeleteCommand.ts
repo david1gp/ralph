@@ -1,9 +1,9 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { deleteStory } from "@/cli/core/deleteStory"
+import { storyDelete } from "@/cli/core/storyDelete"
 
-export const storiesDeleteCommand = buildCommand({
+export const storyDeleteCommand = buildCommand({
 	func(this: CommandContext, _: {}, filename: string) {
-		const deleted = deleteStory(filename)
+		const deleted = storyDelete(filename)
 		if (deleted) {
 			this.process.stdout.write(`Story "${filename}" deleted successfully`)
 		} else {

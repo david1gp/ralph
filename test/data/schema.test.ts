@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
-import { taskSchema, validateTask } from "@/cli/data/taskSchema"
-import { storySchema, validateStory } from "@/cli/data/storySchema"
+import { taskSchema, taskValidate } from "@/cli/data/taskValidate"
+import { storySchema, storyValidate } from "@/cli/data/storyValidate"
 
 test("taskSchema validates correct task data", () => {
 	const validTask = {
@@ -13,7 +13,7 @@ test("taskSchema validates correct task data", () => {
 		passes: false,
 		notes: "Some notes",
 	}
-	expect(() => validateTask(validTask)).not.toThrow()
+	expect(() => taskValidate(validTask)).not.toThrow()
 })
 
 test("taskSchema rejects missing required fields", () => {
@@ -22,7 +22,7 @@ test("taskSchema rejects missing required fields", () => {
 		dir: "/home/david/Coding/project",
 		title: "Test Task",
 	}
-	expect(() => validateTask(invalidTask)).toThrow()
+	expect(() => taskValidate(invalidTask)).toThrow()
 })
 
 test("taskSchema accepts passes as true or false", () => {
@@ -44,8 +44,8 @@ test("taskSchema accepts passes as true or false", () => {
 		priority: 1,
 		passes: false,
 	}
-	expect(() => validateTask(taskTrue)).not.toThrow()
-	expect(() => validateTask(taskFalse)).not.toThrow()
+	expect(() => taskValidate(taskTrue)).not.toThrow()
+	expect(() => taskValidate(taskFalse)).not.toThrow()
 })
 
 test("storySchema validates correct story data", () => {
@@ -55,7 +55,7 @@ test("storySchema validates correct story data", () => {
 		goals: ["Goal 1", "Goal 2"],
 		userTasks: ["S-001", "S-002"],
 	}
-	expect(() => validateStory(validStory)).not.toThrow()
+	expect(() => storyValidate(validStory)).not.toThrow()
 })
 
 test("storySchema rejects missing required fields", () => {
@@ -63,5 +63,5 @@ test("storySchema rejects missing required fields", () => {
 		title: "Test Story",
 		introduction: "An introduction",
 	}
-	expect(() => validateStory(invalidStory)).toThrow()
+	expect(() => storyValidate(invalidStory)).toThrow()
 })

@@ -1,10 +1,10 @@
-import { readFileSync, existsSync } from "node:fs"
-import { getTasksFilePath } from "@/cli/core/getTasksFilePath"
-import { parseTask } from "@/cli/data/parseTask"
+import { taskFilePathGet } from "@/cli/core/taskFilePathGet"
+import { taskParse } from "@/cli/data/taskParse"
 import type { Task } from "@/cli/data/TaskType"
+import { existsSync, readFileSync } from "node:fs"
 
-export function readTasks(): Task[] {
-	const tasksPath = getTasksFilePath()
+export function tasksRead(): Task[] {
+	const tasksPath = taskFilePathGet()
 	if (!existsSync(tasksPath)) {
 		return []
 	}
@@ -14,7 +14,7 @@ export function readTasks(): Task[] {
 		throw new Error("tasks.json must contain an array")
 	}
 	return parsed.map((task, index) => {
-		const result = parseTask(task)
+		const result = taskParse(task)
 		if (!result.success) {
 			throw new Error(`Invalid task at index ${index}: ${result.issues}`)
 		}

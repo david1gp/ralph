@@ -1,9 +1,9 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { readTasks } from "@/cli/core/readTasks"
+import { tasksRead } from "@/cli/core/tasksRead"
 
-export const tasksListCommand = buildCommand({
+export const taskListCommand = buildCommand({
 	func(this: CommandContext, _: {}) {
-		const tasks = readTasks()
+		const tasks = tasksRead()
 		this.process.stdout.write(JSON.stringify(tasks, null, 2))
 	},
 	parameters: {

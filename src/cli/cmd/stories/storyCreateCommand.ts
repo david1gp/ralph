@@ -1,9 +1,9 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { createStory } from "@/cli/core/createStory"
+import { storyCreate } from "@/cli/core/storyCreate"
 
-export const storiesCreateCommand = buildCommand({
+export const storyCreateCommand = buildCommand({
 	func(this: CommandContext, _: {}, filename: string, content: string) {
-		createStory(filename, content)
+		storyCreate(filename, content)
 		this.process.stdout.write(`Story "${filename}" created successfully`)
 	},
 	parameters: {

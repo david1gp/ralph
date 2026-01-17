@@ -1,17 +1,17 @@
-import { readFileSync, existsSync } from "node:fs"
-import { getStoriesFolderPath } from "@/cli/core/getStoriesFolderPath"
-import { parseStory } from "@/cli/data/parseStory"
+import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
+import { storyParse } from "@/cli/data/storyParse"
 import type { Story } from "@/cli/data/StoryType"
+import { existsSync, readFileSync } from "node:fs"
 
-export function readStory(filename: string): Story {
-	const storiesPath = getStoriesFolderPath()
+export function storyRead(filename: string): Story {
+	const storiesPath = storyFolderPathGet()
 	const filePath = `${storiesPath}/${filename}`
 	if (!existsSync(filePath)) {
 		throw new Error(`Story "${filename}" not found`)
 	}
 	const content = readFileSync(filePath, "utf-8")
 	const story = parseMarkdownToStory(content)
-	const result = parseStory(story)
+	const result = storyParse(story)
 	if (!result.success) {
 		throw new Error(`Invalid story structure: ${result.issues}`)
 	}

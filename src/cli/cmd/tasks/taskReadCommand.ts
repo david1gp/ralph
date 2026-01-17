@@ -1,9 +1,9 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { readTasks } from "@/cli/core/readTasks"
+import { tasksRead } from "@/cli/core/tasksRead"
 
-export const tasksReadCommand = buildCommand({
+export const taskReadCommand = buildCommand({
 	func(this: CommandContext, _: {}, id: string) {
-		const tasks = readTasks()
+		const tasks = tasksRead()
 		const task = tasks.find((t) => t.id === id)
 		if (task) {
 			this.process.stdout.write(JSON.stringify(task, null, 2))
