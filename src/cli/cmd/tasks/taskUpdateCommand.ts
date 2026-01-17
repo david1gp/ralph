@@ -2,6 +2,7 @@ import { buildCommand, type CommandContext } from "@stricli/core"
 import { array, safeParse, string } from "valibot"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { taskUpdate } from "@/cli/core/taskUpdate"
+import { storyPathGet } from "@/cli/core/storyPathGet"
 import type { Task } from "@/cli/data/TaskType"
 
 interface UpdateFlags {
@@ -13,6 +14,7 @@ interface UpdateFlags {
 	description?: string
 	acceptanceCriteria?: string
 	priority?: number
+	story?: string
 }
 
 export const taskUpdateCommand = buildCommand({
@@ -45,6 +47,9 @@ export const taskUpdateCommand = buildCommand({
 		}
 		if (flags.priority !== undefined) {
 			updates.priority = flags.priority
+		}
+		if (flags.story !== undefined) {
+			updates.story = storyPathGet(flags.story)
 		}
 		const updated = taskUpdate(id, updates)
 		this.process.stdout.write(`Task "${updated.id}" updated successfully`)
@@ -109,6 +114,13 @@ export const taskUpdateCommand = buildCommand({
 				parse: Number,
 				optional: true,
 				brief: "Set task priority (number)",
+			},
+			story: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				inferEmpty: true,
+				brief: "Set story reference (filename or path, empty to clear)",
 			},
 		},
 	},

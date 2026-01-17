@@ -11,4 +11,5 @@ export const taskSchema = object({
 	note: optional(string()),
 	startedAt: optional(string()),
 	endedAt: optional(string()),
+	story: optional(string()),
 })

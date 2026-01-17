@@ -3,6 +3,7 @@ import { array, safeParse, string } from "valibot"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { taskCreate } from "@/cli/core/taskCreate"
 import { tasksRead } from "@/cli/core/tasksRead"
+import { storyPathGet } from "@/cli/core/storyPathGet"
 import type { Task } from "@/cli/data/TaskType"
 
 interface CreateFlags {
@@ -14,6 +15,7 @@ interface CreateFlags {
 	start?: string
 	end?: string
 	note?: string
+	story?: string
 }
 
 export function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
@@ -39,6 +41,7 @@ export function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 		note: flags.note ?? "",
 		startedAt: flags.start !== undefined ? parseDateTime(flags.start) : undefined,
 		endedAt: flags.end !== undefined ? parseDateTime(flags.end) : undefined,
+		story: flags.story !== undefined ? storyPathGet(flags.story) : undefined,
 	}
 	const created = taskCreate(newTask)
 	this.process.stdout.write(`Task "${created.id}" created successfully`)
@@ -96,6 +99,13 @@ export const taskCreateCommand = buildCommand({
 				parse: String,
 				optional: true,
 				brief: "Set note field",
+			},
+			story: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				inferEmpty: true,
+				brief: "Set story reference (filename or path, empty to clear)",
 			},
 		},
 	},
