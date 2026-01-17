@@ -1,6 +1,6 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { array, safeParse, string } from "valibot"
-import { dateTimeSchema } from "~utils/valibot/dateTimeSchema"
+import { parseDateTime } from "@/cli/utils/dateTime"
 import { taskUpdate } from "@/cli/core/taskUpdate"
 import type { Task } from "@/cli/data/TaskType"
 
@@ -13,20 +13,6 @@ interface UpdateFlags {
 	description?: string
 	acceptanceCriteria?: string
 	priority?: number
-}
-
-function parseDateTime(value: string): string | undefined {
-	if (value === "now") {
-		return new Date().toISOString()
-	}
-	if (value === "") {
-		return undefined
-	}
-	const result = safeParse(dateTimeSchema, value)
-	if (!result.success) {
-		throw new Error(`Invalid date-time format: "${value}". Use ISO 8601 format or "now".`)
-	}
-	return result.output
 }
 
 export const taskUpdateCommand = buildCommand({
