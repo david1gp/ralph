@@ -1,26 +1,32 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { storyCreate } from "@/cli/core/storyCreate"
 
+interface CreateFlags {
+	filename: string
+	content: string
+}
+
+export function storyCreateFunc(this: CommandContext, flags: CreateFlags) {
+	storyCreate(flags.filename, flags.content)
+	this.process.stdout.write(`Story "${flags.filename}" created successfully`)
+}
+
 export const storyCreateCommand = buildCommand({
-	func(this: CommandContext, _: {}, filename: string, content: string) {
-		storyCreate(filename, content)
-		this.process.stdout.write(`Story "${filename}" created successfully`)
-	},
+	func: storyCreateFunc,
 	parameters: {
-		positional: {
-			kind: "tuple",
-			parameters: [
-				{
-					brief: "Story filename",
-					parse: String,
-					placeholder: "filename",
-				},
-				{
-					brief: "Story content",
-					parse: String,
-					placeholder: "content",
-				},
-			],
+		flags: {
+			filename: {
+				kind: "parsed",
+				parse: String,
+				optional: false,
+				brief: "Story filename",
+			},
+			content: {
+				kind: "parsed",
+				parse: String,
+				optional: false,
+				brief: "Story content",
+			},
 		},
 	},
 	docs: {
