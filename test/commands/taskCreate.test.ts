@@ -38,7 +38,7 @@ beforeEach(() => {
 
 test("taskCreateCommand creates task with required --title flag", () => {
 	const context = createMockContext()
-	const params = { title: "New Task" }
+	const params = { title: "New Task", description: "Test description", acceptanceCriteria: "[]", story: "test-story", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	expect(stdout[0]).toContain("created successfully")
@@ -46,7 +46,7 @@ test("taskCreateCommand creates task with required --title flag", () => {
 	const created = tasks.find(t => t.title === "New Task")
 	expect(created).toBeDefined()
 	expect(created!.title).toBe("New Task")
-	expect(created!.description).toBe("")
+	expect(created!.description).toBe("Test description")
 	expect(created!.acceptanceCriteria).toEqual([])
 	expect(created!.passes).toBe(false)
 	expect(created!.note).toBe("")
@@ -62,6 +62,8 @@ test("taskCreateCommand creates task with all optional flags", () => {
 		passes: true,
 		start: "now",
 		note: "Test note",
+		story: "full-task-story",
+		dir: "/home/david/Coding/test",
 	}
 	taskCreateFunc.call(context, params)
 	
@@ -81,7 +83,7 @@ test("taskCreateCommand creates task with all optional flags", () => {
 
 test("taskCreateCommand auto-generates ID", () => {
 	const context = createMockContext()
-	const params = { title: "Auto ID Task" }
+	const params = { title: "Auto ID Task", description: "Test", acceptanceCriteria: "[]", story: "auto-id", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	const tasks = tasksRead()
@@ -95,7 +97,7 @@ test("taskCreateCommand calculates priority as max + 1 when not provided", () =>
 	const maxPriority = Math.max(...tasks.map(t => t.priority))
 	
 	const context = createMockContext()
-	const params = { title: "Default Priority Task" }
+	const params = { title: "Default Priority Task", description: "Test", acceptanceCriteria: "[]", story: "default-priority", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	const created = tasksRead().find(t => t.title === "Default Priority Task")
@@ -105,7 +107,7 @@ test("taskCreateCommand calculates priority as max + 1 when not provided", () =>
 
 test("taskCreateCommand uses provided priority", () => {
 	const context = createMockContext()
-	const params = { title: "Custom Priority Task", priority: 999 }
+	const params = { title: "Custom Priority Task", priority: 999, description: "Test", acceptanceCriteria: "[]", story: "custom-priority", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	const created = tasksRead().find(t => t.title === "Custom Priority Task")
@@ -115,7 +117,7 @@ test("taskCreateCommand uses provided priority", () => {
 
 test("taskCreateCommand parses acceptance criteria as JSON array", () => {
 	const context = createMockContext()
-	const params = { title: "AC Task", acceptanceCriteria: '["Criterion 1", "Criterion 2", "Criterion 3"]' }
+	const params = { title: "AC Task", acceptanceCriteria: '["Criterion 1", "Criterion 2", "Criterion 3"]', description: "Test", story: "ac-task", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	const created = tasksRead().find(t => t.title === "AC Task")
@@ -125,14 +127,14 @@ test("taskCreateCommand parses acceptance criteria as JSON array", () => {
 
 test("taskCreateCommand throws error for invalid acceptance criteria format", () => {
 	const context = createMockContext()
-	const params = { title: "Invalid AC Task", acceptanceCriteria: "not-json" }
+	const params = { title: "Invalid AC Task", acceptanceCriteria: "not-json", description: "Test", story: "invalid-ac", dir: "/home/david/Coding/test" }
 	
 	expect(() => taskCreateFunc.call(context, params)).toThrow("JSON Parse error")
 })
 
 test("taskCreateCommand parses 'now' as current timestamp for start", () => {
 	const context = createMockContext()
-	const params = { title: "Start Now Task", start: "now" }
+	const params = { title: "Start Now Task", start: "now", description: "Test", acceptanceCriteria: "[]", story: "start-now", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	const created = tasksRead().find(t => t.title === "Start Now Task")
@@ -142,7 +144,7 @@ test("taskCreateCommand parses 'now' as current timestamp for start", () => {
 
 test("taskCreateCommand parses ISO 8601 timestamp for start", () => {
 	const context = createMockContext()
-	const params = { title: "Start ISO Task", start: "2025-01-17T10:00:00.000Z" }
+	const params = { title: "Start ISO Task", start: "2025-01-17T10:00:00.000Z", description: "Test", acceptanceCriteria: "[]", story: "start-iso", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	const created = tasksRead().find(t => t.title === "Start ISO Task")
@@ -152,7 +154,7 @@ test("taskCreateCommand parses ISO 8601 timestamp for start", () => {
 
 test("taskCreateCommand handles empty start to clear", () => {
 	const context = createMockContext()
-	const params = { title: "Empty Start Task", start: "" }
+	const params = { title: "Empty Start Task", start: "", description: "Test", acceptanceCriteria: "[]", story: "empty-start", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	const created = tasksRead().find(t => t.title === "Empty Start Task")
@@ -162,7 +164,7 @@ test("taskCreateCommand handles empty start to clear", () => {
 
 test("taskCreateCommand parses end timestamp", () => {
 	const context = createMockContext()
-	const params = { title: "End Task", end: "2025-01-17T18:00:00.000Z" }
+	const params = { title: "End Task", end: "2025-01-17T18:00:00.000Z", description: "Test", acceptanceCriteria: "[]", story: "end-task", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	const created = tasksRead().find(t => t.title === "End Task")
@@ -172,7 +174,7 @@ test("taskCreateCommand parses end timestamp", () => {
 
 test("taskCreateCommand handles empty end to clear", () => {
 	const context = createMockContext()
-	const params = { title: "Empty End Task", end: "" }
+	const params = { title: "Empty End Task", end: "", description: "Test", acceptanceCriteria: "[]", story: "empty-end", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
 	const created = tasksRead().find(t => t.title === "Empty End Task")
@@ -182,7 +184,7 @@ test("taskCreateCommand handles empty end to clear", () => {
 
 test("taskCreateCommand throws error for invalid start date format", () => {
 	const context = createMockContext()
-	const params = { title: "Invalid Start Task", start: "invalid-date" }
+	const params = { title: "Invalid Start Task", start: "invalid-date", description: "Test", acceptanceCriteria: "[]", story: "invalid-start", dir: "/home/david/Coding/test" }
 	
 	expect(() => taskCreateFunc.call(context, params)).toThrow(
 		'Invalid date-time format: "invalid-date". Use ISO 8601 format or "now".',
@@ -191,19 +193,19 @@ test("taskCreateCommand throws error for invalid start date format", () => {
 
 test("taskCreateCommand throws error for invalid end date format", () => {
 	const context = createMockContext()
-	const params = { title: "Invalid End Task", end: "2025/01/17" }
+	const params = { title: "Invalid End Task", end: "2025/01/17", description: "Test", acceptanceCriteria: "[]", story: "invalid-end", dir: "/home/david/Coding/test" }
 	
 	expect(() => taskCreateFunc.call(context, params)).toThrow(
 		'Invalid date-time format: "2025/01/17". Use ISO 8601 format or "now".',
 	)
 })
 
-test("taskCreateCommand sets dir to project root", () => {
+test("taskCreateCommand sets dir to specified value", () => {
 	const context = createMockContext()
-	const params = { title: "Dir Test Task" }
+	const params = { title: "Dir Test Task", description: "Test", acceptanceCriteria: "[]", story: "dir-test", dir: "/custom/path" }
 	taskCreateFunc.call(context, params)
 	
 	const created = tasksRead().find(t => t.title === "Dir Test Task")
 	expect(created).toBeDefined()
-	expect(created!.dir).toBe("/home/david/Coding/personal-taski-cli")
+	expect(created!.dir).toBe("/custom/path")
 })

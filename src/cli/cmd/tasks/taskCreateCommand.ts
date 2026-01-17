@@ -8,40 +8,39 @@ import type { Task } from "@/cli/data/TaskType"
 
 interface CreateFlags {
 	title: string
-	description?: string
-	acceptanceCriteria?: string
+	description: string
+	acceptanceCriteria: string
 	priority?: number
 	passes?: boolean
 	start?: string
 	end?: string
 	note?: string
-	story?: string
+	story: string
+	dir: string
 }
 
 export function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 	const tasks = tasksRead()
 	const maxPriority = tasks.length > 0 ? Math.max(...tasks.map((t) => t.priority)) : 0
-	let acceptanceCriteria: string[] = []
-	if (flags.acceptanceCriteria !== undefined) {
-		const parsed = JSON.parse(flags.acceptanceCriteria)
-		const result = safeParse(array(string()), parsed)
-		if (!result.success) {
-			throw new Error(`Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.`)
-		}
-		acceptanceCriteria = result.output
+	const parsed = JSON.parse(flags.acceptanceCriteria)
+	const result = safeParse(array(string()), parsed)
+	if (!result.success) {
+		throw new Error(`Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.`)
 	}
+	const acceptanceCriteria = result.output
+	const storyValue = flags.story.endsWith(".md") ? flags.story : `${flags.story}.md`
 	const newTask: Task = {
 		id: `T-${String(tasks.length + 1).padStart(3, "0")}`,
-		dir: "/home/david/Coding/personal-taski-cli",
+		dir: flags.dir,
 		title: flags.title,
-		description: flags.description ?? "",
+		description: flags.description,
 		acceptanceCriteria: acceptanceCriteria,
 		priority: flags.priority ?? maxPriority + 1,
 		passes: flags.passes ?? false,
 		note: flags.note ?? "",
 		startedAt: flags.start !== undefined ? parseDateTime(flags.start) : undefined,
 		endedAt: flags.end !== undefined ? parseDateTime(flags.end) : undefined,
-		story: flags.story !== undefined ? storyPathGet(flags.story) : undefined,
+		story: storyPathGet(storyValue),
 	}
 	const created = taskCreate(newTask)
 	this.process.stdout.write(`Task "${created.id}" created successfully`)
@@ -60,13 +59,13 @@ export const taskCreateCommand = buildCommand({
 			description: {
 				kind: "parsed",
 				parse: String,
-				optional: true,
+				optional: false,
 				brief: "Set task description",
 			},
 			acceptanceCriteria: {
 				kind: "parsed",
 				parse: String,
-				optional: true,
+				optional: false,
 				brief: "Set acceptance criteria (JSON array string, e.g. '[\"Test 1\"]')",
 			},
 			priority: {
@@ -103,9 +102,14 @@ export const taskCreateCommand = buildCommand({
 			story: {
 				kind: "parsed",
 				parse: String,
-				optional: true,
-				inferEmpty: true,
-				brief: "Set story reference (filename or path, empty to clear)",
+				optional: false,
+				brief: "Set story reference (filename or path, .md extension optional)",
+			},
+			dir: {
+				kind: "parsed",
+				parse: String,
+				optional: false,
+				brief: "Set task directory path",
 			},
 		},
 	},
