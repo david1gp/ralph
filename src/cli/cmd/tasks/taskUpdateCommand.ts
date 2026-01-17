@@ -1,5 +1,5 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { safeParse } from "valibot"
+import { array, safeParse, string } from "valibot"
 import { dateTimeSchema } from "~utils/valibot/dateTimeSchema"
 import { taskUpdate } from "@/cli/core/taskUpdate"
 import type { Task } from "@/cli/data/TaskType"
@@ -9,6 +9,10 @@ interface UpdateFlags {
 	start?: string
 	end?: string
 	note?: string
+	title?: string
+	description?: string
+	acceptanceCriteria?: string
+	priority?: number
 }
 
 function parseDateTime(value: string): string | undefined {
@@ -39,6 +43,22 @@ export const taskUpdateCommand = buildCommand({
 		}
 		if (flags.note !== undefined) {
 			updates.note = flags.note
+		}
+		if (flags.title !== undefined) {
+			updates.title = flags.title
+		}
+		if (flags.description !== undefined) {
+			updates.description = flags.description
+		}
+		if (flags.acceptanceCriteria !== undefined) {
+			const result = safeParse(array(string()), flags.acceptanceCriteria)
+			if (!result.success) {
+				throw new Error(`Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.`)
+			}
+			updates.acceptanceCriteria = result.output
+		}
+		if (flags.priority !== undefined) {
+			updates.priority = flags.priority
 		}
 		const updated = taskUpdate(id, updates)
 		this.process.stdout.write(`Task "${updated.id}" updated successfully`)
@@ -79,6 +99,30 @@ export const taskUpdateCommand = buildCommand({
 				parse: String,
 				optional: true,
 				brief: "Set note field",
+			},
+			title: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				brief: "Set task title (use empty string to clear)",
+			},
+			description: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				brief: "Set task description (use empty string to clear)",
+			},
+			acceptanceCriteria: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				brief: "Set acceptance criteria (JSON array string, e.g. '[\"Test 1\"]')",
+			},
+			priority: {
+				kind: "parsed",
+				parse: Number,
+				optional: true,
+				brief: "Set task priority (number)",
 			},
 		},
 	},
