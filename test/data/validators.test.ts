@@ -33,7 +33,7 @@ test("taskParse returns failure for invalid data", () => {
 test("storyParse returns success for valid data", () => {
 	const validStory = {
 		title: "Test Story",
-		introduction: "An introduction",
+		description: "A description",
 		goals: ["Goal 1"],
 		userTasks: ["S-001"],
 	}

@@ -41,7 +41,7 @@ taski stories read <filename>
 $ taski stories read taski_cli.md
 {
   "title": "Taski CLI",
-  "introduction": "A CLI for managing tasks and stories.",
+  "description": "A CLI for managing tasks and stories.",
   "goals": ["Goal 1", "Goal 2"],
   "userTasks": [...]
 }
@@ -49,7 +49,7 @@ $ taski stories read taski_cli.md
 
 **Output:** JSON object with parsed story content including:
 - `title` - Story title
-- `introduction` - Introduction text
+- `description` - Description text
 - `goals` - Array of goals
 - `userTasks` - Array of user tasks
 
@@ -71,7 +71,7 @@ taski stories create <filename> <content>
 
 **Example:**
 ```bash
-$ taski stories create my_story.md "# My Story\n\n## Introduction\n\nThis is my story."
+$ taski stories create my_story.md "# My Story\n\n## Description\n\nThis is my story."
 Story "my_story.md" created successfully
 ```
 
@@ -110,9 +110,9 @@ Stories are markdown files with a specific structure:
 ```markdown
 # Title
 
-## Introduction
+## Description
 
-Introduction text here.
+Description text here.
 
 ## Goals
 
@@ -135,7 +135,7 @@ Description of task 2...
 | Section | Description |
 |---------|-------------|
 | `# Title` | The story title (first H1 heading) |
-| `## Introduction` | Brief introduction to the story |
+| `## Description` | Brief description of the story |
 | `## Goals` | List of goals (bulleted) |
 | `## User Tasks` | Section containing user tasks |
 
@@ -146,7 +146,7 @@ When reading a story, the CLI parses it into:
 ```json
 {
   "title": "Story Title",
-  "introduction": "Introduction text...",
+  "description": "Description text...",
   "goals": ["Goal 1", "Goal 2"],
   "userTasks": [
     {
@@ -164,7 +164,7 @@ When reading a story, the CLI parses it into:
 
 ```bash
 # Create a story with content
-taski stories create new_feature.md "# New Feature\n\n## Introduction\n\nAdding X feature.\n\n## Goals\n\n- Implement feature\n- Write tests"
+taski stories create new_feature.md "# New Feature\n\n## Description\n\nAdding X feature.\n\n## Goals\n\n- Implement feature\n- Write tests"
 ```
 
 ### Managing Multiple Stories
@@ -197,7 +197,7 @@ taski stories create update.md "$(cat new_story_content.md)"
 ### Full Example: Creating a Story
 
 ```bash
-$ taski stories create example.md "# Example Story\n\n## Introduction\n\nThis is an example.\n\n## Goals\n\n- Learn CLI\n- Write docs"
+$ taski stories create example.md "# Example Story\n\n## Description\n\nThis is an example.\n\n## Goals\n\n- Learn CLI\n- Write docs"
 Story "example.md" created successfully
 
 $ taski stories list
@@ -209,7 +209,7 @@ $ taski stories list
 $ taski stories read example.md
 {
   "title": "Example Story",
-  "introduction": "This is an example.",
+  "description": "This is an example.",
   "goals": ["Learn CLI", "Write docs"],
   "userTasks": []
 }

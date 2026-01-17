@@ -26,9 +26,9 @@ export function storyUpdate(filename: string, updates: Partial<Story>): Story {
 function storyToMarkdown(story: Story): string {
 	let content = `# Story: ${story.title}
 
-## Introduction
+## Description
 
-${story.introduction}
+${story.description}
 
 ## Goals
 

@@ -31,8 +31,8 @@ function parseMarkdownToStory(content: string): Partial<Story> {
 			currentSection = null
 		} else if (trimmedLine.startsWith("## ")) {
 			currentSection = trimmedLine.replace("## ", "")
-		} else if (currentSection === "Introduction" && story.introduction === undefined && trimmedLine !== "") {
-			story.introduction = trimmedLine
+		} else if (currentSection === "Description" && story.description === undefined && trimmedLine !== "") {
+			story.description = trimmedLine
 		} else if (currentSection === "Goals" && trimmedLine.startsWith("- ")) {
 			if (!story.goals) story.goals = []
 			story.goals.push(trimmedLine.replace("- ", ""))

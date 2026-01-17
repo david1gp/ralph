@@ -3,7 +3,7 @@ import { storyUpdate } from "@/cli/core/storyUpdate"
 
 interface UpdateFlags {
 	title?: string
-	introduction?: string
+	description?: string
 	goals?: string
 	userTasks?: string
 }
@@ -21,8 +21,8 @@ export const storyUpdateCommand = buildCommand({
 		if (flags.title !== undefined) {
 			updates.title = flags.title
 		}
-		if (flags.introduction !== undefined) {
-			updates.introduction = flags.introduction
+		if (flags.description !== undefined) {
+			updates.description = flags.description
 		}
 		if (flags.goals !== undefined) {
 			updates.goals = parseArray(flags.goals)
@@ -51,11 +51,11 @@ export const storyUpdateCommand = buildCommand({
 				optional: true,
 				brief: "Set story title",
 			},
-			introduction: {
+			description: {
 				kind: "parsed",
 				parse: String,
 				optional: true,
-				brief: "Set story introduction",
+				brief: "Set story description",
 			},
 			goals: {
 				kind: "parsed",

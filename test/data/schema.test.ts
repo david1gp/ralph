@@ -51,7 +51,7 @@ test("taskSchema accepts passes as true or false", () => {
 test("storySchema validates correct story data", () => {
 	const validStory = {
 		title: "Test Story",
-		introduction: "An introduction",
+		description: "A description",
 		goals: ["Goal 1", "Goal 2"],
 		userTasks: ["S-001", "S-002"],
 	}
@@ -61,7 +61,7 @@ test("storySchema validates correct story data", () => {
 test("storySchema rejects missing required fields", () => {
 	const invalidStory = {
 		title: "Test Story",
-		introduction: "An introduction",
+		description: "A description",
 	}
 	expect(() => storyValidate(invalidStory)).toThrow()
 })

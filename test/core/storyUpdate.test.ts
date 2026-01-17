@@ -8,9 +8,9 @@ const testStoryFilename = "test_update_story.md"
 
 const initialContent = `# Story: Initial Title
 
-## Introduction
+## Description
 
-This is the initial introduction text
+This is the initial description text
 
 ## Goals
 
@@ -41,15 +41,15 @@ test("storyUpdate updates title field", () => {
 	expect(story.title).toBe("Updated Title")
 })
 
-test("storyUpdate updates introduction field", () => {
+test("storyUpdate updates description field", () => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	writeFileSync(testFile, initialContent)
 
-	const updated = storyUpdate(testStoryFilename, { introduction: "Updated introduction text" })
-	expect(updated.introduction).toBe("Updated introduction text")
+	const updated = storyUpdate(testStoryFilename, { description: "Updated description text" })
+	expect(updated.description).toBe("Updated description text")
 
 	const story = storyRead(testStoryFilename)
-	expect(story.introduction).toBe("Updated introduction text")
+	expect(story.description).toBe("Updated description text")
 })
 
 test("storyUpdate updates goals field", () => {
@@ -80,7 +80,7 @@ test("storyUpdate performs partial update on existing story", () => {
 
 	const updated = storyUpdate(testStoryFilename, { title: "Partially Updated Title" })
 	expect(updated.title).toBe("Partially Updated Title")
-	expect(updated.introduction).toBe("This is the initial introduction text")
+	expect(updated.description).toBe("This is the initial description text")
 	expect(updated.goals).toEqual(["Initial goal one", "Initial goal two"])
 	expect(updated.userTasks).toEqual(["T-001", "T-002"])
 })
@@ -105,19 +105,19 @@ test("storyUpdate updates all fields at once", () => {
 
 	const updated = storyUpdate(testStoryFilename, {
 		title: "Complete Update Title",
-		introduction: "Complete update introduction",
+		description: "Complete update description",
 		goals: ["Complete goal one", "Complete goal two"],
 		userTasks: ["S-201", "S-202", "S-203"],
 	})
 
 	expect(updated.title).toBe("Complete Update Title")
-	expect(updated.introduction).toBe("Complete update introduction")
+	expect(updated.description).toBe("Complete update description")
 	expect(updated.goals).toEqual(["Complete goal one", "Complete goal two"])
 	expect(updated.userTasks).toEqual(["S-201", "S-202", "S-203"])
 
 	const story = storyRead(testStoryFilename)
 	expect(story.title).toBe("Complete Update Title")
-	expect(story.introduction).toBe("Complete update introduction")
+	expect(story.description).toBe("Complete update description")
 	expect(story.goals).toEqual(["Complete goal one", "Complete goal two"])
 	expect(story.userTasks).toEqual(["S-201", "S-202", "S-203"])
 })

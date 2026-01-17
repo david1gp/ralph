@@ -9,7 +9,7 @@ const testStoriesPath = "/home/david/Coding/personal-taski-cli/stories"
 const testStoryFilename = "test_story.md"
 const testStoryContent = `# Story: Test Story
 
-## Introduction
+## Description
 
 This is a test story for unit testing purposes.
 
@@ -53,7 +53,7 @@ test("listStories returns all markdown filenames in stories folder", () => {
 test("readStory parses existing story correctly", () => {
 	const story = storyRead(existingStoryFilename)
 	expect(story.title).toBe("Taski CLI Tool")
-	expect(story.introduction).toContain("CLI tool")
+	expect(story.description).toContain("CLI tool")
 	expect(Array.isArray(story.goals)).toBe(true)
 	expect(story.goals.length).toBeGreaterThan(0)
 	expect(Array.isArray(story.userTasks)).toBe(true)
@@ -75,7 +75,7 @@ test("createStory creates new story file", () => {
 
 	const story = storyRead(testStoryFilename)
 	expect(story.title).toBe("Test Story")
-	expect(story.introduction).toContain("test story")
+	expect(story.description).toContain("test story")
 })
 
 test("createStory appends .md extension if missing", () => {
