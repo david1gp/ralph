@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { taskiCommand } from "@/cli/cmd/taskiCommand"
 import { run } from "@stricli/core"
 

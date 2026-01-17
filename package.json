@@ -17,6 +17,9 @@
     "@stricli/core": "^1.2.5",
     "valibot": "^1.2.0"
   },
+  "bin": {
+    "taski": "./src/cli/index.ts"
+  },
   "prettier": {
     "semi": false,
     "printWidth": 120,
