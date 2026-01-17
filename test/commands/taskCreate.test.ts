@@ -41,7 +41,7 @@ test("taskCreateCommand creates task with required --title flag", () => {
 	const params = { title: "New Task", description: "Test description", acceptanceCriteria: "[]", story: "test-story", dir: "/home/david/Coding/test" }
 	taskCreateFunc.call(context, params)
 	
-	expect(stdout[0]).toContain("created successfully")
+	expect(stdout[0]).toMatch(/^T-\d{3}$/)
 	const tasks = tasksRead()
 	const created = tasks.find(t => t.title === "New Task")
 	expect(created).toBeDefined()
@@ -67,7 +67,7 @@ test("taskCreateCommand creates task with all optional flags", () => {
 	}
 	taskCreateFunc.call(context, params)
 	
-	expect(stdout[0]).toContain("created successfully")
+	expect(stdout[0]).toMatch(/^T-\d{3}$/)
 	const tasks = tasksRead()
 	const created = tasks.find(t => t.title === "Full Task")
 	expect(created).toBeDefined()

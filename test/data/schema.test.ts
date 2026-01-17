@@ -2,10 +2,11 @@ import { expect, test } from "bun:test"
 import { taskSchema, taskValidate } from "@/cli/data/taskValidate"
 import { storySchema, storyValidate } from "@/cli/data/storyValidate"
 
-test("taskSchema validates correct task data", () => {
+	test("taskSchema validates correct task data", () => {
 	const validTask = {
 		id: "T-001",
 		dir: "/home/david/Coding/project",
+		story: "test-story.md",
 		title: "Test Task",
 		description: "A test task",
 		acceptanceCriteria: ["Criterion 1", "Criterion 2"],
@@ -25,10 +26,11 @@ test("taskSchema rejects missing required fields", () => {
 	expect(() => taskValidate(invalidTask)).toThrow()
 })
 
-test("taskSchema accepts passes as true or false", () => {
+	test("taskSchema accepts passes as true or false", () => {
 	const taskTrue = {
 		id: "T-001",
 		dir: "/home/david/Coding/project",
+		story: "test-story.md",
 		title: "Test Task",
 		description: "A test task",
 		acceptanceCriteria: [],
@@ -38,6 +40,7 @@ test("taskSchema accepts passes as true or false", () => {
 	const taskFalse = {
 		id: "T-001",
 		dir: "/home/david/Coding/project",
+		story: "test-story.md",
 		title: "Test Task",
 		description: "A test task",
 		acceptanceCriteria: [],

@@ -2,10 +2,11 @@ import { expect, test } from "bun:test"
 import { taskParse } from "@/cli/data/taskParse"
 import { storyParse } from "@/cli/data/storyParse"
 
-test("taskParse returns success for valid data", () => {
+	test("taskParse returns success for valid data", () => {
 	const validTask = {
 		id: "T-001",
 		dir: "/home/david/Coding/project",
+		story: "test-story.md",
 		title: "Test Task",
 		description: "A test task",
 		acceptanceCriteria: ["Criterion 1"],

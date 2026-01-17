@@ -49,6 +49,7 @@ test("taskCreate appends new task to tasks array", () => {
 	const newTask: Task = {
 		id: "T-NEW",
 		dir: "/home/david/Coding/test",
+		story: "test-story.md",
 		title: "New Task",
 		description: "Newly created task",
 		acceptanceCriteria: ["Test"],
@@ -98,6 +99,7 @@ test("taskCreate initializes task with new fields", () => {
 	const newTask: Task = {
 		id: "T-CREATE-TEST",
 		dir: "/home/david/Coding/test",
+		story: "test-story.md",
 		title: "Create Test Task",
 		description: "A task to test creation",
 		acceptanceCriteria: ["Test"],

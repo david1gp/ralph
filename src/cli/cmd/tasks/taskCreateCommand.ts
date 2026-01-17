@@ -43,7 +43,7 @@ export function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 		story: storyPathGet(storyValue),
 	}
 	const created = taskCreate(newTask)
-	this.process.stdout.write(`Task "${created.id}" created successfully`)
+	this.process.stdout.write(created.id)
 }
 
 export const taskCreateCommand = buildCommand({
