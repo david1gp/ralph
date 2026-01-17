@@ -1,6 +1,6 @@
-import { safeParse } from "valibot"
 import type { Story } from "@/cli/data/StoryType"
-import { storySchema } from "@/cli/data/storyValidate"
+import { storySchema } from "@/cli/data/storySchema"
+import { safeParse } from "valibot"
 
 export function storyParse(data: unknown): { success: true; data: Story } | { success: false; issues: string } {
 	const result = safeParse(storySchema, data)
