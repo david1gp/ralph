@@ -64,7 +64,7 @@ test("storyCreateCommand creates story with --filename and --content", () => {
 	const params = { filename: testStoryFilename, content: testStoryContent }
 	storyCreateFunc.call(context, params)
 	
-	expect(stdout[0]).toContain(`Story "${testStoryFilename}" created successfully`)
+	expect(stdout[0]).toBe(`${storiesPath}/${testStoryFilename}`)
 	
 	const stories = storiesList()
 	expect(stories.includes(testStoryFilename)).toBe(true)
@@ -93,7 +93,7 @@ A simple story content.
 	const params = { filename: "simple_test.md", content: simpleContent }
 	storyCreateFunc.call(context, params)
 	
-	expect(stdout[0]).toContain("Story \"simple_test.md\" created successfully")
+	expect(stdout[0]).toBe(`${storiesPath}/simple_test.md`)
 	
 	const stories = storiesList()
 	expect(stories.includes("simple_test.md")).toBe(true)
@@ -175,7 +175,7 @@ This story has **bold** and *italic* text, as well as [links](https://example.co
 	const params = { filename: "complex_story.md", content: complexContent }
 	storyCreateFunc.call(context, params)
 	
-	expect(stdout[0]).toContain("Story \"complex_story.md\" created successfully")
+	expect(stdout[0]).toBe(`${storiesPath}/complex_story.md`)
 	
 	const stories = storiesList()
 	expect(stories.includes("complex_story.md")).toBe(true)
@@ -233,5 +233,5 @@ test("storyCreateCommand outputs success message with filename", () => {
 	const params = { filename: "output_test.md", content: "# Output Story\n\nTesting output.\n\n## Goals\n\n- Goal\n\n## User Tasks\n\n### T-OUTPUT-001: Output task" }
 	storyCreateFunc.call(context, params)
 	
-	expect(stdout[0]).toBe('Story "output_test.md" created successfully')
+	expect(stdout[0]).toBe(`${storiesPath}/output_test.md`)
 })

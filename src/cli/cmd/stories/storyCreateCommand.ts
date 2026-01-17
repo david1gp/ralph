@@ -7,8 +7,8 @@ interface CreateFlags {
 }
 
 export function storyCreateFunc(this: CommandContext, flags: CreateFlags) {
-	storyCreate(flags.filename, flags.content)
-	this.process.stdout.write(`Story "${flags.filename}" created successfully`)
+	const filePath = storyCreate(flags.filename, flags.content)
+	this.process.stdout.write(filePath)
 }
 
 export const storyCreateCommand = buildCommand({
