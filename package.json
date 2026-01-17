@@ -1,0 +1,26 @@
+{
+  "name": "taski-cli",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "bun test",
+    "test:w": "bun test --watch"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@adaptive-sm/utils": "link:@adaptive-sm/utils",
+    "@stricli/core": "^1.2.5",
+    "valibot": "^1.2.0"
+  },
+  "prettier": {
+    "semi": false,
+    "printWidth": 120,
+    "trailingComma": "all"
+  },
+  "type": "module",
+  "private": true
+}
