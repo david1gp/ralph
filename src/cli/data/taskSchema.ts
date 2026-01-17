@@ -8,5 +8,7 @@ export const taskSchema = object({
 	acceptanceCriteria: array(string()),
 	priority: number(),
 	passes: union([literal(true), literal(false)]),
-	notes: optional(string()),
+	note: optional(string()),
+	startedAt: optional(string()),
+	endedAt: optional(string()),
 })

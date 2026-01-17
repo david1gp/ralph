@@ -15,7 +15,7 @@ export const taskCreateCommand = buildCommand({
 			acceptanceCriteria: [],
 			priority: maxPriority + 1,
 			passes: false,
-			notes: "",
+			note: "",
 		}
 		const created = taskCreate(newTask)
 		this.process.stdout.write(`Task "${created.id}" created successfully`)

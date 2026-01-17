@@ -54,7 +54,7 @@ test("taskCreate appends new task to tasks array", () => {
 		acceptanceCriteria: ["Test"],
 		priority: 99,
 		passes: false,
-		notes: "",
+		note: "",
 	}
 	const result = taskCreate(newTask)
 	expect(result.id).toBe("T-NEW")
@@ -112,4 +112,85 @@ test("taskDelete removes task by ID", () => {
 test("taskDelete returns false for non-existent task", () => {
 	const result = taskDelete("NON-EXISTENT")
 	expect(result).toBe(false)
+})
+
+test("taskUpdate sets startedAt field", () => {
+	const updated = taskUpdate("T-001", { startedAt: "2025-01-17T10:00:00.000Z" })
+	expect(updated.startedAt).toBe("2025-01-17T10:00:00.000Z")
+	const tasks = tasksRead()
+	const found = tasks.find((t) => t.id === "T-001")
+	expect(found!.startedAt).toBe("2025-01-17T10:00:00.000Z")
+})
+
+test("taskUpdate sets endedAt field", () => {
+	const updated = taskUpdate("T-002", { endedAt: "2025-01-17T12:00:00.000Z" })
+	expect(updated.endedAt).toBe("2025-01-17T12:00:00.000Z")
+	const tasks = tasksRead()
+	const found = tasks.find((t) => t.id === "T-002")
+	expect(found!.endedAt).toBe("2025-01-17T12:00:00.000Z")
+})
+
+test("taskUpdate sets note field", () => {
+	const updated = taskUpdate("T-003", { note: "Test note content" })
+	expect(updated.note).toBe("Test note content")
+	const tasks = tasksRead()
+	const found = tasks.find((t) => t.id === "T-003")
+	expect(found!.note).toBe("Test note content")
+})
+
+test("taskUpdate clears startedAt field when set to undefined", () => {
+	taskUpdate("T-001", { startedAt: "2025-01-17T10:00:00.000Z" })
+	const updated = taskUpdate("T-001", { startedAt: undefined })
+	expect(updated.startedAt).toBeUndefined()
+	const tasks = tasksRead()
+	const found = tasks.find((t) => t.id === "T-001")
+	expect(found!.startedAt).toBeUndefined()
+})
+
+test("taskUpdate clears endedAt field when set to undefined", () => {
+	taskUpdate("T-002", { endedAt: "2025-01-17T12:00:00.000Z" })
+	const updated = taskUpdate("T-002", { endedAt: undefined })
+	expect(updated.endedAt).toBeUndefined()
+	const tasks = tasksRead()
+	const found = tasks.find((t) => t.id === "T-002")
+	expect(found!.endedAt).toBeUndefined()
+})
+
+test("taskUpdate clears note field when set to undefined", () => {
+	taskUpdate("T-003", { note: "Test note content" })
+	const updated = taskUpdate("T-003", { note: undefined })
+	expect(updated.note).toBeUndefined()
+	const tasks = tasksRead()
+	const found = tasks.find((t) => t.id === "T-003")
+	expect(found!.note).toBeUndefined()
+})
+
+test("taskCreate initializes task with new fields", () => {
+	const newTask: Task = {
+		id: "T-CREATE-TEST",
+		dir: "/home/david/Coding/test",
+		title: "Create Test Task",
+		description: "A task to test creation",
+		acceptanceCriteria: ["Test"],
+		priority: 100,
+		passes: false,
+		note: "Initial note",
+		startedAt: "2025-01-17T08:00:00.000Z",
+		endedAt: undefined,
+	}
+	const result = taskCreate(newTask)
+	expect(result.note).toBe("Initial note")
+	expect(result.startedAt).toBe("2025-01-17T08:00:00.000Z")
+	expect(result.endedAt).toBeUndefined()
+})
+
+test("taskUpdate updates multiple fields at once", () => {
+	const updated = taskUpdate("T-005", {
+		note: "Updated note",
+		startedAt: "2025-01-17T09:00:00.000Z",
+		endedAt: "2025-01-17T17:00:00.000Z",
+	})
+	expect(updated.note).toBe("Updated note")
+	expect(updated.startedAt).toBe("2025-01-17T09:00:00.000Z")
+	expect(updated.endedAt).toBe("2025-01-17T17:00:00.000Z")
 })

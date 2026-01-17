@@ -11,7 +11,7 @@ test("taskSchema validates correct task data", () => {
 		acceptanceCriteria: ["Criterion 1", "Criterion 2"],
 		priority: 1,
 		passes: false,
-		notes: "Some notes",
+		note: "Some notes",
 	}
 	expect(() => taskValidate(validTask)).not.toThrow()
 })

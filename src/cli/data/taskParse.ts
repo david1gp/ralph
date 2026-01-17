@@ -1,6 +1,6 @@
 import { safeParse } from "valibot"
 import type { Task } from "@/cli/data/TaskType"
-import { taskSchema } from "@/cli/data/taskValidate"
+import { taskSchema } from "@/cli/data/taskSchema"
 
 export function taskParse(data: unknown): { success: true; data: Task } | { success: false; issues: string } {
 	const result = safeParse(taskSchema, data)
