@@ -1,12 +1,6 @@
-import { array, object, parse, string } from "valibot"
-
-export const storySchema = object({
-	title: string(),
-	introduction: string(),
-	goals: array(string()),
-	userTasks: array(string()),
-})
+import { storySchema } from "@/cli/data/storySchema"
+import { parse } from "valibot"
 
 export function storyValidate(input: unknown) {
-	return parse(storySchema, input)
+  return parse(storySchema, input)
 }
