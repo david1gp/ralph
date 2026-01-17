@@ -1,6 +1,6 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { updateTask } from "../../core/tasks.js"
-import type { Task } from "../../data/types.js"
+import { updateTask } from "@/cli/core/tasks"
+import type { Task } from "@/cli/data/types"
 
 interface UpdateFlags {
 	passes?: boolean

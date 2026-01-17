@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { taskSchema, storySchema, validateTask, validateStory } from "../../src/cli/data/schema"
+import { taskSchema, storySchema, validateTask, validateStory } from "@/cli/data/schema"
 
 test("taskSchema validates correct task data", () => {
 	const validTask = {

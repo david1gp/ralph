@@ -1,5 +1,5 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { deleteStory } from "../../core/stories.js"
+import { deleteStory } from "@/cli/core/stories"
 
 export const storiesDeleteCommand = buildCommand({
 	func(this: CommandContext, _: {}, filename: string) {

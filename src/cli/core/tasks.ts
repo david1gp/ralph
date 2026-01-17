@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs"
-import { getTasksFilePath } from "./config.js"
-import { parseTask } from "../data/validators.js"
-import { validateTask } from "../data/schema.js"
-import type { Task } from "../data/types.js"
+import { getTasksFilePath } from "@/cli/core/config"
+import { parseTask } from "@/cli/data/validators"
+import { validateTask } from "@/cli/data/schema"
+import type { Task } from "@/cli/data/types"
 
 export function readTasks(): Task[] {
 	const tasksPath = getTasksFilePath()

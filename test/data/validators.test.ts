@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { parseTask, parseStory } from "../../src/cli/data/validators"
+import { parseTask, parseStory } from "@/cli/data/validators"
 
 test("parseTask returns success for valid data", () => {
 	const validTask = {

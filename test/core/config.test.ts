@@ -1,6 +1,6 @@
 import { expect, test, beforeAll, afterAll } from "bun:test"
 import { writeFileSync, rmSync, readFileSync } from "node:fs"
-import { getTasksFilePath, getStoriesFolderPath, getConfig } from "../../src/cli/core/config"
+import { getTasksFilePath, getStoriesFolderPath, getConfig } from "@/cli/core/config"
 
 const testEnvPath = ".env.test"
 const originalEnvPath = ".env"

@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync, unlinkSync, readdirSync } from "node:fs"
-import { getStoriesFolderPath } from "./config.js"
-import { parseStory } from "../data/validators.js"
-import type { Story } from "../data/types.js"
+import { getStoriesFolderPath } from "@/cli/core/config"
+import { parseStory } from "@/cli/data/validators"
+import type { Story } from "@/cli/data/types"
 
 export function listStories(): string[] {
 	const storiesPath = getStoriesFolderPath()
