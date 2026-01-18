@@ -4,6 +4,7 @@ import { storyUpdate } from "@/cli/core/storyUpdate"
 import { storyRead } from "@/cli/core/storyRead"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
+import { getTestConfig } from "../testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
 	if (!result.success) {
@@ -17,7 +18,8 @@ function assertErr<T>(result: Result<T>): asserts result is Extract<typeof resul
 	}
 }
 
-const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
+const testConfig: ConfigType = getTestConfig()
+const testStoriesPath = testConfig.storiesFolder
 const testStoryFilename = "test_update_story.md"
 
 const initialContent = `# Story: Initial Title
@@ -36,11 +38,6 @@ This is the initial description text
 ### T-001: Initial task one
 ### T-002: Initial task two
 `
-
-const testConfig: ConfigType = {
-	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
-	storiesFolder: testStoriesPath,
-}
 
 beforeEach(() => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`

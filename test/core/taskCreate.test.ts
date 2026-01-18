@@ -3,8 +3,8 @@ import { tasksRead } from "@/cli/core/tasksRead"
 import type { TaskType } from "@/cli/data/TaskType"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import type { Result } from "~utils/result/Result"
+import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig } from "../testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
 	if (!result.success) {
@@ -12,27 +12,11 @@ function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result
 	}
 }
 
-const originalTasksPath = "/home/david/Coding/personal-taski-cli/.taski/tasks.json"
-const originalContent: string = readFileSync(originalTasksPath, "utf-8")
+beforeAll(testBeforeAll)
+afterAll(testAfterAll)
+beforeEach(resetTasksFile)
 
-const testConfig: ConfigType = {
-	tasksFile: originalTasksPath,
-	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
-}
-
-beforeAll(() => {
-	if (!existsSync("/home/david/Coding/personal-taski-cli/.taski")) {
-		throw new Error(".taski directory does not exist")
-	}
-})
-
-afterAll(() => {
-	writeFileSync(originalTasksPath, originalContent)
-})
-
-beforeEach(() => {
-	writeFileSync(originalTasksPath, originalContent)
-})
+const testConfig: ConfigType = getTestConfig()
 
 test("taskCreate appends new task to tasks array", async () => {
 	const initialResult = await tasksRead(testConfig)

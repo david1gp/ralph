@@ -1,10 +1,10 @@
 import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
-import { writeFileSync, readFileSync, existsSync } from "node:fs"
 import { taskFindNext } from "@/cli/core/taskFindNext"
 import { tasksRead } from "@/cli/core/tasksRead"
 import { taskUpdate } from "@/cli/core/taskUpdate"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
+import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig } from "../testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
 	if (!result.success) {
@@ -12,27 +12,11 @@ function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result
 	}
 }
 
-const originalTasksPath = "/home/david/Coding/personal-taski-cli/.taski/tasks.json"
-const originalContent: string = readFileSync(originalTasksPath, "utf-8")
+beforeAll(testBeforeAll)
+afterAll(testAfterAll)
+beforeEach(resetTasksFile)
 
-const testConfig: ConfigType = {
-	tasksFile: originalTasksPath,
-	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
-}
-
-beforeAll(() => {
-	if (!existsSync("/home/david/Coding/personal-taski-cli/.taski")) {
-		throw new Error(".taski directory does not exist")
-	}
-})
-
-afterAll(() => {
-	writeFileSync(originalTasksPath, originalContent)
-})
-
-beforeEach(() => {
-	writeFileSync(originalTasksPath, originalContent)
-})
+const testConfig: ConfigType = getTestConfig()
 
 test("taskFindNext returns first task with passes=false", async () => {
 	const result = await taskFindNext(testConfig)
@@ -41,7 +25,7 @@ test("taskFindNext returns first task with passes=false", async () => {
 	const next = result.data
 	expect(next).not.toBeUndefined()
 	expect(next!.passes).toBe(false)
-	expect(next!.id).toBe("T-007")
+	expect(next!.id).toBe("T-001")
 })
 
 test("taskFindNext returns undefined when all tasks pass", async () => {
