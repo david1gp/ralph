@@ -1,9 +1,10 @@
 import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import { existsSync, readdirSync } from "node:fs"
 import { createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function storiesList(): PromiseResult<string[]> {
-	const storiesPathResult = await storyFolderPathGet()
+export async function storiesList(config: ConfigType): PromiseResult<string[]> {
+	const storiesPathResult = await storyFolderPathGet(config)
 	if (!storiesPathResult.success) {
 		return storiesPathResult
 	}

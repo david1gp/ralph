@@ -1,6 +1,7 @@
 import { taskCreate } from "@/cli/core/taskCreate"
 import { tasksRead } from "@/cli/core/tasksRead"
 import type { TaskType } from "@/cli/data/TaskType"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import type { Result } from "~utils/result/Result"
@@ -13,6 +14,11 @@ function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result
 
 const originalTasksPath = "/home/david/Coding/personal-taski-cli/.taski/tasks.json"
 const originalContent: string = readFileSync(originalTasksPath, "utf-8")
+
+const testConfig: ConfigType = {
+	tasksFile: originalTasksPath,
+	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
+}
 
 beforeAll(() => {
 	if (!existsSync("/home/david/Coding/personal-taski-cli/.taski")) {
@@ -29,7 +35,7 @@ beforeEach(() => {
 })
 
 test("taskCreate appends new task to tasks array", async () => {
-	const initialResult = await tasksRead()
+	const initialResult = await tasksRead(testConfig)
 	expect(initialResult.success).toBe(true)
 	assertOk(initialResult)
 	const initialTasks = initialResult.data
@@ -45,11 +51,11 @@ test("taskCreate appends new task to tasks array", async () => {
 		passes: false,
 		note: "",
 	}
-	const result = await taskCreate(newTask)
+	const result = await taskCreate(testConfig, newTask)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data.id).toBe("T-NEW")
-	const tasksResult = await tasksRead()
+	const tasksResult = await tasksRead(testConfig)
 	expect(tasksResult.success).toBe(true)
 	assertOk(tasksResult)
 	const tasks = tasksResult.data
@@ -71,7 +77,7 @@ test("taskCreate initializes task with new fields", async () => {
 		startedAt: "2025-01-17T08:00:00.000Z",
 		endedAt: undefined,
 	}
-	const result = await taskCreate(newTask)
+	const result = await taskCreate(testConfig, newTask)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data.note).toBe("Initial note")

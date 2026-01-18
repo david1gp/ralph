@@ -1,9 +1,21 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { taskDelete } from "@/cli/core/taskDelete"
+import { configLoad } from "@/cli/core/configLoad"
+
+interface DeleteFlags {
+	config?: string
+}
 
 export const taskDeleteCommand = buildCommand({
-	async func(this: CommandContext, _: {}, id: string) {
-		const result = await taskDelete(id)
+	async func(this: CommandContext, flags: DeleteFlags, id: string) {
+		const configResult = await configLoad(flags.config)
+		if (!configResult.success) {
+			console.error(JSON.stringify(configResult))
+			process.exit(1)
+		}
+		const config = configResult.data
+
+		const result = await taskDelete(config, id)
 		if (!result.success) {
 			console.error(JSON.stringify(result))
 			process.exit(1)
@@ -20,6 +32,14 @@ export const taskDeleteCommand = buildCommand({
 					placeholder: "id",
 				},
 			],
+		},
+		flags: {
+			config: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				brief: "Path to config file (directory with taski.json or direct path)",
+			},
 		},
 	},
 	docs: {

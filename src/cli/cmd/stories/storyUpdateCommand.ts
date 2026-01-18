@@ -1,11 +1,14 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { storyUpdate } from "@/cli/core/storyUpdate"
+import type { StoryType } from "@/cli/data/StoryType"
+import { configLoad } from "@/cli/core/configLoad"
 
 interface UpdateFlags {
 	title?: string
 	description?: string
 	goals?: string
 	userTasks?: string
+	config?: string
 }
 
 function parseArray(value: string | undefined): Array<string> | undefined {
@@ -17,7 +20,14 @@ function parseArray(value: string | undefined): Array<string> | undefined {
 
 export const storyUpdateCommand = buildCommand({
 	async func(this: CommandContext, flags: UpdateFlags, filename: string) {
-		const updates: Record<string, unknown> = {}
+		const configResult = await configLoad(flags.config)
+		if (!configResult.success) {
+			console.error(JSON.stringify(configResult))
+			process.exit(1)
+		}
+		const config = configResult.data
+
+		const updates: Partial<StoryType> = {}
 		if (flags.title !== undefined) {
 			updates.title = flags.title
 		}
@@ -30,7 +40,7 @@ export const storyUpdateCommand = buildCommand({
 		if (flags.userTasks !== undefined) {
 			updates.userTasks = parseArray(flags.userTasks)
 		}
-		const updatedResult = await storyUpdate(filename, updates as Parameters<typeof storyUpdate>[1])
+		const updatedResult = await storyUpdate(config, filename, updates)
 		if (!updatedResult.success) {
 			console.error(JSON.stringify(updatedResult))
 			process.exit(1)
@@ -73,6 +83,12 @@ export const storyUpdateCommand = buildCommand({
 				parse: String,
 				optional: true,
 				brief: "Set story user tasks (comma-separated)",
+			},
+			config: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				brief: "Path to config file (directory with taski.json or direct path)",
 			},
 		},
 	},

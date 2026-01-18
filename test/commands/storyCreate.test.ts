@@ -3,6 +3,7 @@ import { writeFileSync, readFileSync, rmSync, existsSync } from "node:fs"
 import { storyCreateFunc, storyCreateCommand } from "@/cli/cmd/stories/storyCreateCommand"
 import { storiesList } from "@/cli/core/storiesList"
 import { storyRead } from "@/cli/core/storyRead"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -12,6 +13,11 @@ function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result
 }
 
 const storiesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
+
+const testConfig: ConfigType = {
+	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
+	storiesFolder: storiesPath,
+}
 
 let stdout: string[] = []
 
@@ -68,18 +74,18 @@ beforeEach(() => {
 
 test("storyCreateCommand creates story with --filename and --content", async () => {
 	const context = createMockContext()
-	const params = { filename: testStoryFilename, content: testStoryContent }
+	const params = { filename: testStoryFilename, content: testStoryContent, config: undefined }
 	await storyCreateFunc.call(context, params)
 	
 	expect(stdout[0]).toBe(`${storiesPath}/${testStoryFilename}`)
 	
-	const storiesResult = await storiesList()
+	const storiesResult = await storiesList(testConfig)
 	expect(storiesResult.success).toBe(true)
 	assertOk(storiesResult)
 	const stories = storiesResult.data
 	expect(stories.includes(testStoryFilename)).toBe(true)
 	
-	const storyResult = await storyRead(testStoryFilename)
+	const storyResult = await storyRead(testConfig, testStoryFilename)
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	const story = storyResult.data
@@ -103,18 +109,18 @@ A simple story content.
 ### T-SIMPLE-001: Simple task
 `
 	const context = createMockContext()
-	const params = { filename: "simple_test.md", content: simpleContent }
+	const params = { filename: "simple_test.md", content: simpleContent, config: undefined }
 	await storyCreateFunc.call(context, params)
 	
 	expect(stdout[0]).toBe(`${storiesPath}/simple_test.md`)
 	
-	const storiesResult = await storiesList()
+	const storiesResult = await storiesList(testConfig)
 	expect(storiesResult.success).toBe(true)
 	assertOk(storiesResult)
 	const stories = storiesResult.data
 	expect(stories.includes("simple_test.md")).toBe(true)
 	
-	const storyResult = await storyRead("simple_test.md")
+	const storyResult = await storyRead(testConfig, "simple_test.md")
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	const story = storyResult.data
@@ -139,10 +145,10 @@ A story with goals.
 ### T-GOALS-001: Goals task
 `
 	const context = createMockContext()
-	const params = { filename: "goals_story.md", content: contentWithGoals }
+	const params = { filename: "goals_story.md", content: contentWithGoals, config: undefined }
 	await storyCreateFunc.call(context, params)
 	
-	const storyResult = await storyRead("goals_story.md")
+	const storyResult = await storyRead(testConfig, "goals_story.md")
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	const story = storyResult.data
@@ -167,10 +173,10 @@ A story with user tasks.
 - Task goal
 `
 	const context = createMockContext()
-	const params = { filename: "tasks_story.md", content: contentWithTasks }
+	const params = { filename: "tasks_story.md", content: contentWithTasks, config: undefined }
 	await storyCreateFunc.call(context, params)
 	
-	const storyResult = await storyRead("tasks_story.md")
+	const storyResult = await storyRead(testConfig, "tasks_story.md")
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	const story = storyResult.data
@@ -197,18 +203,18 @@ This story has **bold** and *italic* text, as well as [links](https://example.co
 ### T-COMPLEX-002: Another complex task
 `
 	const context = createMockContext()
-	const params = { filename: "complex_story.md", content: complexContent }
+	const params = { filename: "complex_story.md", content: complexContent, config: undefined }
 	await storyCreateFunc.call(context, params)
 	
 	expect(stdout[0]).toBe(`${storiesPath}/complex_story.md`)
 	
-	const storiesResult = await storiesList()
+	const storiesResult = await storiesList(testConfig)
 	expect(storiesResult.success).toBe(true)
 	assertOk(storiesResult)
 	const stories = storiesResult.data
 	expect(stories.includes("complex_story.md")).toBe(true)
 	
-	const storyResult = await storyRead("complex_story.md")
+	const storyResult = await storyRead(testConfig, "complex_story.md")
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	const story = storyResult.data
@@ -239,10 +245,10 @@ This story has:
 ### T-MULTI-001: Multiline task
 `
 	const context = createMockContext()
-	const params = { filename: "multiline_story.md", content: multilineContent }
+	const params = { filename: "multiline_story.md", content: multilineContent, config: undefined }
 	await storyCreateFunc.call(context, params)
 	
-	const storyResult = await storyRead("multiline_story.md")
+	const storyResult = await storyRead(testConfig, "multiline_story.md")
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	const story = storyResult.data
@@ -252,7 +258,7 @@ This story has:
 
 test("storyCreateCommand outputs success message with filename", async () => {
 	const context = createMockContext()
-	const params = { filename: "output_test.md", content: "# Output Story\n\nTesting output.\n\n## Goals\n\n- Goal\n\n## User Tasks\n\n### T-OUTPUT-001: Output task" }
+	const params = { filename: "output_test.md", content: "# Output Story\n\nTesting output.\n\n## Goals\n\n- Goal\n\n## User Tasks\n\n### T-OUTPUT-001: Output task", config: undefined }
 	await storyCreateFunc.call(context, params)
 	
 	expect(stdout[0]).toBe(`${storiesPath}/output_test.md`)

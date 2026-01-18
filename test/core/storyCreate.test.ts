@@ -2,6 +2,7 @@ import { storiesList } from "@/cli/core/storiesList"
 import { storyCreate } from "@/cli/core/storyCreate"
 import { storyDelete } from "@/cli/core/storyDelete"
 import { storyRead } from "@/cli/core/storyRead"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import { afterAll, beforeEach, expect, test } from "bun:test"
 import { existsSync, rmSync } from "node:fs"
 import type { Result } from "~utils/result/Result"
@@ -34,6 +35,11 @@ This is a test story for unit testing purposes.
 ### T-TEST3: Third test task
 `
 
+const testConfig: ConfigType = {
+	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
+	storiesFolder: testStoriesPath,
+}
+
 beforeEach(() => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	if (existsSync(testFile)) {
@@ -49,19 +55,19 @@ afterAll(() => {
 })
 
 test("createStory creates new story file", async () => {
-	const storiesBeforeResult = await storiesList()
+	const storiesBeforeResult = await storiesList(testConfig)
 	expect(storiesBeforeResult.success).toBe(true)
 	assertOk(storiesBeforeResult)
 	const storiesBefore = storiesBeforeResult.data
-	await storyCreate(testStoryFilename, testStoryContent)
-	const storiesAfterResult = await storiesList()
+	await storyCreate(testConfig, testStoryFilename, testStoryContent)
+	const storiesAfterResult = await storiesList(testConfig)
 	expect(storiesAfterResult.success).toBe(true)
 	assertOk(storiesAfterResult)
 	const storiesAfter = storiesAfterResult.data
 	expect(storiesAfter.length).toBe(storiesBefore.length + 1)
 	expect(storiesAfter.includes(testStoryFilename)).toBe(true)
 
-	const storyResult = await storyRead(testStoryFilename)
+	const storyResult = await storyRead(testConfig, testStoryFilename)
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	const story = storyResult.data
@@ -71,11 +77,11 @@ test("createStory creates new story file", async () => {
 
 test("createStory appends .md extension if missing", async () => {
 	const filenameWithoutExt = "another_test"
-	await storyCreate(filenameWithoutExt, testStoryContent)
-	const storiesResult = await storiesList()
+	await storyCreate(testConfig, filenameWithoutExt, testStoryContent)
+	const storiesResult = await storiesList(testConfig)
 	expect(storiesResult.success).toBe(true)
 	assertOk(storiesResult)
 	const stories = storiesResult.data
 	expect(stories.includes(`${filenameWithoutExt}.md`)).toBe(true)
-	await storyDelete(`${filenameWithoutExt}.md`)
+	await storyDelete(testConfig, `${filenameWithoutExt}.md`)
 })

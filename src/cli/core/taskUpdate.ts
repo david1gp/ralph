@@ -1,11 +1,12 @@
 import { tasksRead } from "@/cli/core/tasksRead"
 import { tasksWrite } from "@/cli/core/tasksWrite"
 import type { TaskType } from "@/cli/data/TaskType"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import { taskValidate } from "@/cli/data/taskValidate"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function taskUpdate(id: string, updates: Partial<TaskType>): PromiseResult<TaskType> {
-	const tasksResult = await tasksRead()
+export async function taskUpdate(config: ConfigType, id: string, updates: Partial<TaskType>): PromiseResult<TaskType> {
+	const tasksResult = await tasksRead(config)
 	if (!tasksResult.success) {
 		return tasksResult
 	}
@@ -16,7 +17,7 @@ export async function taskUpdate(id: string, updates: Partial<TaskType>): Promis
 	}
 	const updatedTask = taskValidate({ ...tasks[index], ...updates })
 	tasks[index] = updatedTask
-	const writeResult = await tasksWrite(tasks)
+	const writeResult = await tasksWrite(config, tasks)
 	if (!writeResult.success) {
 		return writeResult
 	}

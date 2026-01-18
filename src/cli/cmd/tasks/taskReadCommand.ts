@@ -1,9 +1,21 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { tasksRead } from "@/cli/core/tasksRead"
+import { configLoad } from "@/cli/core/configLoad"
+
+interface ReadFlags {
+	config?: string
+}
 
 export const taskReadCommand = buildCommand({
-	async func(this: CommandContext, _: {}, id: string) {
-		const tasksResult = await tasksRead()
+	async func(this: CommandContext, flags: ReadFlags, id: string) {
+		const configResult = await configLoad(flags.config)
+		if (!configResult.success) {
+			console.error(JSON.stringify(configResult))
+			process.exit(1)
+		}
+		const config = configResult.data
+
+		const tasksResult = await tasksRead(config)
 		if (!tasksResult.success) {
 			console.error(JSON.stringify(tasksResult))
 			process.exit(1)
@@ -28,6 +40,14 @@ export const taskReadCommand = buildCommand({
 					placeholder: "id",
 				},
 			],
+		},
+		flags: {
+			config: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				brief: "Path to config file (directory with taski.json or direct path)",
+			},
 		},
 	},
 	docs: {

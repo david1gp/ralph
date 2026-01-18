@@ -1,13 +1,22 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { storyCreate } from "@/cli/core/storyCreate"
+import { configLoad } from "@/cli/core/configLoad"
 
 interface CreateFlags {
 	filename: string
 	content: string
+	config?: string
 }
 
 export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) {
-	const result = await storyCreate(flags.filename, flags.content)
+	const configResult = await configLoad(flags.config)
+	if (!configResult.success) {
+		console.error(JSON.stringify(configResult))
+		process.exit(1)
+	}
+	const config = configResult.data
+
+	const result = await storyCreate(config, flags.filename, flags.content)
 	if (!result.success) {
 		console.error(JSON.stringify(result))
 		process.exit(1)
@@ -30,6 +39,12 @@ export const storyCreateCommand = buildCommand({
 				parse: String,
 				optional: false,
 				brief: "Story content",
+			},
+			config: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				brief: "Path to config file (directory with taski.json or direct path)",
 			},
 		},
 	},

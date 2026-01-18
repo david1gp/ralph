@@ -2,6 +2,7 @@ import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
 import { writeFileSync, readFileSync, existsSync } from "node:fs"
 import { taskDelete } from "@/cli/core/taskDelete"
 import { tasksRead } from "@/cli/core/tasksRead"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -19,6 +20,11 @@ function assertErr<T>(result: Result<T>): asserts result is Extract<typeof resul
 const originalTasksPath = "/home/david/Coding/personal-taski-cli/.taski/tasks.json"
 const originalContent: string = readFileSync(originalTasksPath, "utf-8")
 
+const testConfig: ConfigType = {
+	tasksFile: originalTasksPath,
+	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
+}
+
 beforeAll(() => {
 	if (!existsSync("/home/david/Coding/personal-taski-cli/.taski")) {
 		throw new Error(".taski directory does not exist")
@@ -34,16 +40,16 @@ beforeEach(() => {
 })
 
 test("taskDelete removes task by ID", async () => {
-	const initialResult = await tasksRead()
+	const initialResult = await tasksRead(testConfig)
 	expect(initialResult.success).toBe(true)
 	assertOk(initialResult)
 	const initialTasks = initialResult.data
 	const initialCount = initialTasks.length
-	const result = await taskDelete("T-004")
+	const result = await taskDelete(testConfig, "T-004")
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data).toBe(true)
-	const tasksResult = await tasksRead()
+	const tasksResult = await tasksRead(testConfig)
 	expect(tasksResult.success).toBe(true)
 	assertOk(tasksResult)
 	const tasks = tasksResult.data
@@ -52,7 +58,7 @@ test("taskDelete removes task by ID", async () => {
 })
 
 test("taskDelete returns error for non-existent task", async () => {
-	const result = await taskDelete("NON-EXISTENT")
+	const result = await taskDelete(testConfig, "NON-EXISTENT")
 	expect(result.success).toBe(false)
 	assertErr(result)
 	expect(result.errorMessage).toContain('Task with id "NON-EXISTENT" not found')

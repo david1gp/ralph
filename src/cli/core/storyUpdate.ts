@@ -1,12 +1,13 @@
 import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import { storyRead } from "@/cli/core/storyRead"
 import type { StoryType } from "@/cli/data/StoryType"
 import { storyValidate } from "@/cli/data/storyValidate"
 import { existsSync, writeFileSync } from "node:fs"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function storyUpdate(filename: string, updates: Partial<StoryType>): PromiseResult<StoryType> {
-	const storiesPathResult = await storyFolderPathGet()
+export async function storyUpdate(config: ConfigType, filename: string, updates: Partial<StoryType>): PromiseResult<StoryType> {
+	const storiesPathResult = await storyFolderPathGet(config)
 	if (!storiesPathResult.success) {
 		return storiesPathResult
 	}
@@ -19,7 +20,7 @@ export async function storyUpdate(filename: string, updates: Partial<StoryType>)
 		return createError("storyUpdate", `Story "${filename}" not found`)
 	}
 
-	const existingStoryResult = await storyRead(filename)
+	const existingStoryResult = await storyRead(config, filename)
 	if (!existingStoryResult.success) {
 		return existingStoryResult
 	}

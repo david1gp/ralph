@@ -4,6 +4,7 @@ import type { TaskType } from "@/cli/data/TaskType"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { array, safeParse, string } from "valibot"
+import { configLoad } from "@/cli/core/configLoad"
 
 interface UpdateFlags {
 	passes?: boolean
@@ -15,10 +16,18 @@ interface UpdateFlags {
 	acceptanceCriteria?: string
 	priority?: number
 	story?: string
+	config?: string
 }
 
 export const taskUpdateCommand = buildCommand({
 	async func(this: CommandContext, flags: UpdateFlags, id: string) {
+		const configResult = await configLoad(flags.config)
+		if (!configResult.success) {
+			console.error(JSON.stringify(configResult))
+			process.exit(1)
+		}
+		const config = configResult.data
+
 		const updates: Partial<TaskType> = {}
 		if (flags.passes !== undefined) {
 			updates.passes = flags.passes
@@ -61,14 +70,14 @@ export const taskUpdateCommand = buildCommand({
 			updates.priority = flags.priority
 		}
 		if (flags.story !== undefined) {
-			const storyResult = await storyPathGet(flags.story)
+			const storyResult = await storyPathGet(config, flags.story)
 			if (!storyResult.success) {
 				console.error(JSON.stringify(storyResult))
 				process.exit(1)
 			}
 			updates.story = storyResult.data
 		}
-		const updatedResult = await taskUpdate(id, updates)
+		const updatedResult = await taskUpdate(config, id, updates)
 		if (!updatedResult.success) {
 			console.error(JSON.stringify(updatedResult))
 			process.exit(1)
@@ -143,6 +152,12 @@ export const taskUpdateCommand = buildCommand({
 				optional: true,
 				inferEmpty: true,
 				brief: "Set story reference (filename or path, empty to clear)",
+			},
+			config: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				brief: "Path to config file (directory with taski.json or direct path)",
 			},
 		},
 	},

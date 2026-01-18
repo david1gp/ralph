@@ -3,6 +3,7 @@ import { writeFileSync, readFileSync, existsSync } from "node:fs"
 import { taskFindNext } from "@/cli/core/taskFindNext"
 import { tasksRead } from "@/cli/core/tasksRead"
 import { taskUpdate } from "@/cli/core/taskUpdate"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -13,6 +14,11 @@ function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result
 
 const originalTasksPath = "/home/david/Coding/personal-taski-cli/.taski/tasks.json"
 const originalContent: string = readFileSync(originalTasksPath, "utf-8")
+
+const testConfig: ConfigType = {
+	tasksFile: originalTasksPath,
+	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
+}
 
 beforeAll(() => {
 	if (!existsSync("/home/david/Coding/personal-taski-cli/.taski")) {
@@ -29,7 +35,7 @@ beforeEach(() => {
 })
 
 test("taskFindNext returns first task with passes=false", async () => {
-	const result = await taskFindNext()
+	const result = await taskFindNext(testConfig)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const next = result.data
@@ -39,14 +45,14 @@ test("taskFindNext returns first task with passes=false", async () => {
 })
 
 test("taskFindNext returns undefined when all tasks pass", async () => {
-	const tasksResult = await tasksRead()
+	const tasksResult = await tasksRead(testConfig)
 	expect(tasksResult.success).toBe(true)
 	assertOk(tasksResult)
 	const tasks = tasksResult.data
 	for (const task of tasks) {
-		await taskUpdate(task.id, { passes: true })
+		await taskUpdate(testConfig, task.id, { passes: true })
 	}
-	const result = await taskFindNext()
+	const result = await taskFindNext(testConfig)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data).toBeUndefined()

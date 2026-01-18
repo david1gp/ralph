@@ -1,11 +1,12 @@
 import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import { storyParse } from "@/cli/data/storyParse"
 import type { StoryType } from "@/cli/data/StoryType"
 import { existsSync, readFileSync } from "node:fs"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function storyRead(filename: string): PromiseResult<StoryType> {
-	const storiesPathResult = await storyFolderPathGet()
+export async function storyRead(config: ConfigType, filename: string): PromiseResult<StoryType> {
+	const storiesPathResult = await storyFolderPathGet(config)
 	if (!storiesPathResult.success) {
 		return storiesPathResult
 	}

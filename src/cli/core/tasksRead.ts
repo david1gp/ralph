@@ -1,11 +1,12 @@
 import { taskFilePathGet } from "@/cli/core/taskFilePathGet"
 import { taskParse } from "@/cli/data/taskParse"
 import type { TaskType } from "@/cli/data/TaskType"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import { existsSync, readFileSync } from "node:fs"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function tasksRead(): PromiseResult<TaskType[]> {
-	const tasksPathResult = await taskFilePathGet()
+export async function tasksRead(config: ConfigType): PromiseResult<TaskType[]> {
+	const tasksPathResult = await taskFilePathGet(config)
 	if (!tasksPathResult.success) {
 		return tasksPathResult
 	}

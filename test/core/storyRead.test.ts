@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test"
 import { storyRead } from "@/cli/core/storyRead"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -16,8 +17,13 @@ function assertErr<T>(result: Result<T>): asserts result is Extract<typeof resul
 
 const existingStoryFilename = "taski_cli.md"
 
+const testConfig: ConfigType = {
+	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
+	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
+}
+
 test("readStory parses existing story correctly", async () => {
-	const result = await storyRead(existingStoryFilename)
+	const result = await storyRead(testConfig, existingStoryFilename)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const story = result.data
@@ -30,14 +36,14 @@ test("readStory parses existing story correctly", async () => {
 })
 
 test("readStory returns error for non-existent story", async () => {
-	const result = await storyRead("non_existent_story.md")
+	const result = await storyRead(testConfig, "non_existent_story.md")
 	expect(result.success).toBe(false)
 	assertErr(result)
 	expect(result.errorMessage).toContain('Story "non_existent_story.md" not found')
 })
 
 test("readStory parses goals correctly", async () => {
-	const result = await storyRead(existingStoryFilename)
+	const result = await storyRead(testConfig, existingStoryFilename)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const story = result.data
@@ -46,7 +52,7 @@ test("readStory parses goals correctly", async () => {
 })
 
 test("readStory parses userTasks correctly", async () => {
-	const result = await storyRead(existingStoryFilename)
+	const result = await storyRead(testConfig, existingStoryFilename)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const story = result.data

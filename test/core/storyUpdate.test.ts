@@ -2,6 +2,7 @@ import { expect, test, beforeEach } from "bun:test"
 import { writeFileSync, rmSync, existsSync } from "node:fs"
 import { storyUpdate } from "@/cli/core/storyUpdate"
 import { storyRead } from "@/cli/core/storyRead"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -36,6 +37,11 @@ This is the initial description text
 ### T-002: Initial task two
 `
 
+const testConfig: ConfigType = {
+	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
+	storiesFolder: testStoriesPath,
+}
+
 beforeEach(() => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	if (existsSync(testFile)) {
@@ -47,13 +53,13 @@ test("storyUpdate updates title field", async () => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	writeFileSync(testFile, initialContent)
 
-	const result = await storyUpdate(testStoryFilename, { title: "Updated Title" })
+	const result = await storyUpdate(testConfig, testStoryFilename, { title: "Updated Title" })
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const updated = result.data
 	expect(updated.title).toBe("Updated Title")
 
-	const storyResult = await storyRead(testStoryFilename)
+	const storyResult = await storyRead(testConfig, testStoryFilename)
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	const story = storyResult.data
@@ -64,12 +70,12 @@ test("storyUpdate updates description field", async () => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	writeFileSync(testFile, initialContent)
 
-	const result = await storyUpdate(testStoryFilename, { description: "Updated description text" })
+	const result = await storyUpdate(testConfig, testStoryFilename, { description: "Updated description text" })
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data.description).toBe("Updated description text")
 
-	const storyResult = await storyRead(testStoryFilename)
+	const storyResult = await storyRead(testConfig, testStoryFilename)
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	expect(storyResult.data.description).toBe("Updated description text")
@@ -79,12 +85,12 @@ test("storyUpdate updates goals field", async () => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	writeFileSync(testFile, initialContent)
 
-	const result = await storyUpdate(testStoryFilename, { goals: ["New goal one", "New goal two", "New goal three"] })
+	const result = await storyUpdate(testConfig, testStoryFilename, { goals: ["New goal one", "New goal two", "New goal three"] })
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data.goals).toEqual(["New goal one", "New goal two", "New goal three"])
 
-	const storyResult = await storyRead(testStoryFilename)
+	const storyResult = await storyRead(testConfig, testStoryFilename)
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	expect(storyResult.data.goals).toEqual(["New goal one", "New goal two", "New goal three"])
@@ -94,12 +100,12 @@ test("storyUpdate updates userTasks field", async () => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	writeFileSync(testFile, initialContent)
 
-	const result = await storyUpdate(testStoryFilename, { userTasks: ["S-101", "S-102"] })
+	const result = await storyUpdate(testConfig, testStoryFilename, { userTasks: ["S-101", "S-102"] })
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data.userTasks).toEqual(["S-101", "S-102"])
 
-	const storyResult = await storyRead(testStoryFilename)
+	const storyResult = await storyRead(testConfig, testStoryFilename)
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	expect(storyResult.data.userTasks).toEqual(["S-101", "S-102"])
@@ -109,7 +115,7 @@ test("storyUpdate performs partial update on existing story", async () => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	writeFileSync(testFile, initialContent)
 
-	const result = await storyUpdate(testStoryFilename, { title: "Partially Updated Title" })
+	const result = await storyUpdate(testConfig, testStoryFilename, { title: "Partially Updated Title" })
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const updated = result.data
@@ -120,7 +126,7 @@ test("storyUpdate performs partial update on existing story", async () => {
 })
 
 test("storyUpdate returns error for non-existent story", async () => {
-	const result = await storyUpdate("non_existent_story.md", { title: "Test" })
+	const result = await storyUpdate(testConfig, "non_existent_story.md", { title: "Test" })
 	expect(result.success).toBe(false)
 	assertErr(result)
 	expect(result.errorMessage).toContain('Story "non_existent_story.md" not found')
@@ -130,7 +136,7 @@ test("storyUpdate works with .md extension provided", async () => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	writeFileSync(testFile, initialContent)
 
-	const result = await storyUpdate(`${testStoryFilename}`, { title: "Title With Extension" })
+	const result = await storyUpdate(testConfig, `${testStoryFilename}`, { title: "Title With Extension" })
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data.title).toBe("Title With Extension")
@@ -140,7 +146,7 @@ test("storyUpdate updates all fields at once", async () => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	writeFileSync(testFile, initialContent)
 
-	const result = await storyUpdate(testStoryFilename, {
+	const result = await storyUpdate(testConfig, testStoryFilename, {
 		title: "Complete Update Title",
 		description: "Complete update description",
 		goals: ["Complete goal one", "Complete goal two"],
@@ -155,7 +161,7 @@ test("storyUpdate updates all fields at once", async () => {
 	expect(updated.goals).toEqual(["Complete goal one", "Complete goal two"])
 	expect(updated.userTasks).toEqual(["S-201", "S-202", "S-203"])
 
-	const storyResult = await storyRead(testStoryFilename)
+	const storyResult = await storyRead(testConfig, testStoryFilename)
 	expect(storyResult.success).toBe(true)
 	assertOk(storyResult)
 	const story = storyResult.data

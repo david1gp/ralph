@@ -1,5 +1,6 @@
 import { expect, test, beforeEach } from "bun:test"
 import { storiesList } from "@/cli/core/storiesList"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -10,8 +11,13 @@ function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result
 
 const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
 
+const testConfig: ConfigType = {
+	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
+	storiesFolder: testStoriesPath,
+}
+
 test("listStories returns all markdown filenames in stories folder", async () => {
-	const result = await storiesList()
+	const result = await storiesList(testConfig)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const stories = result.data

@@ -3,6 +3,7 @@ import { rmSync, existsSync } from "node:fs"
 import { storiesList } from "@/cli/core/storiesList"
 import { storyCreate } from "@/cli/core/storyCreate"
 import { storyDelete } from "@/cli/core/storyDelete"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -39,6 +40,11 @@ This is a test story for unit testing purposes.
 ### T-TEST3: Third test task
 `
 
+const testConfig: ConfigType = {
+	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
+	storiesFolder: testStoriesPath,
+}
+
 afterAll(() => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`
 	if (existsSync(testFile)) {
@@ -54,16 +60,16 @@ beforeEach(() => {
 })
 
 test("deleteStory removes story file", async () => {
-	await storyCreate(testStoryFilename, testStoryContent)
-	const storiesBeforeResult = await storiesList()
+	await storyCreate(testConfig, testStoryFilename, testStoryContent)
+	const storiesBeforeResult = await storiesList(testConfig)
 	expect(storiesBeforeResult.success).toBe(true)
 	assertOk(storiesBeforeResult)
 	const storiesBefore = storiesBeforeResult.data
-	const result = await storyDelete(testStoryFilename)
+	const result = await storyDelete(testConfig, testStoryFilename)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data).toBe(true)
-	const storiesAfterResult = await storiesList()
+	const storiesAfterResult = await storiesList(testConfig)
 	expect(storiesAfterResult.success).toBe(true)
 	assertOk(storiesAfterResult)
 	const storiesAfter = storiesAfterResult.data
@@ -72,7 +78,7 @@ test("deleteStory removes story file", async () => {
 })
 
 test("deleteStory returns error for non-existent story", async () => {
-	const result = await storyDelete("non_existent_story.md")
+	const result = await storyDelete(testConfig, "non_existent_story.md")
 	expect(result.success).toBe(false)
 	assertErr(result)
 	expect(result.errorMessage).toContain('Story "non_existent_story.md" not found')
