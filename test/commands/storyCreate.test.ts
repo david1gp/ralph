@@ -13,7 +13,7 @@ const testDir = join(__dirname, "..")
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
 	if (!result.success) {
-		throw new Error(`Expected success but got error: ${result.errorMessage}`)
+		throw new Error("Expected success but got error: ".concat(result.errorMessage))
 	}
 }
 
@@ -61,7 +61,7 @@ beforeAll(() => {
 
 afterAll(() => {
 	testAfterAll()
-	const testFile = `${storiesPath}/${testStoryFilename}`
+	const testFile = "".concat(storiesPath, "/S-001_TEST-001_", testStoryFilename, ".md")
 	if (existsSync(testFile)) {
 		rmSync(testFile)
 	}
@@ -69,29 +69,33 @@ afterAll(() => {
 
 beforeEach(() => {
 	stdout = []
-	const testFile = `${storiesPath}/${testStoryFilename}`
+	const testFile = "".concat(storiesPath, "/S-001_TEST-001_", testStoryFilename, ".md")
 	if (existsSync(testFile)) {
 		rmSync(testFile)
 	}
 })
 
-test("storyCreateCommand creates story with --filename and --content", async () => {
+test("storyCreateCommand creates story with --shortStoryTitle and --projectDir", async () => {
 	const originalCwd = process.cwd()
 	process.chdir(testDir)
 	try {
 		const context = createMockContext()
-		const params = { filename: testStoryFilename, content: testStoryContent, config: undefined }
+		const params = { shortStoryTitle: "command_test_story", projectDir: testDir, content: testStoryContent, config: undefined }
 		await storyCreateFunc.call(context, params)
 		
-		expect(stdout[0]).toBe(`${storiesPath}/${testStoryFilename}`)
+		expect(stdout.length).toBeGreaterThan(0)
+		expect(stdout[0]).toMatch(/S-\d{3}_test-\d{3}_command-test-story\.md/)
 		
+		const output = stdout[0]!
+		const filename = output.split("/").pop() ?? ""
+		expect(filename.length).toBeGreaterThan(0)
 		const storiesResult = await storiesList(testConfig)
 		expect(storiesResult.success).toBe(true)
 		assertOk(storiesResult)
 		const stories = storiesResult.data
-		expect(stories.includes(testStoryFilename)).toBe(true)
+		expect(stories.includes(filename)).toBe(true)
 		
-		const storyResult = await storyRead(testConfig, testStoryFilename)
+		const storyResult = await storyRead(testConfig, filename)
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
 		const story = storyResult.data
@@ -121,18 +125,22 @@ A simple story content.
 	process.chdir(testDir)
 	try {
 		const context = createMockContext()
-		const params = { filename: "simple_test.md", content: simpleContent, config: undefined }
+		const params = { shortStoryTitle: "simple_test", projectDir: testDir, content: simpleContent, config: undefined }
 		await storyCreateFunc.call(context, params)
 		
-		expect(stdout[0]).toBe(`${storiesPath}/simple_test.md`)
+		expect(stdout.length).toBeGreaterThan(0)
+		expect(stdout[0]).toMatch(/S-\d{3}_test-\d{3}_simple-test\.md/)
 		
+		const output = stdout[0]!
+		const filename = output.split("/").pop() ?? ""
+		expect(filename.length).toBeGreaterThan(0)
 		const storiesResult = await storiesList(testConfig)
 		expect(storiesResult.success).toBe(true)
 		assertOk(storiesResult)
 		const stories = storiesResult.data
-		expect(stories.includes("simple_test.md")).toBe(true)
+		expect(stories.includes(filename)).toBe(true)
 		
-		const storyResult = await storyRead(testConfig, "simple_test.md")
+		const storyResult = await storyRead(testConfig, filename)
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
 		const story = storyResult.data
@@ -163,10 +171,14 @@ A story with goals.
 	process.chdir(testDir)
 	try {
 		const context = createMockContext()
-		const params = { filename: "goals_story.md", content: contentWithGoals, config: undefined }
+		const params = { shortStoryTitle: "goals_story", projectDir: testDir, content: contentWithGoals, config: undefined }
 		await storyCreateFunc.call(context, params)
 		
-		const storyResult = await storyRead(testConfig, "goals_story.md")
+		expect(stdout.length).toBeGreaterThan(0)
+		const output = stdout[0]!
+		const filename = output.split("/").pop() ?? ""
+		expect(filename.length).toBeGreaterThan(0)
+		const storyResult = await storyRead(testConfig, filename)
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
 		const story = storyResult.data
@@ -197,10 +209,14 @@ A story with user tasks.
 	process.chdir(testDir)
 	try {
 		const context = createMockContext()
-		const params = { filename: "tasks_story.md", content: contentWithTasks, config: undefined }
+		const params = { shortStoryTitle: "tasks_story", projectDir: testDir, content: contentWithTasks, config: undefined }
 		await storyCreateFunc.call(context, params)
 		
-		const storyResult = await storyRead(testConfig, "tasks_story.md")
+		expect(stdout.length).toBeGreaterThan(0)
+		const output = stdout[0]!
+		const filename = output.split("/").pop() ?? ""
+		expect(filename.length).toBeGreaterThan(0)
+		const storyResult = await storyRead(testConfig, filename)
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
 		const story = storyResult.data
@@ -233,18 +249,22 @@ This story has **bold** and *italic* text, as well as [links](https://example.co
 	process.chdir(testDir)
 	try {
 		const context = createMockContext()
-		const params = { filename: "complex_story.md", content: complexContent, config: undefined }
+		const params = { shortStoryTitle: "complex_story", projectDir: testDir, content: complexContent, config: undefined }
 		await storyCreateFunc.call(context, params)
 		
-		expect(stdout[0]).toBe(`${storiesPath}/complex_story.md`)
+		expect(stdout.length).toBeGreaterThan(0)
+		expect(stdout[0]).toMatch(/S-\d{3}_test-\d{3}_complex-story\.md/)
 		
+		const output = stdout[0]!
+		const filename = output.split("/").pop() ?? ""
+		expect(filename.length).toBeGreaterThan(0)
 		const storiesResult = await storiesList(testConfig)
 		expect(storiesResult.success).toBe(true)
 		assertOk(storiesResult)
 		const stories = storiesResult.data
-		expect(stories.includes("complex_story.md")).toBe(true)
+		expect(stories.includes(filename)).toBe(true)
 		
-		const storyResult = await storyRead(testConfig, "complex_story.md")
+		const storyResult = await storyRead(testConfig, filename)
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
 		const story = storyResult.data
@@ -281,10 +301,14 @@ This story has:
 	process.chdir(testDir)
 	try {
 		const context = createMockContext()
-		const params = { filename: "multiline_story.md", content: multilineContent, config: undefined }
+		const params = { shortStoryTitle: "multiline_story", projectDir: testDir, content: multilineContent, config: undefined }
 		await storyCreateFunc.call(context, params)
 		
-		const storyResult = await storyRead(testConfig, "multiline_story.md")
+		expect(stdout.length).toBeGreaterThan(0)
+		const output = stdout[0]!
+		const filename = output.split("/").pop() ?? ""
+		expect(filename.length).toBeGreaterThan(0)
+		const storyResult = await storyRead(testConfig, filename)
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
 		const story = storyResult.data
@@ -300,10 +324,10 @@ test("storyCreateCommand outputs success message with filename", async () => {
 	process.chdir(testDir)
 	try {
 		const context = createMockContext()
-		const params = { filename: "output_test.md", content: "# Output Story\n\nTesting output.\n\n## Goals\n\n- Goal\n\n## User Tasks\n\n### T-OUTPUT-001: Output task", config: undefined }
+		const params = { shortStoryTitle: "output_test", projectDir: testDir, content: "# Output Story\n\nTesting output.\n\n## Goals\n\n- Goal\n\n## User Tasks\n\n### T-OUTPUT-001: Output task", config: undefined }
 		await storyCreateFunc.call(context, params)
 		
-		expect(stdout[0]).toBe(`${storiesPath}/output_test.md`)
+		expect(stdout[0]).toMatch(/S-\d{3}_test-\d{3}_output-test\.md/)
 	} finally {
 		process.chdir(originalCwd)
 	}

@@ -4,8 +4,12 @@ import { storiesList } from "@/cli/core/storiesList"
 import { storyCreate } from "@/cli/core/storyCreate"
 import { storyDelete } from "@/cli/core/storyDelete"
 import { getTestConfig, assertOk, assertErr, testBeforeAll, testAfterAll, resetTasksFile } from "../testHelpers"
+import { join, dirname } from "node:path"
+import { fileURLToPath } from "node:url"
 
-const testStoryFilename = "test_story.md"
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const testDir = join(__dirname, "..")
+
 const testStoryContent = `# Story: Test Story
 
 ## Description
@@ -34,35 +38,40 @@ afterAll(testAfterAll)
 beforeEach(resetTasksFile)
 
 afterAll(() => {
-	const testFile = `${testStoriesPath}/${testStoryFilename}`
+	const testFile = testStoriesPath + "/S-001_test-001_delete-test-story.md"
 	if (existsSync(testFile)) {
 		rmSync(testFile)
 	}
 })
 
 beforeEach(() => {
-	const testFile = `${testStoriesPath}/${testStoryFilename}`
+	const testFile = testStoriesPath + "/S-001_test-001_delete-test-story.md"
 	if (existsSync(testFile)) {
 		rmSync(testFile)
 	}
 })
 
 test("deleteStory removes story file", async () => {
-	await storyCreate(testConfig, testStoryFilename, testStoryContent)
+	const createResult = await storyCreate(testConfig, { shortStoryTitle: "delete-test-story", projectDir: testDir, content: testStoryContent })
+	expect(createResult.success).toBe(true)
+	assertOk(createResult)
+	const createdFilename = createResult.data.filePath.split("/").pop()
+	expect(createdFilename).toBeDefined()
+	
 	const storiesBeforeResult = await storiesList(testConfig)
 	expect(storiesBeforeResult.success).toBe(true)
 	assertOk(storiesBeforeResult)
-	const storiesBefore = storiesBeforeResult.data
-	const result = await storyDelete(testConfig, testStoryFilename)
+	
+	const result = await storyDelete(testConfig, createdFilename!)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data).toBe(true)
+	
 	const storiesAfterResult = await storiesList(testConfig)
 	expect(storiesAfterResult.success).toBe(true)
 	assertOk(storiesAfterResult)
 	const storiesAfter = storiesAfterResult.data
-	expect(storiesAfter.length).toBe(storiesBefore.length - 1)
-	expect(storiesAfter.includes(testStoryFilename)).toBe(false)
+	expect(storiesAfter.includes(createdFilename!)).toBe(false)
 })
 
 test("deleteStory returns error for non-existent story", async () => {

@@ -5,5 +5,7 @@ export const configSchema = object({
 	storiesFolder: string(),
 	projectTaskPrefix: optional(record(string(), string()), {}),
 	projectTaskIdNumber: optional(record(string(), number()), {}),
+	storyIdNumber: optional(number(), 1),
+	projectStoryIdNumber: optional(record(string(), number()), {}),
 	testing: optional(boolean(), false),
 })

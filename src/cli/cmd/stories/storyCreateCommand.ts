@@ -1,9 +1,12 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { storyCreate } from "@/cli/core/storyCreate"
 import { configGet } from "@/cli/core/configGet"
+import { configSave } from "@/cli/core/configSave"
+import { shortStoryTitleFormat, projectDirExists } from "@/cli/core/storyInputValidate"
 
 interface CreateFlags {
-	filename: string
+	shortStoryTitle: string
+	projectDir: string
 	content: string
 	config?: string
 }
@@ -16,23 +19,54 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
 	}
 	const config = configResult.data
 
-	const result = await storyCreate(config, flags.filename, flags.content)
+	const dirResult = await projectDirExists(flags.projectDir)
+	if (!dirResult.success) {
+		const errorResult = { success: false, op: "storyCreateCommand", errorMessage: dirResult.error }
+		console.error(JSON.stringify(errorResult))
+		process.exit(1)
+	}
+
+	const titleResult = shortStoryTitleFormat(flags.shortStoryTitle)
+	if (!titleResult.success) {
+		const errorResult = { success: false, op: "storyCreateCommand", errorMessage: titleResult.error }
+		console.error(JSON.stringify(errorResult))
+		process.exit(1)
+	}
+
+	const result = await storyCreate(config, {
+		shortStoryTitle: titleResult.formatted!,
+		projectDir: flags.projectDir,
+		content: flags.content,
+	})
 	if (!result.success) {
 		console.error(JSON.stringify(result))
 		process.exit(1)
 	}
-	this.process.stdout.write(result.data)
+
+	config.storyIdNumber = (config.storyIdNumber ?? 1) + 1
+	config.projectStoryIdNumber = config.projectStoryIdNumber ?? {}
+	config.projectStoryIdNumber[flags.projectDir] = (config.projectStoryIdNumber[flags.projectDir] ?? 1) + 1
+	await configSave(config)
+
+	const filename = result.data.filePath.split("/").pop()!
+	this.process.stdout.write(filename)
 }
 
 export const storyCreateCommand = buildCommand({
 	func: storyCreateFunc,
 	parameters: {
 		flags: {
-			filename: {
+			shortStoryTitle: {
 				kind: "parsed",
 				parse: String,
 				optional: false,
-				brief: "Story filename",
+				brief: "Short story title (spaces and underscores will be replaced with dashes)",
+			},
+			projectDir: {
+				kind: "parsed",
+				parse: String,
+				optional: false,
+				brief: "Project directory path",
 			},
 			content: {
 				kind: "parsed",

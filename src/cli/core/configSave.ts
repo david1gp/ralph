@@ -10,6 +10,8 @@ export async function configSave(config: ConfigType): Promise<void> {
 		storiesFolder: relative(taskiDir, config.storiesFolder),
 		projectTaskPrefix: config.projectTaskPrefix ?? {},
 		projectTaskIdNumber: config.projectTaskIdNumber ?? {},
+		storyIdNumber: config.storyIdNumber ?? 1,
+		projectStoryIdNumber: config.projectStoryIdNumber ?? {},
 	}
 	const validatedConfig = parse(configSchema, rawConfig)
 	const configPath = join(taskiDir, "taski.json")
