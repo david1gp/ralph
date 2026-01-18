@@ -38,52 +38,60 @@ afterAll(testAfterAll)
 beforeEach(resetTasksFile)
 
 beforeEach(() => {
-	const files = ["S-001_test-001_test-story.md", "S-001_test-002_another-test.md"]
-	for (const file of files) {
-		const testFile = testStoriesPath + "/" + file
-		if (existsSync(testFile)) {
-			rmSync(testFile)
-		}
-	}
+  const files = ["S-001_test-001_test-story.md", "S-001_test-002_another-test.md"]
+  for (const file of files) {
+    const testFile = testStoriesPath + "/" + file
+    if (existsSync(testFile)) {
+      rmSync(testFile)
+    }
+  }
 })
 
 afterAll(() => {
-	const files = ["S-001_test-001_test-story.md", "S-001_test-002_another-test.md"]
-	for (const file of files) {
-		const testFile = testStoriesPath + "/" + file
-		if (existsSync(testFile)) {
-			rmSync(testFile)
-		}
-	}
+  const files = ["S-001_test-001_test-story.md", "S-001_test-002_another-test.md"]
+  for (const file of files) {
+    const testFile = testStoriesPath + "/" + file
+    if (existsSync(testFile)) {
+      rmSync(testFile)
+    }
+  }
 })
 
 test("createStory creates new story file", async () => {
-	const storiesBeforeResult = await storiesList(testConfig)
-	expect(storiesBeforeResult.success).toBe(true)
-	assertOk(storiesBeforeResult)
-	const result = await storyCreate(testConfig, { shortStoryTitle: "test-story", projectDir: testDir, content: testStoryContent })
-	expect(result.success).toBe(true)
-	assertOk(result)
-	const createdFilename = result.data.filePath.split("/").pop()
-	expect(createdFilename).toBeDefined()
-	const storiesAfterResult = await storiesList(testConfig)
-	expect(storiesAfterResult.success).toBe(true)
-	assertOk(storiesAfterResult)
-	const storiesAfter = storiesAfterResult.data
-	expect(storiesAfter.includes(createdFilename!)).toBe(true)
+  const storiesBeforeResult = await storiesList(testConfig)
+  expect(storiesBeforeResult.success).toBe(true)
+  assertOk(storiesBeforeResult)
+  const result = await storyCreate(testConfig, {
+    shortStoryTitle: "test-story",
+    projectDir: testDir,
+    content: testStoryContent,
+  })
+  expect(result.success).toBe(true)
+  assertOk(result)
+  const createdFilename = result.data.filePath.split("/").pop()
+  expect(createdFilename).toBeDefined()
+  const storiesAfterResult = await storiesList(testConfig)
+  expect(storiesAfterResult.success).toBe(true)
+  assertOk(storiesAfterResult)
+  const storiesAfter = storiesAfterResult.data
+  expect(storiesAfter.includes(createdFilename!)).toBe(true)
 
-	const storyResult = await storyRead(testConfig, createdFilename!)
-	expect(storyResult.success).toBe(true)
-	assertOk(storyResult)
-	const story = storyResult.data
-	expect(story.title).toBe("Test Story")
-	expect(story.description).toContain("test story")
+  const storyResult = await storyRead(testConfig, createdFilename!)
+  expect(storyResult.success).toBe(true)
+  assertOk(storyResult)
+  const story = storyResult.data
+  expect(story.title).toBe("Test Story")
+  expect(story.description).toContain("test story")
 })
 
 test("createStory creates story with correct filename format", async () => {
-	const result = await storyCreate(testConfig, { shortStoryTitle: "another-test", projectDir: testDir, content: testStoryContent })
-	expect(result.success).toBe(true)
-	assertOk(result)
-	const filename = result.data.filePath.split("/").pop()
-	expect(filename).toMatch(/S-\d{3}_core-\d{3}_another-test\.md/)
+  const result = await storyCreate(testConfig, {
+    shortStoryTitle: "another-test",
+    projectDir: testDir,
+    content: testStoryContent,
+  })
+  expect(result.success).toBe(true)
+  assertOk(result)
+  const filename = result.data.filePath.split("/").pop()
+  expect(filename).toMatch(/S-\d{3}_core-\d{3}_another-test\.md/)
 })

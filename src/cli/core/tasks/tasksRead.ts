@@ -6,27 +6,27 @@ import { existsSync, readFileSync } from "node:fs"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
 export async function tasksRead(config: ConfigType): PromiseResult<TaskType[]> {
-	const tasksPathResult = await taskFilePathGet(config)
-	if (!tasksPathResult.success) {
-		return tasksPathResult
-	}
-	const tasksPath = tasksPathResult.data
-	if (!existsSync(tasksPath)) {
-		return createResult([])
-	}
-	const content = readFileSync(tasksPath, "utf-8")
-	const parsed = JSON.parse(content)
-	if (!Array.isArray(parsed)) {
-		return createError("tasksRead", "tasks.json must contain an array")
-	}
-	const tasks: TaskType[] = []
-	for (let index = 0; index < parsed.length; index++) {
-		const task = parsed[index]
-		const result = taskParse(task)
-		if (!result.success) {
-			return createError("tasksRead", `Invalid task at index ${index}: ${result.issues}`)
-		}
-		tasks.push(result.data)
-	}
-	return createResult(tasks)
+  const tasksPathResult = await taskFilePathGet(config)
+  if (!tasksPathResult.success) {
+    return tasksPathResult
+  }
+  const tasksPath = tasksPathResult.data
+  if (!existsSync(tasksPath)) {
+    return createResult([])
+  }
+  const content = readFileSync(tasksPath, "utf-8")
+  const parsed = JSON.parse(content)
+  if (!Array.isArray(parsed)) {
+    return createError("tasksRead", "tasks.json must contain an array")
+  }
+  const tasks: TaskType[] = []
+  for (let index = 0; index < parsed.length; index++) {
+    const task = parsed[index]
+    const result = taskParse(task)
+    if (!result.success) {
+      return createError("tasksRead", `Invalid task at index ${index}: ${result.issues}`)
+    }
+    tasks.push(result.data)
+  }
+  return createResult(tasks)
 }

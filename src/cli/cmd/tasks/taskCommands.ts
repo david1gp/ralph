@@ -7,15 +7,15 @@ import { taskReadCommand } from "./taskReadCommand"
 import { taskUpdateCommand } from "./taskUpdateCommand"
 
 export const taskCommands = buildRouteMap({
-	routes: {
-		list: taskListCommand,
-		read: taskReadCommand,
-		create: taskCreateCommand,
-		update: taskUpdateCommand,
-		next: taskNextCommand,
-		delete: taskDeleteCommand,
-	},
-	docs: {
-		brief: "Manage tasks",
-	},
+  routes: {
+    list: taskListCommand,
+    read: taskReadCommand,
+    create: taskCreateCommand,
+    update: taskUpdateCommand,
+    next: taskNextCommand,
+    delete: taskDeleteCommand,
+  },
+  docs: {
+    brief: "Manage tasks",
+  },
 })

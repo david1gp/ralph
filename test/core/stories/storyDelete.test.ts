@@ -38,45 +38,49 @@ afterAll(testAfterAll)
 beforeEach(resetTasksFile)
 
 afterAll(() => {
-	const testFile = testStoriesPath + "/S-001_test-001_delete-test-story.md"
-	if (existsSync(testFile)) {
-		rmSync(testFile)
-	}
+  const testFile = testStoriesPath + "/S-001_test-001_delete-test-story.md"
+  if (existsSync(testFile)) {
+    rmSync(testFile)
+  }
 })
 
 beforeEach(() => {
-	const testFile = testStoriesPath + "/S-001_test-001_delete-test-story.md"
-	if (existsSync(testFile)) {
-		rmSync(testFile)
-	}
+  const testFile = testStoriesPath + "/S-001_test-001_delete-test-story.md"
+  if (existsSync(testFile)) {
+    rmSync(testFile)
+  }
 })
 
 test("deleteStory removes story file", async () => {
-	const createResult = await storyCreate(testConfig, { shortStoryTitle: "delete-test-story", projectDir: testDir, content: testStoryContent })
-	expect(createResult.success).toBe(true)
-	assertOk(createResult)
-	const createdFilename = createResult.data.filePath.split("/").pop()
-	expect(createdFilename).toBeDefined()
+  const createResult = await storyCreate(testConfig, {
+    shortStoryTitle: "delete-test-story",
+    projectDir: testDir,
+    content: testStoryContent,
+  })
+  expect(createResult.success).toBe(true)
+  assertOk(createResult)
+  const createdFilename = createResult.data.filePath.split("/").pop()
+  expect(createdFilename).toBeDefined()
 
-	const storiesBeforeResult = await storiesList(testConfig)
-	expect(storiesBeforeResult.success).toBe(true)
-	assertOk(storiesBeforeResult)
+  const storiesBeforeResult = await storiesList(testConfig)
+  expect(storiesBeforeResult.success).toBe(true)
+  assertOk(storiesBeforeResult)
 
-	const result = await storyDelete(testConfig, createdFilename!)
-	expect(result.success).toBe(true)
-	assertOk(result)
-	expect(result.data).toBe(true)
+  const result = await storyDelete(testConfig, createdFilename!)
+  expect(result.success).toBe(true)
+  assertOk(result)
+  expect(result.data).toBe(true)
 
-	const storiesAfterResult = await storiesList(testConfig)
-	expect(storiesAfterResult.success).toBe(true)
-	assertOk(storiesAfterResult)
-	const storiesAfter = storiesAfterResult.data
-	expect(storiesAfter.includes(createdFilename!)).toBe(false)
+  const storiesAfterResult = await storiesList(testConfig)
+  expect(storiesAfterResult.success).toBe(true)
+  assertOk(storiesAfterResult)
+  const storiesAfter = storiesAfterResult.data
+  expect(storiesAfter.includes(createdFilename!)).toBe(false)
 })
 
 test("deleteStory returns error for non-existent story", async () => {
-	const result = await storyDelete(testConfig, "non_existent_story.md")
-	expect(result.success).toBe(false)
-	assertErr(result)
-	expect(result.errorMessage).toContain('Story "non_existent_story.md" not found')
+  const result = await storyDelete(testConfig, "non_existent_story.md")
+  expect(result.success).toBe(false)
+  assertErr(result)
+  expect(result.errorMessage).toContain('Story "non_existent_story.md" not found')
 })

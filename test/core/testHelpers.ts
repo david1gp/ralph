@@ -13,7 +13,7 @@ const originalTasksPath = join(testTaskiDir, "tasks.json")
 let originalContent: string | null = null
 
 function getDefaultTestTasks(): string {
-	return `[
+  return `[
   {
     "id": "TEST-001",
     "dir": "${projectRoot}",
@@ -40,50 +40,50 @@ function getDefaultTestTasks(): string {
 }
 
 export function testBeforeAll(): void {
-	if (!existsSync(testTaskiDir)) {
-		throw new Error(`.taski directory does not exist: ${testTaskiDir}`)
-	}
-	setConfigPath(testTaskiDir)
-	if (!existsSync(originalTasksPath)) {
-		writeFileSync(originalTasksPath, getDefaultTestTasks())
-	}
-	originalContent = readFileSync(originalTasksPath, "utf-8")
+  if (!existsSync(testTaskiDir)) {
+    throw new Error(`.taski directory does not exist: ${testTaskiDir}`)
+  }
+  setConfigPath(testTaskiDir)
+  if (!existsSync(originalTasksPath)) {
+    writeFileSync(originalTasksPath, getDefaultTestTasks())
+  }
+  originalContent = readFileSync(originalTasksPath, "utf-8")
 }
 
 export function testAfterAll(): void {
-	clearConfigPath()
-	if (originalContent && existsSync(originalTasksPath)) {
-		writeFileSync(originalTasksPath, originalContent)
-	}
+  clearConfigPath()
+  if (originalContent && existsSync(originalTasksPath)) {
+    writeFileSync(originalTasksPath, originalContent)
+  }
 }
 
 export function resetTasksFile(): void {
-	if (originalContent && existsSync(originalTasksPath)) {
-		writeFileSync(originalTasksPath, originalContent)
-	}
+  if (originalContent && existsSync(originalTasksPath)) {
+    writeFileSync(originalTasksPath, originalContent)
+  }
 }
 
 export function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
-	if (!result.success) {
-		throw new Error(`Expected success but got error: ${result.errorMessage}`)
-	}
+  if (!result.success) {
+    throw new Error(`Expected success but got error: ${result.errorMessage}`)
+  }
 }
 
 export function assertErr<T>(result: Result<T>): asserts result is Extract<typeof result, { success: false }> {
-	if (result.success) {
-		throw new Error(`Expected error but got success`)
-	}
+  if (result.success) {
+    throw new Error(`Expected error but got success`)
+  }
 }
 
 export function getTestConfig(overrides: Partial<ConfigType> = {}): ConfigType {
-	const base: ConfigType = {
-		tasksFile: join(testTaskiDir, "tasks.json"),
-		storiesFolder: join(testTaskiDir, "stories"),
-		projectTaskPrefix: { [projectRoot]: "TEST" },
-		projectTaskIdNumber: {},
-		storyIdNumber: 0,
-		projectStoryIdNumber: {},
-		testing: true,
-	}
-	return { ...base, ...overrides }
+  const base: ConfigType = {
+    tasksFile: join(testTaskiDir, "tasks.json"),
+    storiesFolder: join(testTaskiDir, "stories"),
+    projectTaskPrefix: { [projectRoot]: "TEST" },
+    projectTaskIdNumber: {},
+    storyIdNumber: 0,
+    projectStoryIdNumber: {},
+    testing: true,
+  }
+  return { ...base, ...overrides }
 }

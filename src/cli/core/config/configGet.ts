@@ -7,11 +7,11 @@ import { parse } from "valibot"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
 function resolveConfigPaths(taskiDir: string, rawConfig: ConfigType) {
-	return {
-		...rawConfig,
-		tasksFile: join(taskiDir, rawConfig.tasksFile),
-		storiesFolder: join(taskiDir, rawConfig.storiesFolder),
-	}
+  return {
+    ...rawConfig,
+    tasksFile: join(taskiDir, rawConfig.tasksFile),
+    storiesFolder: join(taskiDir, rawConfig.storiesFolder),
+  }
 }
 
 async function readConfigFromPath(taskiPath: string): PromiseResult<ConfigType> {

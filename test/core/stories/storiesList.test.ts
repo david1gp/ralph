@@ -9,11 +9,11 @@ beforeAll(testBeforeAll)
 afterAll(testAfterAll)
 
 test("listStories returns all markdown filenames in stories folder", async () => {
-	const result = await storiesList(testConfig)
-	expect(result.success).toBe(true)
-	assertOk(result)
-	const stories = result.data
-	expect(Array.isArray(stories)).toBe(true)
-	expect(stories.length).toBeGreaterThanOrEqual(1)
-	expect(stories.includes("taski_cli.md")).toBe(true)
+  const result = await storiesList(testConfig)
+  expect(result.success).toBe(true)
+  assertOk(result)
+  const stories = result.data
+  expect(Array.isArray(stories)).toBe(true)
+  expect(stories.length).toBeGreaterThanOrEqual(1)
+  expect(stories.includes("taski_cli.md")).toBe(true)
 })
