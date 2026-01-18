@@ -1,28 +1,41 @@
 import { stat } from "node:fs/promises"
+import type { PromiseResult, Result } from "~utils/result/Result"
 
 export interface StoryTitleResult {
-	success: boolean
-	formatted?: string
-	error?: string
+  success: boolean
+  formatted?: string
+  error?: string
 }
 
-export function shortStoryTitleFormat(title: string): StoryTitleResult {
-	const allowedPattern = /^[a-zA-Z0-9 _\-]+$/
-	if (!allowedPattern.test(title)) {
-		return { success: false, error: "Title contains invalid characters. Only alphanumeric, spaces, underscores, and dashes are allowed." }
-	}
-	const formatted = title.replace(/[ _]/g, "-")
-	return { success: true, formatted }
+export function shortStoryTitleFormat(title: string): Result<string> {
+  const allowedPattern = /^[a-zA-Z0-9 _\-]+$/
+  if (!allowedPattern.test(title)) {
+    return {
+      op: "shortStoryTitleFormat",
+      success: false,
+      errorMessage:
+        "Title contains invalid characters. Only alphanumeric, spaces, underscores, and dashes are allowed.",
+      errorData: title,
+    }
+  }
+  const formatted = title.replace(/[ _]/g, "-")
+  return { success: true, data: formatted }
 }
 
-export async function projectDirExists(dir: string): Promise<{ success: boolean; error?: string }> {
-	try {
-		const stats = await stat(dir)
-		if (!stats.isDirectory()) {
-			return { success: false, error: "Path \"".concat(dir, "\" is not a directory.") }
-		}
-		return { success: true }
-	} catch {
-		return { success: false, error: "Directory \"".concat(dir, "\" does not exist.") }
-	}
+export async function projectDirExists(dir: string): PromiseResult<boolean> {
+  const op = "projectDirExists"
+  try {
+    const stats = await stat(dir)
+    if (!stats.isDirectory()) {
+      return {
+        op,
+        success: false,
+        errorMessage: "Path is not a directory",
+        errorData: dir,
+      }
+    }
+    return { success: true, data: true }
+  } catch {
+    return { op, success: false, errorMessage: "Directory does not exist", errorData: dir }
+  }
 }
