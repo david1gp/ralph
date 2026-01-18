@@ -10,14 +10,14 @@ export const taskNextCommand = buildCommand({
 	async func(this: CommandContext, flags: NextFlags) {
 		const configResult = await configLoad(flags.config)
 		if (!configResult.success) {
-			console.error(JSON.stringify(configResult))
+			console.error(configResult)
 			process.exit(1)
 		}
 		const config = configResult.data
 
 		const next = await taskFindNext(config)
 		if (next) {
-			this.process.stdout.write(JSON.stringify(next, null, 2))
+			this.process.stdout.write(JSON.stringify(next))
 		} else {
 			this.process.stdout.write("No pending tasks found")
 		}

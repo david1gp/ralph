@@ -10,17 +10,17 @@ export const storyReadCommand = buildCommand({
 	async func(this: CommandContext, flags: ReadFlags, filename: string) {
 		const configResult = await configLoad(flags.config)
 		if (!configResult.success) {
-			console.error(JSON.stringify(configResult))
+			console.error(configResult)
 			process.exit(1)
 		}
 		const config = configResult.data
 
 		const storyResult = await storyRead(config, filename)
 		if (!storyResult.success) {
-			console.error(JSON.stringify(storyResult))
+			console.error(storyResult)
 			process.exit(1)
 		}
-		this.process.stdout.write(JSON.stringify(storyResult.data, null, 2))
+		this.process.stdout.write(JSON.stringify(storyResult.data))
 	},
 	parameters: {
 		positional: {

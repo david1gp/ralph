@@ -10,14 +10,14 @@ export const storyDeleteCommand = buildCommand({
 	async func(this: CommandContext, flags: DeleteFlags, filename: string) {
 		const configResult = await configLoad(flags.config)
 		if (!configResult.success) {
-			console.error(JSON.stringify(configResult))
+			console.error(configResult)
 			process.exit(1)
 		}
 		const config = configResult.data
 
 		const result = await storyDelete(config, filename)
 		if (!result.success) {
-			console.error(JSON.stringify(result))
+			console.error(result)
 			process.exit(1)
 		}
 		this.process.stdout.write(`Story "${filename}" deleted successfully`)

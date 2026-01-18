@@ -10,14 +10,14 @@ export const taskDeleteCommand = buildCommand({
 	async func(this: CommandContext, flags: DeleteFlags, id: string) {
 		const configResult = await configLoad(flags.config)
 		if (!configResult.success) {
-			console.error(JSON.stringify(configResult))
+			console.error(configResult)
 			process.exit(1)
 		}
 		const config = configResult.data
 
 		const result = await taskDelete(config, id)
 		if (!result.success) {
-			console.error(JSON.stringify(result))
+			console.error(result)
 			process.exit(1)
 		}
 		this.process.stdout.write(`Task "${id}" deleted successfully`)

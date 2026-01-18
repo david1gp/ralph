@@ -1,3 +1,4 @@
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 import { configSchema } from "@/cli/data/configSchema"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { dirname, join, relative } from "node:path"
@@ -16,5 +17,5 @@ export async function configSave(config: ConfigType): Promise<void> {
 	const validatedConfig = parse(configSchema, rawConfig)
 	const configPath = join(taskiDir, "taski.json")
 	const taskiFile = Bun.file(configPath)
-	await taskiFile.write(JSON.stringify(validatedConfig, null, "\t"))
+	await taskiFile.write(jsonStringifyPretty(validatedConfig))
 }

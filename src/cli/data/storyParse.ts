@@ -1,3 +1,4 @@
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 import type { StoryType } from "@/cli/data/StoryType";
 import { storySchema } from "@/cli/data/storySchema";
 import { safeParse } from "valibot";
@@ -7,5 +8,5 @@ export function storyParse(data: unknown): { success: true; data: StoryType } | 
 	if (result.success) {
 		return { success: true, data: result.output }
 	}
-	return { success: false, issues: JSON.stringify(result.issues) }
+	return { success: false, issues: jsonStringifyPretty(result.issues) }
 }

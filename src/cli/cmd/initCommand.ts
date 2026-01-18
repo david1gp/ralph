@@ -1,3 +1,4 @@
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { mkdirSync, writeFileSync } from "node:fs"
@@ -27,7 +28,7 @@ export async function initFunc(this: CommandContext, flags: InitFlags) {
 
   writeFileSync(join(taskiDir, "tasks.json"), "[]")
 
-  writeFileSync(join(taskiDir, "taski.json"), JSON.stringify(defaultConfig, null, 2))
+  writeFileSync(join(taskiDir, "taski.json"), jsonStringifyPretty(defaultConfig))
 
   this.process.stdout.write(`Initialized taski project at ${taskiDir}`)
 }

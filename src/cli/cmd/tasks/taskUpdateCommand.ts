@@ -24,7 +24,7 @@ export const taskUpdateCommand = buildCommand({
 	async func(this: CommandContext, flags: UpdateFlags, id: string) {
 		const configResult = await configLoad(flags.config)
 		if (!configResult.success) {
-			console.error(JSON.stringify(configResult))
+			console.error(configResult)
 			process.exit(1)
 		}
 		const config = configResult.data

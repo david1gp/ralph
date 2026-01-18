@@ -10,17 +10,17 @@ export const storyListCommand = buildCommand({
 	async func(this: CommandContext, flags: ListFlags) {
 		const configResult = await configLoad(flags.config)
 		if (!configResult.success) {
-			console.error(JSON.stringify(configResult))
+			console.error(configResult)
 			process.exit(1)
 		}
 		const config = configResult.data
 
 		const storiesResult = await storiesList(config)
 		if (!storiesResult.success) {
-			console.error(JSON.stringify(storiesResult))
+			console.error(storiesResult)
 			process.exit(1)
 		}
-		this.process.stdout.write(JSON.stringify(storiesResult.data, null, 2))
+		this.process.stdout.write(JSON.stringify(storiesResult.data))
 	},
 	parameters: {
 		flags: {

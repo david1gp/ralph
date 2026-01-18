@@ -22,7 +22,7 @@ export const storyUpdateCommand = buildCommand({
 	async func(this: CommandContext, flags: UpdateFlags, filename: string) {
 		const configResult = await configLoad(flags.config)
 		if (!configResult.success) {
-			console.error(JSON.stringify(configResult))
+			console.error(configResult)
 			process.exit(1)
 		}
 		const config = configResult.data
@@ -42,7 +42,7 @@ export const storyUpdateCommand = buildCommand({
 		}
 		const updatedResult = await storyUpdate(config, filename, updates)
 		if (!updatedResult.success) {
-			console.error(JSON.stringify(updatedResult))
+			console.error(updatedResult)
 			process.exit(1)
 		}
 		const updated = updatedResult.data

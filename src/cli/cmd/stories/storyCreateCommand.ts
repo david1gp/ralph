@@ -14,7 +14,7 @@ interface CreateFlags {
 export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) {
 	const configResult = await configGet()
 	if (!configResult.success) {
-		console.error(JSON.stringify(configResult))
+		console.error(configResult)
 		process.exit(1)
 	}
 	const config = configResult.data
@@ -22,14 +22,14 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
 	const dirResult = await projectDirExists(flags.projectDir)
 	if (!dirResult.success) {
 		const errorResult = { success: false, op: "storyCreateCommand", errorMessage: dirResult.error }
-		console.error(JSON.stringify(errorResult))
+		console.error(errorResult)
 		process.exit(1)
 	}
 
 	const titleResult = shortStoryTitleFormat(flags.shortStoryTitle)
 	if (!titleResult.success) {
 		const errorResult = { success: false, op: "storyCreateCommand", errorMessage: titleResult.error }
-		console.error(JSON.stringify(errorResult))
+		console.error(errorResult)
 		process.exit(1)
 	}
 
@@ -39,7 +39,7 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
 		content: flags.content,
 	})
 	if (!result.success) {
-		console.error(JSON.stringify(result))
+		console.error(result)
 		process.exit(1)
 	}
 

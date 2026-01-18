@@ -10,23 +10,23 @@ export const taskReadCommand = buildCommand({
 	async func(this: CommandContext, flags: ReadFlags, id: string) {
 		const configResult = await configLoad(flags.config)
 		if (!configResult.success) {
-			console.error(JSON.stringify(configResult))
+			console.error(configResult)
 			process.exit(1)
 		}
 		const config = configResult.data
 
 		const tasksResult = await tasksRead(config)
 		if (!tasksResult.success) {
-			console.error(JSON.stringify(tasksResult))
+			console.error(tasksResult)
 			process.exit(1)
 		}
 		const tasks = tasksResult.data
 		const task = tasks.find((t) => t.id === id)
 		if (task) {
-			this.process.stdout.write(JSON.stringify(task, null, 2))
+			this.process.stdout.write(JSON.stringify(task))
 		} else {
 			const errorResult = { success: false, op: "taskRead", errorMessage: `Task "${id}" not found` }
-			console.error(JSON.stringify(errorResult))
+			console.error(errorResult)
 			process.exit(1)
 		}
 	},

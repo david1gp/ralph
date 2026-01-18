@@ -1,3 +1,4 @@
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 import type { TaskType } from "@/cli/data/TaskType"
 import { taskSchema } from "@/cli/data/taskSchema"
 import { safeParse } from "valibot"
@@ -7,5 +8,5 @@ export function taskParse(data: unknown): { success: true; data: TaskType } | { 
 	if (result.success) {
 		return { success: true, data: result.output }
 	}
-	return { success: false, issues: JSON.stringify(result.issues) }
+	return { success: false, issues: jsonStringifyPretty(result.issues) }
 }

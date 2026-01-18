@@ -1,3 +1,4 @@
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 import { taskFilePathGet } from "@/cli/core/tasks/taskFilePathGet"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { writeFileSync } from "node:fs"
@@ -8,6 +9,6 @@ export async function tasksWrite(config: ConfigType, tasks: unknown[]): PromiseR
 	if (!tasksPathResult.success) {
 		return tasksPathResult
 	}
-	writeFileSync(tasksPathResult.data, JSON.stringify(tasks, null, 2))
+	writeFileSync(tasksPathResult.data, jsonStringifyPretty(tasks))
 	return { success: true } as { success: true; data: void }
 }

@@ -1,3 +1,4 @@
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 import { taskFindNext } from "@/cli/core/tasks/taskFindNext"
 import { tasksRead } from "@/cli/core/tasks/tasksRead"
 import { taskUpdate } from "@/cli/core/tasks/taskUpdate"
@@ -37,7 +38,7 @@ test("taskFindNext returns undefined when all tasks pass", async () => {
 })
 
 test("taskFindNext with same priority returns first in list", async () => {
-	const tasksContent = JSON.stringify([
+	const tasksContent = jsonStringifyPretty([
 		{
 			id: "T1",
 			dir: "/test",
@@ -80,7 +81,7 @@ test("taskFindNext with same priority returns first in list", async () => {
 })
 
 test("taskFindNext higher priority wins over lower", async () => {
-	const tasksContent = JSON.stringify([
+	const tasksContent = jsonStringifyPretty([
 		{
 			id: "LOW",
 			dir: "/test",

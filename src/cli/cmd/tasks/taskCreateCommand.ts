@@ -26,14 +26,14 @@ interface CreateFlags {
 export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 	const configResult = await configGet()
 	if (!configResult.success) {
-		console.error(JSON.stringify(configResult))
+		console.error(configResult)
 		process.exit(1)
 	}
 	const config = configResult.data
 
 	const tasksResult = await tasksRead(config)
 	if (!tasksResult.success) {
-		console.error(JSON.stringify(tasksResult))
+		console.error(tasksResult)
 		process.exit(1)
 	}
 	const tasks = tasksResult.data
@@ -42,14 +42,14 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 	const result = safeParse(array(string()), parsed)
 	if (!result.success) {
 		const errorResult = { success: false, op: "taskCreateCommand", errorMessage: `Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.` }
-		console.error(JSON.stringify(errorResult))
+		console.error(errorResult)
 		process.exit(1)
 	}
 	const acceptanceCriteria = result.output
 	const storyValue = flags.story.endsWith(".md") ? flags.story : `${flags.story}.md`
 	const storyResult = await storyPathGet(config, storyValue)
 	if (!storyResult.success) {
-		console.error(JSON.stringify(storyResult))
+		console.error(storyResult)
 		process.exit(1)
 	}
 	let startedAt: string | undefined
@@ -57,11 +57,11 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 		const startResult = parseDateTime(flags.start)
 		if (!startResult) {
 			const errorResult = { success: false, op: "taskCreateCommand", errorMessage: `Invalid start date format: "${flags.start}"` }
-			console.error(JSON.stringify(errorResult))
+			console.error(errorResult)
 			process.exit(1)
 		}
 		if (!startResult.success) {
-			console.error(JSON.stringify(startResult))
+			console.error(startResult)
 			process.exit(1)
 		}
 		startedAt = startResult.data
@@ -72,11 +72,11 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 		const endResult = parseDateTime(flags.end)
 		if (!endResult) {
 			const errorResult = { success: false, op: "taskCreateCommand", errorMessage: `Invalid end date format: "${flags.end}"` }
-			console.error(JSON.stringify(errorResult))
+			console.error(errorResult)
 			process.exit(1)
 		}
 		if (!endResult.success) {
-			console.error(JSON.stringify(endResult))
+			console.error(endResult)
 			process.exit(1)
 		}
 		endedAt = endResult.data
@@ -100,7 +100,7 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 	}
 	const createdResult = await taskCreate(config, newTask)
 	if (!createdResult.success) {
-		console.error(JSON.stringify(createdResult))
+		console.error(createdResult)
 		process.exit(1)
 	}
 
