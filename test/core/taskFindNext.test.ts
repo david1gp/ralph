@@ -2,9 +2,11 @@ import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
 import { taskFindNext } from "@/cli/core/taskFindNext"
 import { tasksRead } from "@/cli/core/tasksRead"
 import { taskUpdate } from "@/cli/core/taskUpdate"
+import { writeFileSync } from "node:fs"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
 import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig } from "../testHelpers"
+import { join } from "node:path"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
 	if (!result.success) {
@@ -17,15 +19,16 @@ afterAll(testAfterAll)
 beforeEach(resetTasksFile)
 
 const testConfig: ConfigType = getTestConfig()
+const testTaskiDir = join(__dirname, "..", "..", ".taski")
 
-test("taskFindNext returns first task with passes=false", async () => {
+test("taskFindNext returns highest priority incomplete task", async () => {
 	const result = await taskFindNext(testConfig)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const next = result.data
 	expect(next).not.toBeUndefined()
 	expect(next!.passes).toBe(false)
-	expect(next!.id).toBe("TEST-001")
+	expect(next!.id).toBe("TEST-002")
 })
 
 test("taskFindNext returns undefined when all tasks pass", async () => {
@@ -40,4 +43,90 @@ test("taskFindNext returns undefined when all tasks pass", async () => {
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data).toBeUndefined()
+})
+
+test("taskFindNext with same priority returns first in list", async () => {
+	const tasksContent = JSON.stringify([
+		{
+			id: "T1",
+			dir: "/test",
+			story: "/test/story.md",
+			priority: 5,
+			passes: false,
+			title: "Task 1",
+			description: "Desc",
+			acceptanceCriteria: [],
+			note: ""
+		},
+		{
+			id: "T2",
+			dir: "/test",
+			story: "/test/story.md",
+			priority: 5,
+			passes: false,
+			title: "Task 2",
+			description: "Desc",
+			acceptanceCriteria: [],
+			note: ""
+		},
+		{
+			id: "T3",
+			dir: "/test",
+			story: "/test/story.md",
+			priority: 5,
+			passes: false,
+			title: "Task 3",
+			description: "Desc",
+			acceptanceCriteria: [],
+			note: ""
+		}
+	])
+	writeFileSync(join(testTaskiDir, "tasks.json"), tasksContent)
+	const result = await taskFindNext(testConfig)
+	expect(result.success).toBe(true)
+	assertOk(result)
+	expect(result.data!.id).toBe("T1")
+})
+
+test("taskFindNext higher priority wins over lower", async () => {
+	const tasksContent = JSON.stringify([
+		{
+			id: "LOW",
+			dir: "/test",
+			story: "/test/story.md",
+			priority: 1,
+			passes: false,
+			title: "Low Priority",
+			description: "Desc",
+			acceptanceCriteria: [],
+			note: ""
+		},
+		{
+			id: "HIGH",
+			dir: "/test",
+			story: "/test/story.md",
+			priority: 99,
+			passes: false,
+			title: "High Priority",
+			description: "Desc",
+			acceptanceCriteria: [],
+			note: ""
+		},
+		{
+			id: "MED",
+			dir: "/test",
+			story: "/test/story.md",
+			priority: 50,
+			passes: false,
+			title: "Med Priority",
+			description: "Desc",
+			acceptanceCriteria: [],
+			note: ""
+		}
+	])
+	writeFileSync(join(testTaskiDir, "tasks.json"), tasksContent)
+	const result = await taskFindNext(testConfig)
+	expect(result.success).toBe(true)
+	assertOk(result)
+	expect(result.data!.id).toBe("HIGH")
 })

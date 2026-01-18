@@ -8,6 +8,14 @@ export async function taskFindNext(config: ConfigType): PromiseResult<TaskType |
 	if (!tasksResult.success) {
 		return tasksResult
 	}
-	const task = tasksResult.data.find((task) => task.passes === false)
-	return createResult(task)
+	const incomplete = tasksResult.data
+		.filter((task) => task.passes === false)
+		.sort((a, b) => {
+			const aIndex = tasksResult.data.indexOf(a)
+			const bIndex = tasksResult.data.indexOf(b)
+			const aVirtual = a.priority * 1000 - aIndex
+			const bVirtual = b.priority * 1000 - bIndex
+			return bVirtual - aVirtual
+		})
+	return createResult(incomplete[0])
 }
