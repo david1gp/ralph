@@ -23,10 +23,6 @@ export const taskNextCommand = buildCommand({
 		}
 	},
 	parameters: {
-		positional: {
-			kind: "tuple",
-			parameters: [],
-		},
 		flags: {
 			config: {
 				kind: "parsed",

@@ -23,10 +23,6 @@ export const storyListCommand = buildCommand({
 		this.process.stdout.write(JSON.stringify(storiesResult.data, null, 2))
 	},
 	parameters: {
-		positional: {
-			kind: "tuple",
-			parameters: [],
-		},
 		flags: {
 			config: {
 				kind: "parsed",
