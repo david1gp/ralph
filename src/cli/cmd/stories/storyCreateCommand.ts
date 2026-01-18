@@ -6,8 +6,8 @@ interface CreateFlags {
 	content: string
 }
 
-export function storyCreateFunc(this: CommandContext, flags: CreateFlags) {
-	const filePath = storyCreate(flags.filename, flags.content)
+export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) {
+	const filePath = await storyCreate(flags.filename, flags.content)
 	this.process.stdout.write(filePath)
 }
 

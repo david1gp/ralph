@@ -1,44 +1,80 @@
 import { configGet } from "@/cli/core/configGet"
-import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
-import { taskFilePathGet } from "@/cli/core/taskFilePathGet"
-import { expect, test } from "bun:test"
-import { readFileSync, rmSync, writeFileSync } from "node:fs"
+import { expect, test, beforeAll, afterAll } from "bun:test"
+import { writeFileSync, rmSync, existsSync, mkdirSync } from "node:fs"
+import { join } from "node:path"
 
-const testEnvPath = ".env.test"
-const originalEnvPath = ".env"
+const testTaskiDir = "/home/david/Coding/personal-taski-cli/.taski_test"
+const testConfigPath = join(testTaskiDir, "taski.json")
+const originalConfigPath = "/home/david/Coding/personal-taski-cli/.taski/taski.json"
 
-test("tasksFilePathGet returns correct path from .env", () => {
-	expect(taskFilePathGet()).toBe("/home/david/Coding/personal-taski-cli/tasks/tasks.json")
+const originalContent: string = "{\"tasksFile\":\"./tasks.json\",\"storiesFolder\":\"./stories\"}"
+
+beforeAll(() => {
+	mkdirSync(testTaskiDir, { recursive: true })
+	mkdirSync(join(testTaskiDir, "stories"), { recursive: true })
 })
 
-test("storiesFolderPathGet returns correct path from .env", () => {
-	expect(storyFolderPathGet()).toBe("/home/david/Coding/personal-taski-cli/stories")
+afterAll(() => {
+	if (existsSync(testTaskiDir)) {
+		rmSync(testTaskiDir, { recursive: true, force: true })
+	}
 })
 
-test("configGet returns both values", () => {
-	const config = configGet()
-	expect(config.tasksFile).toBe("/home/david/Coding/personal-taski-cli/tasks/tasks.json")
-	expect(config.storiesFolder).toBe("/home/david/Coding/personal-taski-cli/stories")
+test("configGet returns correct paths from taski.json", async () => {
+	const config = await configGet()
+	expect(config.tasksFile).toBe("/home/david/Coding/personal-taski-cli/.taski/tasks.json")
+	expect(config.storiesFolder).toBe("/home/david/Coding/personal-taski-cli/.taski/stories")
 })
 
-test("throws error when .env file is missing", () => {
-	rmSync(originalEnvPath, { force: true })
-	expect(() => taskFilePathGet()).toThrow(".env file not found")
-	expect(() => storyFolderPathGet()).toThrow(".env file not found")
-	expect(() => configGet()).toThrow(".env file not found")
-	writeFileSync(originalEnvPath, readFileSync(testEnvPath, "utf-8"))
+test("configGet returns correct paths from nested taski.json", async () => {
+	const nestedDir = "/home/david/Coding/personal-taski-cli/test/nested"
+	const nestedTaskiDir = join(nestedDir, ".taski")
+	mkdirSync(nestedTaskiDir, { recursive: true })
+	writeFileSync(join(nestedTaskiDir, "taski.json"), '{"tasksFile":"./my_tasks.json","storiesFolder":"./my_stories"}')
+	writeFileSync(join(nestedTaskiDir, "my_tasks.json"), "[]")
+	mkdirSync(join(nestedTaskiDir, "my_stories"), { recursive: true })
+
+	const originalCwd = process.cwd()
+	process.chdir(nestedDir)
+
+	try {
+		const config = await configGet()
+		expect(config.tasksFile).toBe(join(nestedTaskiDir, "my_tasks.json"))
+		expect(config.storiesFolder).toBe(join(nestedTaskiDir, "my_stories"))
+	} finally {
+		process.chdir(originalCwd)
+		rmSync(nestedDir, { recursive: true, force: true })
+	}
 })
 
-test("throws error when TASKI_TASKS_FILE is missing from .env", () => {
-	const missingContent = "TASKI_STORIES_FOLDER=/home/david/Coding/test\n"
-	writeFileSync(originalEnvPath, missingContent)
-	expect(() => taskFilePathGet()).toThrow("TASKI_TASKS_FILE not found")
-	writeFileSync(originalEnvPath, readFileSync(testEnvPath, "utf-8"))
+test("configGet throws error when taski.json is missing in isolated directory", async () => {
+	const tempDir = "/tmp/taski_test_isolated_" + Date.now()
+	mkdirSync(tempDir, { recursive: true })
+
+	const originalCwd = process.cwd()
+	process.chdir(tempDir)
+
+	try {
+		expect(configGet()).rejects.toThrow()
+	} finally {
+		process.chdir(originalCwd)
+		rmSync(tempDir, { recursive: true, force: true })
+	}
 })
 
-test("throws error when TASKI_STORIES_FOLDER is missing from .env", () => {
-	const missingContent = "TASKI_TASKS_FILE=/home/david/Coding/test/tasks.json\n"
-	writeFileSync(originalEnvPath, missingContent)
-	expect(() => storyFolderPathGet()).toThrow("TASKI_STORIES_FOLDER not found")
-	writeFileSync(originalEnvPath, readFileSync(testEnvPath, "utf-8"))
+test("configGet validates taski.json against schema and throws", async () => {
+	const tempDir = "/tmp/taski_test_invalid_" + Date.now()
+	const tempTaskiDir = join(tempDir, ".taski")
+	mkdirSync(tempTaskiDir, { recursive: true })
+	writeFileSync(join(tempTaskiDir, "taski.json"), '{"tasksFile":123,"storiesFolder":"./stories"}')
+
+	const originalCwd = process.cwd()
+	process.chdir(tempDir)
+
+	try {
+		expect(configGet()).rejects.toThrow()
+	} finally {
+		process.chdir(originalCwd)
+		rmSync(tempDir, { recursive: true, force: true })
+	}
 })

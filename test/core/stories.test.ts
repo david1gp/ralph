@@ -1,11 +1,11 @@
-import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
-import { writeFileSync, readFileSync, rmSync, existsSync } from "node:fs"
+import { expect, test, afterAll, beforeEach } from "bun:test"
+import { writeFileSync, readFileSync, rmSync, existsSync, mkdirSync } from "node:fs"
 import { storiesList } from "@/cli/core/storiesList"
 import { storyRead } from "@/cli/core/storyRead"
 import { storyCreate } from "@/cli/core/storyCreate"
 import { storyDelete } from "@/cli/core/storyDelete"
 
-const testStoriesPath = "/home/david/Coding/personal-taski-cli/stories"
+const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
 const testStoryFilename = "test_story.md"
 const testStoryContent = `# Story: Test Story
 
@@ -43,15 +43,15 @@ beforeEach(() => {
 	}
 })
 
-test("listStories returns all markdown filenames in stories folder", () => {
-	const stories = storiesList()
+test("listStories returns all markdown filenames in stories folder", async () => {
+	const stories = await storiesList()
 	expect(Array.isArray(stories)).toBe(true)
 	expect(stories.length).toBeGreaterThanOrEqual(1)
 	expect(stories.includes(existingStoryFilename)).toBe(true)
 })
 
-test("readStory parses existing story correctly", () => {
-	const story = storyRead(existingStoryFilename)
+test("readStory parses existing story correctly", async () => {
+	const story = await storyRead(existingStoryFilename)
 	expect(story.title).toBe("Taski CLI Tool")
 	expect(story.description).toContain("CLI tool")
 	expect(Array.isArray(story.goals)).toBe(true)
@@ -60,55 +60,55 @@ test("readStory parses existing story correctly", () => {
 	expect(story.userTasks.includes("S-001")).toBe(true)
 })
 
-test("readStory throws error for non-existent story", () => {
-	expect(() => storyRead("non_existent_story.md")).toThrow(
+test("readStory throws error for non-existent story", async () => {
+	expect(storyRead("non_existent_story.md")).rejects.toThrow(
 		'Story "non_existent_story.md" not found',
 	)
 })
 
-test("createStory creates new story file", () => {
-	const storiesBefore = storiesList()
-	storyCreate(testStoryFilename, testStoryContent)
-	const storiesAfter = storiesList()
+test("createStory creates new story file", async () => {
+	const storiesBefore = await storiesList()
+	await storyCreate(testStoryFilename, testStoryContent)
+	const storiesAfter = await storiesList()
 	expect(storiesAfter.length).toBe(storiesBefore.length + 1)
 	expect(storiesAfter.includes(testStoryFilename)).toBe(true)
 
-	const story = storyRead(testStoryFilename)
+	const story = await storyRead(testStoryFilename)
 	expect(story.title).toBe("Test Story")
 	expect(story.description).toContain("test story")
 })
 
-test("createStory appends .md extension if missing", () => {
+test("createStory appends .md extension if missing", async () => {
 	const filenameWithoutExt = "another_test"
-	storyCreate(filenameWithoutExt, testStoryContent)
-	const stories = storiesList()
+	await storyCreate(filenameWithoutExt, testStoryContent)
+	const stories = await storiesList()
 	expect(stories.includes(`${filenameWithoutExt}.md`)).toBe(true)
-	storyDelete(`${filenameWithoutExt}.md`)
+	await storyDelete(`${filenameWithoutExt}.md`)
 })
 
-test("deleteStory removes story file", () => {
-	storyCreate(testStoryFilename, testStoryContent)
-	const storiesBefore = storiesList()
-	const result = storyDelete(testStoryFilename)
+test("deleteStory removes story file", async () => {
+	await storyCreate(testStoryFilename, testStoryContent)
+	const storiesBefore = await storiesList()
+	const result = await storyDelete(testStoryFilename)
 	expect(result).toBe(true)
-	const storiesAfter = storiesList()
+	const storiesAfter = await storiesList()
 	expect(storiesAfter.length).toBe(storiesBefore.length - 1)
 	expect(storiesAfter.includes(testStoryFilename)).toBe(false)
 })
 
-test("deleteStory returns false for non-existent story", () => {
-	const result = storyDelete("non_existent_story.md")
+test("deleteStory returns false for non-existent story", async () => {
+	const result = await storyDelete("non_existent_story.md")
 	expect(result).toBe(false)
 })
 
-test("readStory parses goals correctly", () => {
-	const story = storyRead(existingStoryFilename)
+test("readStory parses goals correctly", async () => {
+	const story = await storyRead(existingStoryFilename)
 	expect(story.goals).toContain("Create a fully functional CLI tool for task/story management")
 	expect(story.goals).toContain("Implement type-safe schemas with valibot validation")
 })
 
-test("readStory parses userTasks correctly", () => {
-	const story = storyRead(existingStoryFilename)
+test("readStory parses userTasks correctly", async () => {
+	const story = await storyRead(existingStoryFilename)
 	expect(story.userTasks).toContain("S-001")
 	expect(story.userTasks).toContain("S-002")
 	expect(story.userTasks).toContain("S-003")

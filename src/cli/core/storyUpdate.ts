@@ -4,8 +4,8 @@ import { storyValidate } from "@/cli/data/storyValidate"
 import type { Story } from "@/cli/data/StoryType"
 import { existsSync, writeFileSync } from "node:fs"
 
-export function storyUpdate(filename: string, updates: Partial<Story>): Story {
-	const storiesPath = storyFolderPathGet()
+export async function storyUpdate(filename: string, updates: Partial<Story>): Promise<Story> {
+	const storiesPath = await storyFolderPathGet()
 	let filePath = `${storiesPath}/${filename}`
 	if (!existsSync(`${filePath}`) && existsSync(`${filePath}.md`)) {
 		filePath = `${filePath}.md`
@@ -14,7 +14,7 @@ export function storyUpdate(filename: string, updates: Partial<Story>): Story {
 		throw new Error(`Story "${filename}" not found`)
 	}
 
-	const existingStory = storyRead(filename)
+	const existingStory = await storyRead(filename)
 	const updatedStory = storyValidate({ ...existingStory, ...updates })
 
 	const content = storyToMarkdown(updatedStory)

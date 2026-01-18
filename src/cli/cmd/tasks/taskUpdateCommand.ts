@@ -18,7 +18,7 @@ interface UpdateFlags {
 }
 
 export const taskUpdateCommand = buildCommand({
-	func(this: CommandContext, flags: UpdateFlags, id: string) {
+	async func(this: CommandContext, flags: UpdateFlags, id: string) {
 		const updates: Partial<Task> = {}
 		if (flags.passes !== undefined) {
 			updates.passes = flags.passes
@@ -49,9 +49,9 @@ export const taskUpdateCommand = buildCommand({
 			updates.priority = flags.priority
 		}
 		if (flags.story !== undefined) {
-			updates.story = storyPathGet(flags.story)
+			updates.story = await storyPathGet(flags.story)
 		}
-		const updated = taskUpdate(id, updates)
+		const updated = await taskUpdate(id, updates)
 		this.process.stdout.write(`Task "${updated.id}" updated successfully`)
 	},
 	parameters: {

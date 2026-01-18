@@ -1,8 +1,8 @@
 import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
 import { existsSync, readdirSync } from "node:fs"
 
-export function storiesList(): string[] {
-	const storiesPath = storyFolderPathGet()
+export async function storiesList(): Promise<string[]> {
+	const storiesPath = await storyFolderPathGet()
 	if (!existsSync(storiesPath)) {
 		return []
 	}

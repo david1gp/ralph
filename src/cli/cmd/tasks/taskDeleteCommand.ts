@@ -2,8 +2,8 @@ import { buildCommand, type CommandContext } from "@stricli/core"
 import { taskDelete } from "@/cli/core/taskDelete"
 
 export const taskDeleteCommand = buildCommand({
-	func(this: CommandContext, _: {}, id: string) {
-		const deleted = taskDelete(id)
+	async func(this: CommandContext, _: {}, id: string) {
+		const deleted = await taskDelete(id)
 		if (deleted) {
 			this.process.stdout.write(`Task "${id}" deleted successfully`)
 		} else {

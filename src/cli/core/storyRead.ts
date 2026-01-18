@@ -3,8 +3,8 @@ import { storyParse } from "@/cli/data/storyParse"
 import type { Story } from "@/cli/data/StoryType"
 import { existsSync, readFileSync } from "node:fs"
 
-export function storyRead(filename: string): Story {
-	const storiesPath = storyFolderPathGet()
+export async function storyRead(filename: string): Promise<Story> {
+	const storiesPath = await storyFolderPathGet()
 	const filePath = `${storiesPath}/${filename}`
 	if (!existsSync(filePath)) {
 		throw new Error(`Story "${filename}" not found`)

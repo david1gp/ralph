@@ -96,5 +96,4 @@ wrangler.toml
 /archive/
 
 # Data
-/tasks
-/stories
+/.taski

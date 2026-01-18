@@ -4,7 +4,7 @@ import { storyCreateFunc, storyCreateCommand } from "@/cli/cmd/stories/storyCrea
 import { storiesList } from "@/cli/core/storiesList"
 import { storyRead } from "@/cli/core/storyRead"
 
-const storiesPath = "/home/david/Coding/personal-taski-cli/stories"
+const storiesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
 
 let stdout: string[] = []
 
@@ -59,22 +59,22 @@ beforeEach(() => {
 	}
 })
 
-test("storyCreateCommand creates story with --filename and --content", () => {
+test("storyCreateCommand creates story with --filename and --content", async () => {
 	const context = createMockContext()
 	const params = { filename: testStoryFilename, content: testStoryContent }
-	storyCreateFunc.call(context, params)
+	await storyCreateFunc.call(context, params)
 	
 	expect(stdout[0]).toBe(`${storiesPath}/${testStoryFilename}`)
 	
-	const stories = storiesList()
+	const stories = await storiesList()
 	expect(stories.includes(testStoryFilename)).toBe(true)
 	
-	const story = storyRead(testStoryFilename)
+	const story = await storyRead(testStoryFilename)
 	expect(story.title).toBe("Command Test Story")
 	expect(story.description).toContain("test story created by the command test")
 })
 
-test("storyCreateCommand creates story with simple content", () => {
+test("storyCreateCommand creates story with simple content", async () => {
 	const simpleContent = `# Story: Simple Story
 
 ## Description
@@ -91,18 +91,18 @@ A simple story content.
 `
 	const context = createMockContext()
 	const params = { filename: "simple_test.md", content: simpleContent }
-	storyCreateFunc.call(context, params)
+	await storyCreateFunc.call(context, params)
 	
 	expect(stdout[0]).toBe(`${storiesPath}/simple_test.md`)
 	
-	const stories = storiesList()
+	const stories = await storiesList()
 	expect(stories.includes("simple_test.md")).toBe(true)
 	
-	const story = storyRead("simple_test.md")
+	const story = await storyRead("simple_test.md")
 	expect(story.title).toBe("Simple Story")
 })
 
-test("storyCreateCommand creates story with goals", () => {
+test("storyCreateCommand creates story with goals", async () => {
 	const contentWithGoals = `# Story: Goals Story
 
 ## Description
@@ -121,13 +121,13 @@ A story with goals.
 `
 	const context = createMockContext()
 	const params = { filename: "goals_story.md", content: contentWithGoals }
-	storyCreateFunc.call(context, params)
+	await storyCreateFunc.call(context, params)
 	
-	const story = storyRead("goals_story.md")
+	const story = await storyRead("goals_story.md")
 	expect(story.goals).toEqual(["Goal one", "Goal two", "Goal three"])
 })
 
-test("storyCreateCommand creates story with user tasks", () => {
+test("storyCreateCommand creates story with user tasks", async () => {
 	const contentWithTasks = `# Story: Tasks Story
 
 ## Description
@@ -146,13 +146,13 @@ A story with user tasks.
 `
 	const context = createMockContext()
 	const params = { filename: "tasks_story.md", content: contentWithTasks }
-	storyCreateFunc.call(context, params)
+	await storyCreateFunc.call(context, params)
 	
-	const story = storyRead("tasks_story.md")
+	const story = await storyRead("tasks_story.md")
 	expect(story.userTasks).toEqual(["T-001", "T-002", "S-003"])
 })
 
-test("storyCreateCommand creates story with complex markdown formatting", () => {
+test("storyCreateCommand creates story with complex markdown formatting", async () => {
 	const complexContent = `# Story: Complex Story
 
 ## Description
@@ -173,32 +173,20 @@ This story has **bold** and *italic* text, as well as [links](https://example.co
 `
 	const context = createMockContext()
 	const params = { filename: "complex_story.md", content: complexContent }
-	storyCreateFunc.call(context, params)
+	await storyCreateFunc.call(context, params)
 	
 	expect(stdout[0]).toBe(`${storiesPath}/complex_story.md`)
 	
-	const stories = storiesList()
+	const stories = await storiesList()
 	expect(stories.includes("complex_story.md")).toBe(true)
 	
-	const story = storyRead("complex_story.md")
+	const story = await storyRead("complex_story.md")
 	expect(story.title).toBe("Complex Story")
 	expect(story.description).toContain("bold")
 	expect(story.goals.length).toBeGreaterThanOrEqual(2)
 })
 
-test("storyCreateCommand increments story count in stories list", () => {
-	const storiesBefore = storiesList()
-	const expectedAfter = storiesBefore.length + 1
-	
-	const context = createMockContext()
-	const params = { filename: "count_test.md", content: "# Story: Count Story\n\n## Description\n\nTesting story count.\n\n## Goals\n\n- Goal\n\n## User Tasks\n\n### T-COUNT-001: Count task" }
-	storyCreateFunc.call(context, params)
-	
-	const storiesAfter = storiesList()
-	expect(storiesAfter.includes("count_test.md")).toBe(true)
-})
-
-test("storyCreateCommand handles multiline content", () => {
+test("storyCreateCommand creates story with multiline content", async () => {
 	const multilineContent = `# Story: Multiline Story
 
 ## Description
@@ -221,17 +209,17 @@ This story has:
 `
 	const context = createMockContext()
 	const params = { filename: "multiline_story.md", content: multilineContent }
-	storyCreateFunc.call(context, params)
+	await storyCreateFunc.call(context, params)
 	
-	const story = storyRead("multiline_story.md")
+	const story = await storyRead("multiline_story.md")
 	expect(story.title).toBe("Multiline Story")
 	expect(story.goals.length).toBeGreaterThan(1)
 })
 
-test("storyCreateCommand outputs success message with filename", () => {
+test("storyCreateCommand outputs success message with filename", async () => {
 	const context = createMockContext()
 	const params = { filename: "output_test.md", content: "# Output Story\n\nTesting output.\n\n## Goals\n\n- Goal\n\n## User Tasks\n\n### T-OUTPUT-001: Output task" }
-	storyCreateFunc.call(context, params)
+	await storyCreateFunc.call(context, params)
 	
 	expect(stdout[0]).toBe(`${storiesPath}/output_test.md`)
 })

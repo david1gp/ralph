@@ -16,7 +16,7 @@ function parseArray(value: string | undefined): Array<string> | undefined {
 }
 
 export const storyUpdateCommand = buildCommand({
-	func(this: CommandContext, flags: UpdateFlags, filename: string) {
+	async func(this: CommandContext, flags: UpdateFlags, filename: string) {
 		const updates: Record<string, unknown> = {}
 		if (flags.title !== undefined) {
 			updates.title = flags.title
@@ -30,7 +30,7 @@ export const storyUpdateCommand = buildCommand({
 		if (flags.userTasks !== undefined) {
 			updates.userTasks = parseArray(flags.userTasks)
 		}
-		const updated = storyUpdate(filename, updates as Parameters<typeof storyUpdate>[1])
+		const updated = await storyUpdate(filename, updates as Parameters<typeof storyUpdate>[1])
 		this.process.stdout.write(`Story "${updated.title}" updated successfully`)
 	},
 	parameters: {

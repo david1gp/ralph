@@ -19,8 +19,8 @@ interface CreateFlags {
 	dir: string
 }
 
-export function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
-	const tasks = tasksRead()
+export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
+	const tasks = await tasksRead()
 	const maxPriority = tasks.length > 0 ? Math.max(...tasks.map((t) => t.priority)) : 0
 	const parsed = JSON.parse(flags.acceptanceCriteria)
 	const result = safeParse(array(string()), parsed)
@@ -40,9 +40,9 @@ export function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 		note: flags.note ?? "",
 		startedAt: flags.start !== undefined ? parseDateTime(flags.start) : undefined,
 		endedAt: flags.end !== undefined ? parseDateTime(flags.end) : undefined,
-		story: storyPathGet(storyValue),
+		story: await storyPathGet(storyValue),
 	}
-	const created = taskCreate(newTask)
+	const created = await taskCreate(newTask)
 	this.process.stdout.write(created.id)
 }
 

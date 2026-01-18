@@ -1,12 +1,13 @@
 import { join } from "node:path"
 import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
 
-export function storyPathGet(filename: string): string {
+export async function storyPathGet(filename: string): Promise<string> {
 	if (filename === "") {
 		return ""
 	}
 	if (filename.startsWith("/")) {
 		return filename
 	}
-	return join(storyFolderPathGet(), filename)
+	const storiesPath = await storyFolderPathGet()
+	return join(storiesPath, filename)
 }

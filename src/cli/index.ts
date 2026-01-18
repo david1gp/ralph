@@ -2,4 +2,12 @@
 import { taskiCommand } from "@/cli/cmd/taskiCommand"
 import { run } from "@stricli/core"
 
-await run(taskiCommand, process.argv.slice(2), { process })
+try {
+	await run(taskiCommand, process.argv.slice(2), { process })
+} catch (error) {
+	if (error instanceof Error && error.message.startsWith("{")) {
+		console.error(error.message)
+		process.exit(1)
+	}
+	throw error
+}

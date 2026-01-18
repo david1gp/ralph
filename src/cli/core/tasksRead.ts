@@ -3,8 +3,8 @@ import { taskParse } from "@/cli/data/taskParse"
 import type { Task } from "@/cli/data/TaskType"
 import { existsSync, readFileSync } from "node:fs"
 
-export function tasksRead(): Task[] {
-	const tasksPath = taskFilePathGet()
+export async function tasksRead(): Promise<Task[]> {
+	const tasksPath = await taskFilePathGet()
 	if (!existsSync(tasksPath)) {
 		return []
 	}

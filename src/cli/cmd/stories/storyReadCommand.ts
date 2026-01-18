@@ -2,8 +2,8 @@ import { buildCommand, type CommandContext } from "@stricli/core"
 import { storyRead } from "@/cli/core/storyRead"
 
 export const storyReadCommand = buildCommand({
-	func(this: CommandContext, _: {}, filename: string) {
-		const story = storyRead(filename)
+	async func(this: CommandContext, _: {}, filename: string) {
+		const story = await storyRead(filename)
 		this.process.stdout.write(JSON.stringify(story, null, 2))
 	},
 	parameters: {
