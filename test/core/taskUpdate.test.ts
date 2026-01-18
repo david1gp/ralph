@@ -1,8 +1,7 @@
-import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
-import { writeFileSync, readFileSync, rmSync, existsSync } from "node:fs"
 import { tasksRead } from "@/cli/core/tasksRead"
 import { taskUpdate } from "@/cli/core/taskUpdate"
-import type { Task } from "@/cli/data/TaskType"
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
+import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {

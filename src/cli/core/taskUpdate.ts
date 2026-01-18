@@ -1,10 +1,10 @@
 import { tasksRead } from "@/cli/core/tasksRead"
 import { tasksWrite } from "@/cli/core/tasksWrite"
+import type { TaskType } from "@/cli/data/TaskType"
 import { taskValidate } from "@/cli/data/taskValidate"
-import type { Task } from "@/cli/data/TaskType"
-import { createResult, createError, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function taskUpdate(id: string, updates: Partial<Task>): PromiseResult<Task> {
+export async function taskUpdate(id: string, updates: Partial<TaskType>): PromiseResult<TaskType> {
 	const tasksResult = await tasksRead()
 	if (!tasksResult.success) {
 		return tasksResult

@@ -1,9 +1,9 @@
+import { storyPathGet } from "@/cli/core/storyPathGet"
+import { taskUpdate } from "@/cli/core/taskUpdate"
+import type { TaskType } from "@/cli/data/TaskType"
+import { parseDateTime } from "@/cli/utils/dateTime"
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { array, safeParse, string } from "valibot"
-import { parseDateTime } from "@/cli/utils/dateTime"
-import { taskUpdate } from "@/cli/core/taskUpdate"
-import { storyPathGet } from "@/cli/core/storyPathGet"
-import type { Task } from "@/cli/data/TaskType"
 
 interface UpdateFlags {
 	passes?: boolean
@@ -19,7 +19,7 @@ interface UpdateFlags {
 
 export const taskUpdateCommand = buildCommand({
 	async func(this: CommandContext, flags: UpdateFlags, id: string) {
-		const updates: Partial<Task> = {}
+		const updates: Partial<TaskType> = {}
 		if (flags.passes !== undefined) {
 			updates.passes = flags.passes
 		}

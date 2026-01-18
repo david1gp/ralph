@@ -1,10 +1,10 @@
 import { taskFilePathGet } from "@/cli/core/taskFilePathGet"
 import { taskParse } from "@/cli/data/taskParse"
-import type { Task } from "@/cli/data/TaskType"
+import type { TaskType } from "@/cli/data/TaskType"
 import { existsSync, readFileSync } from "node:fs"
-import { createResult, createError, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function tasksRead(): PromiseResult<Task[]> {
+export async function tasksRead(): PromiseResult<TaskType[]> {
 	const tasksPathResult = await taskFilePathGet()
 	if (!tasksPathResult.success) {
 		return tasksPathResult
@@ -18,7 +18,7 @@ export async function tasksRead(): PromiseResult<Task[]> {
 	if (!Array.isArray(parsed)) {
 		return createError("tasksRead", "tasks.json must contain an array")
 	}
-	const tasks: Task[] = []
+	const tasks: TaskType[] = []
 	for (let index = 0; index < parsed.length; index++) {
 		const task = parsed[index]
 		const result = taskParse(task)

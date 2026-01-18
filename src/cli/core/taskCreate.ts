@@ -1,10 +1,10 @@
 import { tasksRead } from "@/cli/core/tasksRead"
 import { tasksWrite } from "@/cli/core/tasksWrite"
+import type { TaskType } from "@/cli/data/TaskType"
 import { taskValidate } from "@/cli/data/taskValidate"
-import type { Task } from "@/cli/data/TaskType"
 import { createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function taskCreate(task: Task): PromiseResult<Task> {
+export async function taskCreate(task: TaskType): PromiseResult<TaskType> {
 	const tasksResult = await tasksRead()
 	if (!tasksResult.success) {
 		return tasksResult

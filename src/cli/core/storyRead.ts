@@ -1,10 +1,10 @@
 import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
 import { storyParse } from "@/cli/data/storyParse"
-import type { Story } from "@/cli/data/StoryType"
+import type { StoryType } from "@/cli/data/StoryType"
 import { existsSync, readFileSync } from "node:fs"
-import { createResult, createError, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function storyRead(filename: string): PromiseResult<Story> {
+export async function storyRead(filename: string): PromiseResult<StoryType> {
 	const storiesPathResult = await storyFolderPathGet()
 	if (!storiesPathResult.success) {
 		return storiesPathResult
@@ -23,9 +23,9 @@ export async function storyRead(filename: string): PromiseResult<Story> {
 	return createResult(result.data)
 }
 
-function parseMarkdownToStory(content: string): Partial<Story> {
+function parseMarkdownToStory(content: string): Partial<StoryType> {
 	const lines = content.split("\n")
-	const story: Partial<Story> = {}
+	const story: Partial<StoryType> = {}
 	let currentSection: string | null = null
 
 	for (const line of lines) {

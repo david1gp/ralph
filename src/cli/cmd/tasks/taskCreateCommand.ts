@@ -1,10 +1,10 @@
-import { buildCommand, type CommandContext } from "@stricli/core"
-import { array, safeParse, string } from "valibot"
-import { parseDateTime } from "@/cli/utils/dateTime"
+import { storyPathGet } from "@/cli/core/storyPathGet"
 import { taskCreate } from "@/cli/core/taskCreate"
 import { tasksRead } from "@/cli/core/tasksRead"
-import { storyPathGet } from "@/cli/core/storyPathGet"
-import type { Task } from "@/cli/data/TaskType"
+import type { TaskType } from "@/cli/data/TaskType"
+import { parseDateTime } from "@/cli/utils/dateTime"
+import { buildCommand, type CommandContext } from "@stricli/core"
+import { array, safeParse, string } from "valibot"
 
 interface CreateFlags {
 	title: string
@@ -71,7 +71,7 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 		endedAt = endResult.data
 	}
 
-	const newTask: Task = {
+	const newTask: TaskType = {
 		id: `T-${String(tasks.length + 1).padStart(3, "0")}`,
 		dir: flags.dir,
 		title: flags.title,

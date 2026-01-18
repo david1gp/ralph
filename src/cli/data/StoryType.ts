@@ -1,4 +1,4 @@
-import type { InferOutput } from "valibot"
 import { storySchema } from "@/cli/data/storySchema"
+import type { InferOutput } from "valibot"
 
-export type Story = InferOutput<typeof storySchema>
+export type StoryType = InferOutput<typeof storySchema>

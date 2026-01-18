@@ -1,11 +1,11 @@
 import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
 import { storyRead } from "@/cli/core/storyRead"
+import type { StoryType } from "@/cli/data/StoryType"
 import { storyValidate } from "@/cli/data/storyValidate"
-import type { Story } from "@/cli/data/StoryType"
 import { existsSync, writeFileSync } from "node:fs"
-import { createResult, createError, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function storyUpdate(filename: string, updates: Partial<Story>): PromiseResult<Story> {
+export async function storyUpdate(filename: string, updates: Partial<StoryType>): PromiseResult<StoryType> {
 	const storiesPathResult = await storyFolderPathGet()
 	if (!storiesPathResult.success) {
 		return storiesPathResult
@@ -32,7 +32,7 @@ export async function storyUpdate(filename: string, updates: Partial<Story>): Pr
 	return createResult(updatedStory)
 }
 
-function storyToMarkdown(story: Story): string {
+function storyToMarkdown(story: StoryType): string {
 	let content = `# Story: ${story.title}
 
 ## Description

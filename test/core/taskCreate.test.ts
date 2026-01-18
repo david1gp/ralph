@@ -1,8 +1,8 @@
-import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
 import { taskCreate } from "@/cli/core/taskCreate"
 import { tasksRead } from "@/cli/core/tasksRead"
-import { writeFileSync, readFileSync, existsSync } from "node:fs"
-import type { Task } from "@/cli/data/TaskType"
+import type { TaskType } from "@/cli/data/TaskType"
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
+import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -34,7 +34,7 @@ test("taskCreate appends new task to tasks array", async () => {
 	assertOk(initialResult)
 	const initialTasks = initialResult.data
 	const initialCount = initialTasks.length
-	const newTask: Task = {
+	const newTask: TaskType = {
 		id: "T-NEW",
 		dir: "/home/david/Coding/test",
 		story: "test-story.md",
@@ -58,7 +58,7 @@ test("taskCreate appends new task to tasks array", async () => {
 })
 
 test("taskCreate initializes task with new fields", async () => {
-	const newTask: Task = {
+	const newTask: TaskType = {
 		id: "T-CREATE-TEST",
 		dir: "/home/david/Coding/test",
 		story: "test-story.md",
