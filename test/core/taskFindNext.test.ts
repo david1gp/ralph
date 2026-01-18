@@ -4,22 +4,13 @@ import { tasksRead } from "@/cli/core/tasksRead"
 import { taskUpdate } from "@/cli/core/taskUpdate"
 import { writeFileSync } from "node:fs"
 import type { ConfigType } from "@/cli/data/ConfigType"
-import type { Result } from "~utils/result/Result"
-import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig } from "../testHelpers"
-import { join } from "node:path"
-
-function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
-	if (!result.success) {
-		throw new Error(`Expected success but got error: ${result.errorMessage}`)
-	}
-}
+import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig, assertOk } from "../testHelpers"
 
 beforeAll(testBeforeAll)
 afterAll(testAfterAll)
 beforeEach(resetTasksFile)
 
 const testConfig: ConfigType = getTestConfig()
-const testTaskiDir = join(__dirname, "..", "..", ".taski")
 
 test("taskFindNext returns highest priority incomplete task", async () => {
 	const result = await taskFindNext(testConfig)
@@ -81,7 +72,7 @@ test("taskFindNext with same priority returns first in list", async () => {
 			note: ""
 		}
 	])
-	writeFileSync(join(testTaskiDir, "tasks.json"), tasksContent)
+	writeFileSync(testConfig.tasksFile, tasksContent)
 	const result = await taskFindNext(testConfig)
 	expect(result.success).toBe(true)
 	assertOk(result)
@@ -124,7 +115,7 @@ test("taskFindNext higher priority wins over lower", async () => {
 			note: ""
 		}
 	])
-	writeFileSync(join(testTaskiDir, "tasks.json"), tasksContent)
+	writeFileSync(testConfig.tasksFile, tasksContent)
 	const result = await taskFindNext(testConfig)
 	expect(result.success).toBe(true)
 	assertOk(result)
