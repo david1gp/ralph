@@ -1,8 +1,8 @@
-import { setConfigPath, clearConfigPath } from "@/cli/core/configStore"
-import { join, dirname } from "node:path"
-import { fileURLToPath } from "node:url"
-import { existsSync, readFileSync, writeFileSync } from "node:fs"
+import { clearConfigPath, setConfigPath } from "@/cli/core/config/configStore"
 import type { ConfigType } from "@/cli/data/ConfigType"
+import { existsSync, readFileSync, writeFileSync } from "node:fs"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
 import type { Result } from "~utils/result/Result"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))

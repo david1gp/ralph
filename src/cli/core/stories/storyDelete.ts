@@ -1,7 +1,7 @@
-import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
+import { storyFolderPathGet } from "@/cli/core/stories/storyFolderPathGet"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { existsSync, unlinkSync } from "node:fs"
-import { createResult, createError, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
 export async function storyDelete(config: ConfigType, filename: string): PromiseResult<boolean> {
 	const storiesPathResult = await storyFolderPathGet(config)

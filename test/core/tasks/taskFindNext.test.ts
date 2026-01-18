@@ -1,10 +1,10 @@
-import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
-import { taskFindNext } from "@/cli/core/taskFindNext"
-import { tasksRead } from "@/cli/core/tasksRead"
-import { taskUpdate } from "@/cli/core/taskUpdate"
-import { writeFileSync } from "node:fs"
+import { taskFindNext } from "@/cli/core/tasks/taskFindNext"
+import { tasksRead } from "@/cli/core/tasks/tasksRead"
+import { taskUpdate } from "@/cli/core/tasks/taskUpdate"
 import type { ConfigType } from "@/cli/data/ConfigType"
-import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig, assertOk } from "../testHelpers"
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
+import { writeFileSync } from "node:fs"
+import { assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../testHelpers"
 
 beforeAll(testBeforeAll)
 afterAll(testAfterAll)

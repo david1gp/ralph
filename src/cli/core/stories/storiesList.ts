@@ -1,4 +1,4 @@
-import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
+import { storyFolderPathGet } from "@/cli/core/stories/storyFolderPathGet"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { existsSync, readdirSync } from "node:fs"
 import { createResult, type PromiseResult } from "~utils/result/Result"

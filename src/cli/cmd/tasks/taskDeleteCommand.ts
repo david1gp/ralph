@@ -1,6 +1,6 @@
+import { configLoad } from "@/cli/core/config/configLoad"
+import { taskDelete } from "@/cli/core/tasks/taskDelete"
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { taskDelete } from "@/cli/core/taskDelete"
-import { configLoad } from "@/cli/core/configLoad"
 
 interface DeleteFlags {
 	config?: string

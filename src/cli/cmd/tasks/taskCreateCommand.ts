@@ -1,13 +1,13 @@
-import { configSave } from "@/cli/core/configSave"
-import { taskIdGenerate } from "@/cli/core/taskIdGenerate"
-import { storyPathGet } from "@/cli/core/storyPathGet"
-import { taskCreate } from "@/cli/core/taskCreate"
-import { tasksRead } from "@/cli/core/tasksRead"
+import { configGet } from "@/cli/core/config/configGet"
+import { configSave } from "@/cli/core/config/configSave"
+import { storyPathGet } from "@/cli/core/stories/storyPathGet"
+import { taskCreate } from "@/cli/core/tasks/taskCreate"
+import { taskIdGenerate } from "@/cli/core/tasks/taskIdGenerate"
+import { tasksRead } from "@/cli/core/tasks/tasksRead"
 import type { TaskType } from "@/cli/data/TaskType"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { array, safeParse, string } from "valibot"
-import { configGet } from "@/cli/core/configGet"
 
 interface CreateFlags {
 	title: string

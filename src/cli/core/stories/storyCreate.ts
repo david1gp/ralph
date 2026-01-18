@@ -1,5 +1,5 @@
-import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
-import { storyIdGenerate, type StoryIdResult } from "@/cli/core/storyIdGenerate"
+import { storyFolderPathGet } from "@/cli/core/stories/storyFolderPathGet"
+import { storyIdGenerate, type StoryIdResult } from "@/cli/core/stories/storyIdGenerate"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { writeFileSync } from "node:fs"
 import { createResult, type PromiseResult } from "~utils/result/Result"

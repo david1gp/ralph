@@ -1,7 +1,7 @@
-import { tasksRead } from "@/cli/core/tasksRead"
-import { tasksWrite } from "@/cli/core/tasksWrite"
+import { tasksRead } from "@/cli/core/tasks/tasksRead"
+import { tasksWrite } from "@/cli/core/tasks/tasksWrite"
 import type { ConfigType } from "@/cli/data/ConfigType"
-import { createResult, createError, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
 export async function taskDelete(config: ConfigType, id: string): PromiseResult<boolean> {
 	const tasksResult = await tasksRead(config)

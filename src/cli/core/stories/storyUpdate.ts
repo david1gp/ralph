@@ -1,6 +1,6 @@
-import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
+import { storyFolderPathGet } from "@/cli/core/stories/storyFolderPathGet"
+import { storyRead } from "@/cli/core/stories/storyRead"
 import type { ConfigType } from "@/cli/data/ConfigType"
-import { storyRead } from "@/cli/core/storyRead"
 import type { StoryType } from "@/cli/data/StoryType"
 import { storyValidate } from "@/cli/data/storyValidate"
 import { existsSync, writeFileSync } from "node:fs"

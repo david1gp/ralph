@@ -1,6 +1,6 @@
-import { expect, test, beforeAll, afterAll } from "bun:test"
-import { storyRead } from "@/cli/core/storyRead"
-import { getTestConfig, assertOk, assertErr, testBeforeAll, testAfterAll } from "../testHelpers"
+import { storyRead } from "@/cli/core/stories/storyRead"
+import { afterAll, beforeAll, expect, test } from "bun:test"
+import { assertErr, assertOk, getTestConfig, testAfterAll, testBeforeAll } from "../testHelpers"
 
 const existingStoryFilename = "taski_cli.md"
 

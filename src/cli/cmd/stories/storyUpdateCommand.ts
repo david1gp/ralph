@@ -1,7 +1,7 @@
-import { buildCommand, type CommandContext } from "@stricli/core"
-import { storyUpdate } from "@/cli/core/storyUpdate"
+import { configLoad } from "@/cli/core/config/configLoad"
+import { storyUpdate } from "@/cli/core/stories/storyUpdate"
 import type { StoryType } from "@/cli/data/StoryType"
-import { configLoad } from "@/cli/core/configLoad"
+import { buildCommand, type CommandContext } from "@stricli/core"
 
 interface UpdateFlags {
 	title?: string

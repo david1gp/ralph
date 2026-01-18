@@ -1,7 +1,7 @@
-import { taskFilePathGet } from "@/cli/core/taskFilePathGet"
+import { taskFilePathGet } from "@/cli/core/tasks/taskFilePathGet"
+import type { ConfigType } from "@/cli/data/ConfigType"
 import { taskParse } from "@/cli/data/taskParse"
 import type { TaskType } from "@/cli/data/TaskType"
-import type { ConfigType } from "@/cli/data/ConfigType"
 import { existsSync, readFileSync } from "node:fs"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 

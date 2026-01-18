@@ -1,12 +1,12 @@
-import { expect, test, beforeAll, afterAll, beforeEach, mock } from "bun:test"
-import { writeFileSync, rmSync, existsSync } from "node:fs"
-import { storyCreateFunc, storyCreateCommand } from "@/cli/cmd/stories/storyCreateCommand"
-import { storiesList } from "@/cli/core/storiesList"
-import { storyRead } from "@/cli/core/storyRead"
-import type { Result } from "~utils/result/Result"
-import { testBeforeAll, testAfterAll, getTestConfig } from "../testHelpers"
-import { join, dirname } from "node:path"
+import { storyCreateFunc } from "@/cli/cmd/stories/storyCreateCommand"
+import { storiesList } from "@/cli/core/stories/storiesList"
+import { storyRead } from "@/cli/core/stories/storyRead"
+import { afterAll, beforeAll, beforeEach, expect, mock, test } from "bun:test"
+import { existsSync, rmSync } from "node:fs"
+import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+import type { Result } from "~utils/result/Result"
+import { getTestConfig, testAfterAll, testBeforeAll } from "../core/testHelpers"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const testDir = join(__dirname, "..")
@@ -82,10 +82,10 @@ test("storyCreateCommand creates story with --shortStoryTitle and --projectDir",
 		const context = createMockContext()
 		const params = { shortStoryTitle: "command_test_story", projectDir: testDir, content: testStoryContent, config: undefined }
 		await storyCreateFunc.call(context, params)
-		
+
 		expect(stdout.length).toBeGreaterThan(0)
 		expect(stdout[0]).toMatch(/S-\d{3}_test-\d{3}_command-test-story\.md/)
-		
+
 		const output = stdout[0]!
 		const filename = output.split("/").pop() ?? ""
 		expect(filename.length).toBeGreaterThan(0)
@@ -94,7 +94,7 @@ test("storyCreateCommand creates story with --shortStoryTitle and --projectDir",
 		assertOk(storiesResult)
 		const stories = storiesResult.data
 		expect(stories.includes(filename)).toBe(true)
-		
+
 		const storyResult = await storyRead(testConfig, filename)
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
@@ -127,10 +127,10 @@ A simple story content.
 		const context = createMockContext()
 		const params = { shortStoryTitle: "simple_test", projectDir: testDir, content: simpleContent, config: undefined }
 		await storyCreateFunc.call(context, params)
-		
+
 		expect(stdout.length).toBeGreaterThan(0)
 		expect(stdout[0]).toMatch(/S-\d{3}_test-\d{3}_simple-test\.md/)
-		
+
 		const output = stdout[0]!
 		const filename = output.split("/").pop() ?? ""
 		expect(filename.length).toBeGreaterThan(0)
@@ -139,7 +139,7 @@ A simple story content.
 		assertOk(storiesResult)
 		const stories = storiesResult.data
 		expect(stories.includes(filename)).toBe(true)
-		
+
 		const storyResult = await storyRead(testConfig, filename)
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
@@ -173,7 +173,7 @@ A story with goals.
 		const context = createMockContext()
 		const params = { shortStoryTitle: "goals_story", projectDir: testDir, content: contentWithGoals, config: undefined }
 		await storyCreateFunc.call(context, params)
-		
+
 		expect(stdout.length).toBeGreaterThan(0)
 		const output = stdout[0]!
 		const filename = output.split("/").pop() ?? ""
@@ -211,7 +211,7 @@ A story with user tasks.
 		const context = createMockContext()
 		const params = { shortStoryTitle: "tasks_story", projectDir: testDir, content: contentWithTasks, config: undefined }
 		await storyCreateFunc.call(context, params)
-		
+
 		expect(stdout.length).toBeGreaterThan(0)
 		const output = stdout[0]!
 		const filename = output.split("/").pop() ?? ""
@@ -251,10 +251,10 @@ This story has **bold** and *italic* text, as well as [links](https://example.co
 		const context = createMockContext()
 		const params = { shortStoryTitle: "complex_story", projectDir: testDir, content: complexContent, config: undefined }
 		await storyCreateFunc.call(context, params)
-		
+
 		expect(stdout.length).toBeGreaterThan(0)
 		expect(stdout[0]).toMatch(/S-\d{3}_test-\d{3}_complex-story\.md/)
-		
+
 		const output = stdout[0]!
 		const filename = output.split("/").pop() ?? ""
 		expect(filename.length).toBeGreaterThan(0)
@@ -263,7 +263,7 @@ This story has **bold** and *italic* text, as well as [links](https://example.co
 		assertOk(storiesResult)
 		const stories = storiesResult.data
 		expect(stories.includes(filename)).toBe(true)
-		
+
 		const storyResult = await storyRead(testConfig, filename)
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
@@ -303,7 +303,7 @@ This story has:
 		const context = createMockContext()
 		const params = { shortStoryTitle: "multiline_story", projectDir: testDir, content: multilineContent, config: undefined }
 		await storyCreateFunc.call(context, params)
-		
+
 		expect(stdout.length).toBeGreaterThan(0)
 		const output = stdout[0]!
 		const filename = output.split("/").pop() ?? ""
@@ -326,7 +326,7 @@ test("storyCreateCommand outputs success message with filename", async () => {
 		const context = createMockContext()
 		const params = { shortStoryTitle: "output_test", projectDir: testDir, content: "# Output Story\n\nTesting output.\n\n## Goals\n\n- Goal\n\n## User Tasks\n\n### T-OUTPUT-001: Output task", config: undefined }
 		await storyCreateFunc.call(context, params)
-		
+
 		expect(stdout[0]).toMatch(/S-\d{3}_test-\d{3}_output-test\.md/)
 	} finally {
 		process.chdir(originalCwd)

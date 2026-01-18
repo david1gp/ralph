@@ -1,8 +1,8 @@
+import { configGet } from "@/cli/core/config/configGet"
+import { configSave } from "@/cli/core/config/configSave"
+import { storyCreate } from "@/cli/core/stories/storyCreate"
+import { projectDirExists, shortStoryTitleFormat } from "@/cli/core/stories/storyInputValidate"
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { storyCreate } from "@/cli/core/storyCreate"
-import { configGet } from "@/cli/core/configGet"
-import { configSave } from "@/cli/core/configSave"
-import { shortStoryTitleFormat, projectDirExists } from "@/cli/core/storyInputValidate"
 
 interface CreateFlags {
 	shortStoryTitle: string

@@ -1,7 +1,7 @@
-import { tasksRead } from "@/cli/core/tasksRead"
-import { tasksWrite } from "@/cli/core/tasksWrite"
-import type { TaskType } from "@/cli/data/TaskType"
+import { tasksRead } from "@/cli/core/tasks/tasksRead"
+import { tasksWrite } from "@/cli/core/tasks/tasksWrite"
 import type { ConfigType } from "@/cli/data/ConfigType"
+import type { TaskType } from "@/cli/data/TaskType"
 import { taskValidate } from "@/cli/data/taskValidate"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 

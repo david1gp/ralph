@@ -1,4 +1,4 @@
-import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
+import { storyFolderPathGet } from "@/cli/core/stories/storyFolderPathGet"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { storyParse } from "@/cli/data/storyParse"
 import type { StoryType } from "@/cli/data/StoryType"

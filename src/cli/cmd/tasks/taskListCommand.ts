@@ -1,6 +1,6 @@
+import { configLoad } from "@/cli/core/config/configLoad"
+import { tasksRead } from "@/cli/core/tasks/tasksRead"
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { tasksRead } from "@/cli/core/tasksRead"
-import { configLoad } from "@/cli/core/configLoad"
 
 interface ListFlags {
 	config?: string

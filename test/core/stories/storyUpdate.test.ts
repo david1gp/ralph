@@ -1,8 +1,8 @@
-import { expect, test, beforeEach } from "bun:test"
-import { writeFileSync, rmSync, existsSync } from "node:fs"
-import { storyUpdate } from "@/cli/core/storyUpdate"
-import { storyRead } from "@/cli/core/storyRead"
+import { storyRead } from "@/cli/core/stories/storyRead"
+import { storyUpdate } from "@/cli/core/stories/storyUpdate"
 import type { ConfigType } from "@/cli/data/ConfigType"
+import { beforeEach, expect, test } from "bun:test"
+import { existsSync, rmSync, writeFileSync } from "node:fs"
 import type { Result } from "~utils/result/Result"
 import { getTestConfig } from "../testHelpers"
 

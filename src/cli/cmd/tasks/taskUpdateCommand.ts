@@ -1,10 +1,10 @@
-import { storyPathGet } from "@/cli/core/storyPathGet"
-import { taskUpdate } from "@/cli/core/taskUpdate"
+import { configLoad } from "@/cli/core/config/configLoad"
+import { storyPathGet } from "@/cli/core/stories/storyPathGet"
+import { taskUpdate } from "@/cli/core/tasks/taskUpdate"
 import type { TaskType } from "@/cli/data/TaskType"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { array, safeParse, string } from "valibot"
-import { configLoad } from "@/cli/core/configLoad"
 
 interface UpdateFlags {
 	passes?: boolean

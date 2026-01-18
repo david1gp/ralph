@@ -1,6 +1,6 @@
+import { configLoad } from "@/cli/core/config/configLoad"
+import { storiesList } from "@/cli/core/stories/storiesList"
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { storiesList } from "@/cli/core/storiesList"
-import { configLoad } from "@/cli/core/configLoad"
 
 interface ListFlags {
 	config?: string

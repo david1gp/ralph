@@ -1,4 +1,4 @@
-import { getConfigPath } from "@/cli/core/configStore"
+import { getConfigPath } from "@/cli/core/config/configStore"
 import { configSchema } from "@/cli/data/configSchema"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { dirname, join } from "node:path"

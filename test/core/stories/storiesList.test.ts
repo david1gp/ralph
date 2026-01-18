@@ -1,6 +1,6 @@
-import { expect, test, beforeAll, afterAll } from "bun:test"
-import { storiesList } from "@/cli/core/storiesList"
-import { getTestConfig, assertOk, testBeforeAll, testAfterAll } from "../testHelpers"
+import { storiesList } from "@/cli/core/stories/storiesList"
+import { afterAll, beforeAll, expect, test } from "bun:test"
+import { assertOk, getTestConfig, testAfterAll, testBeforeAll } from "../testHelpers"
 
 const testConfig = getTestConfig()
 const testStoriesPath = testConfig.storiesFolder

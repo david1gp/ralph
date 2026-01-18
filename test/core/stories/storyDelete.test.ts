@@ -1,11 +1,11 @@
-import { expect, test, afterAll, beforeAll, beforeEach } from "bun:test"
-import { rmSync, existsSync } from "node:fs"
-import { storiesList } from "@/cli/core/storiesList"
-import { storyCreate } from "@/cli/core/storyCreate"
-import { storyDelete } from "@/cli/core/storyDelete"
-import { getTestConfig, assertOk, assertErr, testBeforeAll, testAfterAll, resetTasksFile } from "../testHelpers"
-import { join, dirname } from "node:path"
+import { storiesList } from "@/cli/core/stories/storiesList"
+import { storyCreate } from "@/cli/core/stories/storyCreate"
+import { storyDelete } from "@/cli/core/stories/storyDelete"
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
+import { existsSync, rmSync } from "node:fs"
+import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+import { assertErr, assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../testHelpers"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const testDir = join(__dirname, "..")
@@ -57,16 +57,16 @@ test("deleteStory removes story file", async () => {
 	assertOk(createResult)
 	const createdFilename = createResult.data.filePath.split("/").pop()
 	expect(createdFilename).toBeDefined()
-	
+
 	const storiesBeforeResult = await storiesList(testConfig)
 	expect(storiesBeforeResult.success).toBe(true)
 	assertOk(storiesBeforeResult)
-	
+
 	const result = await storyDelete(testConfig, createdFilename!)
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data).toBe(true)
-	
+
 	const storiesAfterResult = await storiesList(testConfig)
 	expect(storiesAfterResult.success).toBe(true)
 	assertOk(storiesAfterResult)

@@ -1,6 +1,6 @@
+import { configLoad } from "@/cli/core/config/configLoad"
+import { taskFindNext } from "@/cli/core/tasks/taskFindNext"
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { taskFindNext } from "@/cli/core/taskFindNext"
-import { configLoad } from "@/cli/core/configLoad"
 
 interface NextFlags {
 	config?: string

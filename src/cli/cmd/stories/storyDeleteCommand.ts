@@ -1,6 +1,6 @@
+import { configLoad } from "@/cli/core/config/configLoad"
+import { storyDelete } from "@/cli/core/stories/storyDelete"
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { storyDelete } from "@/cli/core/storyDelete"
-import { configLoad } from "@/cli/core/configLoad"
 
 interface DeleteFlags {
 	config?: string

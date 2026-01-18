@@ -1,12 +1,11 @@
-import { storiesList } from "@/cli/core/storiesList"
-import { storyCreate } from "@/cli/core/storyCreate"
-import { storyDelete } from "@/cli/core/storyDelete"
-import { storyRead } from "@/cli/core/storyRead"
+import { storiesList } from "@/cli/core/stories/storiesList"
+import { storyCreate } from "@/cli/core/stories/storyCreate"
+import { storyRead } from "@/cli/core/stories/storyRead"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import { existsSync, rmSync } from "node:fs"
-import { getTestConfig, assertOk, testBeforeAll, testAfterAll, resetTasksFile } from "../testHelpers"
-import { join, dirname } from "node:path"
+import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+import { assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../testHelpers"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const testDir = join(__dirname, "..")

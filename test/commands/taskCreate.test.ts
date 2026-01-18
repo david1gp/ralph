@@ -1,9 +1,8 @@
-import { expect, test, beforeAll, afterAll, beforeEach, mock } from "bun:test"
-import { writeFileSync, readFileSync } from "node:fs"
-import { taskCreateFunc, taskCreateCommand } from "@/cli/cmd/tasks/taskCreateCommand"
-import { tasksRead } from "@/cli/core/tasksRead"
+import { taskCreateFunc } from "@/cli/cmd/tasks/taskCreateCommand"
+import { tasksRead } from "@/cli/core/tasks/tasksRead"
+import { afterAll, beforeAll, beforeEach, expect, mock, test } from "bun:test"
 import type { Result } from "~utils/result/Result"
-import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig } from "../testHelpers"
+import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../core/testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
 	if (!result.success) {
@@ -47,7 +46,7 @@ test("taskCreateCommand creates task with required --title flag", async () => {
 	const context = createMockContext()
 	const params = { title: "New Task", description: "Test description", acceptanceCriteria: "[]", story: "test-story", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	expect(stdout[0]).toMatch(/^T-\d{3}$/)
 	const tasksResult = await tasksRead(testConfig)
 	expect(tasksResult.success).toBe(true)
@@ -77,7 +76,7 @@ test("taskCreateCommand creates task with all optional flags", async () => {
 		config: undefined,
 	}
 	await taskCreateFunc.call(context, params)
-	
+
 	expect(stdout[0]).toMatch(/^T-\d{3}$/)
 	const tasksResult = await tasksRead(testConfig)
 	expect(tasksResult.success).toBe(true)
@@ -99,7 +98,7 @@ test("taskCreateCommand auto-generates ID", async () => {
 	const context = createMockContext()
 	const params = { title: "Auto ID Task", description: "Test", acceptanceCriteria: "[]", story: "auto-id", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const tasksResult = await tasksRead(testConfig)
 	expect(tasksResult.success).toBe(true)
 	assertOk(tasksResult)
@@ -115,11 +114,11 @@ test("taskCreateCommand calculates priority as max + 1 when not provided", async
 	assertOk(tasksResult)
 	const tasks = tasksResult.data
 	const maxPriority = Math.max(...tasks.map(t => t.priority))
-	
+
 	const context = createMockContext()
 	const params = { title: "Default Priority Task", description: "Test", acceptanceCriteria: "[]", story: "default-priority", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const createdResult = await tasksRead(testConfig)
 	expect(createdResult.success).toBe(true)
 	assertOk(createdResult)
@@ -132,7 +131,7 @@ test("taskCreateCommand uses provided priority", async () => {
 	const context = createMockContext()
 	const params = { title: "Custom Priority Task", priority: 999, description: "Test", acceptanceCriteria: "[]", story: "custom-priority", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const createdResult = await tasksRead(testConfig)
 	expect(createdResult.success).toBe(true)
 	assertOk(createdResult)
@@ -145,7 +144,7 @@ test("taskCreateCommand parses acceptance criteria as JSON array", async () => {
 	const context = createMockContext()
 	const params = { title: "AC Task", acceptanceCriteria: '["Criterion 1", "Criterion 2", "Criterion 3"]', description: "Test", story: "ac-task", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const createdResult = await tasksRead(testConfig)
 	expect(createdResult.success).toBe(true)
 	assertOk(createdResult)
@@ -157,7 +156,7 @@ test("taskCreateCommand parses acceptance criteria as JSON array", async () => {
 test("taskCreateCommand throws error for invalid acceptance criteria format", async () => {
 	const context = createMockContext()
 	const params = { title: "Invalid AC Task", acceptanceCriteria: "not-json", description: "Test", story: "invalid-ac", dir: "/home/david/Coding/test", config: undefined }
-	
+
 	expect(taskCreateFunc.call(context, params)).rejects.toThrow("JSON Parse error")
 })
 
@@ -165,7 +164,7 @@ test("taskCreateCommand parses 'now' as current timestamp for start", async () =
 	const context = createMockContext()
 	const params = { title: "Start Now Task", start: "now", description: "Test", acceptanceCriteria: "[]", story: "start-now", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const createdResult = await tasksRead(testConfig)
 	expect(createdResult.success).toBe(true)
 	assertOk(createdResult)
@@ -178,7 +177,7 @@ test("taskCreateCommand parses ISO 8601 timestamp for start", async () => {
 	const context = createMockContext()
 	const params = { title: "Start ISO Task", start: "2025-01-17T10:00:00.000Z", description: "Test", acceptanceCriteria: "[]", story: "start-iso", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const createdResult = await tasksRead(testConfig)
 	expect(createdResult.success).toBe(true)
 	assertOk(createdResult)
@@ -191,7 +190,7 @@ test("taskCreateCommand handles empty start to clear", async () => {
 	const context = createMockContext()
 	const params = { title: "Empty Start Task", start: "", description: "Test", acceptanceCriteria: "[]", story: "empty-start", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const createdResult = await tasksRead(testConfig)
 	expect(createdResult.success).toBe(true)
 	assertOk(createdResult)
@@ -204,7 +203,7 @@ test("taskCreateCommand parses end timestamp", async () => {
 	const context = createMockContext()
 	const params = { title: "End Task", end: "2025-01-17T18:00:00.000Z", description: "Test", acceptanceCriteria: "[]", story: "end-task", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const createdResult = await tasksRead(testConfig)
 	expect(createdResult.success).toBe(true)
 	assertOk(createdResult)
@@ -217,7 +216,7 @@ test("taskCreateCommand handles empty end to clear", async () => {
 	const context = createMockContext()
 	const params = { title: "Empty End Task", end: "", description: "Test", acceptanceCriteria: "[]", story: "empty-end", dir: "/home/david/Coding/test", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const createdResult = await tasksRead(testConfig)
 	expect(createdResult.success).toBe(true)
 	assertOk(createdResult)
@@ -230,7 +229,7 @@ test("taskCreateCommand sets dir to specified value", async () => {
 	const context = createMockContext()
 	const params = { title: "Dir Test Task", description: "Test", acceptanceCriteria: "[]", story: "dir-test", dir: "/custom/path", config: undefined }
 	await taskCreateFunc.call(context, params)
-	
+
 	const createdResult = await tasksRead(testConfig)
 	expect(createdResult.success).toBe(true)
 	assertOk(createdResult)

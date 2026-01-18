@@ -1,6 +1,6 @@
-import { tasksRead } from "@/cli/core/tasksRead"
-import type { TaskType } from "@/cli/data/TaskType"
+import { tasksRead } from "@/cli/core/tasks/tasksRead"
 import type { ConfigType } from "@/cli/data/ConfigType"
+import type { TaskType } from "@/cli/data/TaskType"
 import { createResult, type PromiseResult } from "~utils/result/Result"
 
 export async function taskFindNext(config: ConfigType): PromiseResult<TaskType | undefined> {

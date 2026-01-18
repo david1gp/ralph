@@ -1,6 +1,6 @@
+import { configLoad } from "@/cli/core/config/configLoad"
+import { storyRead } from "@/cli/core/stories/storyRead"
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { storyRead } from "@/cli/core/storyRead"
-import { configLoad } from "@/cli/core/configLoad"
 
 interface ReadFlags {
 	config?: string
