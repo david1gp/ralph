@@ -3,6 +3,13 @@ import { taskCreate } from "@/cli/core/taskCreate"
 import { tasksRead } from "@/cli/core/tasksRead"
 import { writeFileSync, readFileSync, existsSync } from "node:fs"
 import type { Task } from "@/cli/data/TaskType"
+import type { Result } from "~utils/result/Result"
+
+function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
+	if (!result.success) {
+		throw new Error(`Expected success but got error: ${result.errorMessage}`)
+	}
+}
 
 const originalTasksPath = "/home/david/Coding/personal-taski-cli/.taski/tasks.json"
 const originalContent: string = readFileSync(originalTasksPath, "utf-8")
@@ -22,7 +29,10 @@ beforeEach(() => {
 })
 
 test("taskCreate appends new task to tasks array", async () => {
-	const initialTasks = await tasksRead()
+	const initialResult = await tasksRead()
+	expect(initialResult.success).toBe(true)
+	assertOk(initialResult)
+	const initialTasks = initialResult.data
 	const initialCount = initialTasks.length
 	const newTask: Task = {
 		id: "T-NEW",
@@ -36,8 +46,13 @@ test("taskCreate appends new task to tasks array", async () => {
 		note: "",
 	}
 	const result = await taskCreate(newTask)
-	expect(result.id).toBe("T-NEW")
-	const tasks = await tasksRead()
+	expect(result.success).toBe(true)
+	assertOk(result)
+	expect(result.data.id).toBe("T-NEW")
+	const tasksResult = await tasksRead()
+	expect(tasksResult.success).toBe(true)
+	assertOk(tasksResult)
+	const tasks = tasksResult.data
 	expect(tasks.length).toBe(initialCount + 1)
 	expect(tasks[tasks.length - 1]!.id).toBe("T-NEW")
 })
@@ -57,7 +72,9 @@ test("taskCreate initializes task with new fields", async () => {
 		endedAt: undefined,
 	}
 	const result = await taskCreate(newTask)
-	expect(result.note).toBe("Initial note")
-	expect(result.startedAt).toBe("2025-01-17T08:00:00.000Z")
-	expect(result.endedAt).toBeUndefined()
+	expect(result.success).toBe(true)
+	assertOk(result)
+	expect(result.data.note).toBe("Initial note")
+	expect(result.data.startedAt).toBe("2025-01-17T08:00:00.000Z")
+	expect(result.data.endedAt).toBeUndefined()
 })

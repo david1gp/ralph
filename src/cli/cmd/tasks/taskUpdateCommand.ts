@@ -24,10 +24,20 @@ export const taskUpdateCommand = buildCommand({
 			updates.passes = flags.passes
 		}
 		if (flags.start !== undefined) {
-			updates.startedAt = parseDateTime(flags.start)
+			const startResult = parseDateTime(flags.start)
+			if (startResult && !startResult.success) {
+				console.error(JSON.stringify(startResult))
+				process.exit(1)
+			}
+			updates.startedAt = startResult?.data
 		}
 		if (flags.end !== undefined) {
-			updates.endedAt = parseDateTime(flags.end)
+			const endResult = parseDateTime(flags.end)
+			if (endResult && !endResult.success) {
+				console.error(JSON.stringify(endResult))
+				process.exit(1)
+			}
+			updates.endedAt = endResult?.data
 		}
 		if (flags.note !== undefined) {
 			updates.note = flags.note
@@ -41,7 +51,9 @@ export const taskUpdateCommand = buildCommand({
 		if (flags.acceptanceCriteria !== undefined) {
 			const result = safeParse(array(string()), flags.acceptanceCriteria)
 			if (!result.success) {
-				throw new Error(`Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.`)
+				const errorResult = { success: false, op: "taskUpdateCommand", errorMessage: `Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.` }
+				console.error(JSON.stringify(errorResult))
+				process.exit(1)
 			}
 			updates.acceptanceCriteria = result.output
 		}
@@ -49,9 +61,19 @@ export const taskUpdateCommand = buildCommand({
 			updates.priority = flags.priority
 		}
 		if (flags.story !== undefined) {
-			updates.story = await storyPathGet(flags.story)
+			const storyResult = await storyPathGet(flags.story)
+			if (!storyResult.success) {
+				console.error(JSON.stringify(storyResult))
+				process.exit(1)
+			}
+			updates.story = storyResult.data
 		}
-		const updated = await taskUpdate(id, updates)
+		const updatedResult = await taskUpdate(id, updates)
+		if (!updatedResult.success) {
+			console.error(JSON.stringify(updatedResult))
+			process.exit(1)
+		}
+		const updated = updatedResult.data
 		this.process.stdout.write(`Task "${updated.id}" updated successfully`)
 	},
 	parameters: {

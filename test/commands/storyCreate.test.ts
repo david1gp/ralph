@@ -3,6 +3,13 @@ import { writeFileSync, readFileSync, rmSync, existsSync } from "node:fs"
 import { storyCreateFunc, storyCreateCommand } from "@/cli/cmd/stories/storyCreateCommand"
 import { storiesList } from "@/cli/core/storiesList"
 import { storyRead } from "@/cli/core/storyRead"
+import type { Result } from "~utils/result/Result"
+
+function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
+	if (!result.success) {
+		throw new Error(`Expected success but got error: ${result.errorMessage}`)
+	}
+}
 
 const storiesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
 
@@ -66,10 +73,16 @@ test("storyCreateCommand creates story with --filename and --content", async () 
 	
 	expect(stdout[0]).toBe(`${storiesPath}/${testStoryFilename}`)
 	
-	const stories = await storiesList()
+	const storiesResult = await storiesList()
+	expect(storiesResult.success).toBe(true)
+	assertOk(storiesResult)
+	const stories = storiesResult.data
 	expect(stories.includes(testStoryFilename)).toBe(true)
 	
-	const story = await storyRead(testStoryFilename)
+	const storyResult = await storyRead(testStoryFilename)
+	expect(storyResult.success).toBe(true)
+	assertOk(storyResult)
+	const story = storyResult.data
 	expect(story.title).toBe("Command Test Story")
 	expect(story.description).toContain("test story created by the command test")
 })
@@ -95,10 +108,16 @@ A simple story content.
 	
 	expect(stdout[0]).toBe(`${storiesPath}/simple_test.md`)
 	
-	const stories = await storiesList()
+	const storiesResult = await storiesList()
+	expect(storiesResult.success).toBe(true)
+	assertOk(storiesResult)
+	const stories = storiesResult.data
 	expect(stories.includes("simple_test.md")).toBe(true)
 	
-	const story = await storyRead("simple_test.md")
+	const storyResult = await storyRead("simple_test.md")
+	expect(storyResult.success).toBe(true)
+	assertOk(storyResult)
+	const story = storyResult.data
 	expect(story.title).toBe("Simple Story")
 })
 
@@ -123,7 +142,10 @@ A story with goals.
 	const params = { filename: "goals_story.md", content: contentWithGoals }
 	await storyCreateFunc.call(context, params)
 	
-	const story = await storyRead("goals_story.md")
+	const storyResult = await storyRead("goals_story.md")
+	expect(storyResult.success).toBe(true)
+	assertOk(storyResult)
+	const story = storyResult.data
 	expect(story.goals).toEqual(["Goal one", "Goal two", "Goal three"])
 })
 
@@ -148,7 +170,10 @@ A story with user tasks.
 	const params = { filename: "tasks_story.md", content: contentWithTasks }
 	await storyCreateFunc.call(context, params)
 	
-	const story = await storyRead("tasks_story.md")
+	const storyResult = await storyRead("tasks_story.md")
+	expect(storyResult.success).toBe(true)
+	assertOk(storyResult)
+	const story = storyResult.data
 	expect(story.userTasks).toEqual(["T-001", "T-002", "S-003"])
 })
 
@@ -177,10 +202,16 @@ This story has **bold** and *italic* text, as well as [links](https://example.co
 	
 	expect(stdout[0]).toBe(`${storiesPath}/complex_story.md`)
 	
-	const stories = await storiesList()
+	const storiesResult = await storiesList()
+	expect(storiesResult.success).toBe(true)
+	assertOk(storiesResult)
+	const stories = storiesResult.data
 	expect(stories.includes("complex_story.md")).toBe(true)
 	
-	const story = await storyRead("complex_story.md")
+	const storyResult = await storyRead("complex_story.md")
+	expect(storyResult.success).toBe(true)
+	assertOk(storyResult)
+	const story = storyResult.data
 	expect(story.title).toBe("Complex Story")
 	expect(story.description).toContain("bold")
 	expect(story.goals.length).toBeGreaterThanOrEqual(2)
@@ -211,7 +242,10 @@ This story has:
 	const params = { filename: "multiline_story.md", content: multilineContent }
 	await storyCreateFunc.call(context, params)
 	
-	const story = await storyRead("multiline_story.md")
+	const storyResult = await storyRead("multiline_story.md")
+	expect(storyResult.success).toBe(true)
+	assertOk(storyResult)
+	const story = storyResult.data
 	expect(story.title).toBe("Multiline Story")
 	expect(story.goals.length).toBeGreaterThan(1)
 })

@@ -3,12 +3,12 @@ import { taskDelete } from "@/cli/core/taskDelete"
 
 export const taskDeleteCommand = buildCommand({
 	async func(this: CommandContext, _: {}, id: string) {
-		const deleted = await taskDelete(id)
-		if (deleted) {
-			this.process.stdout.write(`Task "${id}" deleted successfully`)
-		} else {
-			throw new Error(`Task "${id}" not found`)
+		const result = await taskDelete(id)
+		if (!result.success) {
+			console.error(JSON.stringify(result))
+			process.exit(1)
 		}
+		this.process.stdout.write(`Task "${id}" deleted successfully`)
 	},
 	parameters: {
 		positional: {

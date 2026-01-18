@@ -27,24 +27,5 @@ function processConfigFlag(args: string[]): string[] {
 	return args
 }
 
-try {
-	const processedArgs = processConfigFlag(process.argv.slice(2))
-	await run(taskiCommand, processedArgs, { process })
-} catch (error) {
-	if (error instanceof Error && error.message.startsWith("{")) {
-		console.error(error.message)
-		process.exit(1)
-	}
-	throw error
-}
-
-try {
-	const processedArgs = processConfigFlag(process.argv.slice(2))
-	await run(taskiCommand, processedArgs, { process })
-} catch (error) {
-	if (error instanceof Error && error.message.startsWith("{")) {
-		console.error(error.message)
-		process.exit(1)
-	}
-	throw error
-}
+const processedArgs = processConfigFlag(process.argv.slice(2))
+await run(taskiCommand, processedArgs, { process })

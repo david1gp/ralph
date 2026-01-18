@@ -1,7 +1,12 @@
 import { taskFilePathGet } from "@/cli/core/taskFilePathGet"
 import { writeFileSync } from "node:fs"
+import { type PromiseResult } from "~utils/result/Result"
 
-export async function tasksWrite(tasks: unknown[]): Promise<void> {
-	const tasksPath = await taskFilePathGet()
-	writeFileSync(tasksPath, JSON.stringify(tasks, null, 2))
+export async function tasksWrite(tasks: unknown[]): PromiseResult<void> {
+	const tasksPathResult = await taskFilePathGet()
+	if (!tasksPathResult.success) {
+		return tasksPathResult
+	}
+	writeFileSync(tasksPathResult.data, JSON.stringify(tasks, null, 2))
+	return { success: true } as { success: true; data: void }
 }

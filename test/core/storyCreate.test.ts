@@ -4,6 +4,13 @@ import { storyDelete } from "@/cli/core/storyDelete"
 import { storyRead } from "@/cli/core/storyRead"
 import { afterAll, beforeEach, expect, test } from "bun:test"
 import { existsSync, rmSync } from "node:fs"
+import type { Result } from "~utils/result/Result"
+
+function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
+	if (!result.success) {
+		throw new Error(`Expected success but got error: ${result.errorMessage}`)
+	}
+}
 
 const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
 const testStoryFilename = "test_story.md"
@@ -42,13 +49,22 @@ afterAll(() => {
 })
 
 test("createStory creates new story file", async () => {
-	const storiesBefore = await storiesList()
+	const storiesBeforeResult = await storiesList()
+	expect(storiesBeforeResult.success).toBe(true)
+	assertOk(storiesBeforeResult)
+	const storiesBefore = storiesBeforeResult.data
 	await storyCreate(testStoryFilename, testStoryContent)
-	const storiesAfter = await storiesList()
+	const storiesAfterResult = await storiesList()
+	expect(storiesAfterResult.success).toBe(true)
+	assertOk(storiesAfterResult)
+	const storiesAfter = storiesAfterResult.data
 	expect(storiesAfter.length).toBe(storiesBefore.length + 1)
 	expect(storiesAfter.includes(testStoryFilename)).toBe(true)
 
-	const story = await storyRead(testStoryFilename)
+	const storyResult = await storyRead(testStoryFilename)
+	expect(storyResult.success).toBe(true)
+	assertOk(storyResult)
+	const story = storyResult.data
 	expect(story.title).toBe("Test Story")
 	expect(story.description).toContain("test story")
 })
@@ -56,7 +72,10 @@ test("createStory creates new story file", async () => {
 test("createStory appends .md extension if missing", async () => {
 	const filenameWithoutExt = "another_test"
 	await storyCreate(filenameWithoutExt, testStoryContent)
-	const stories = await storiesList()
+	const storiesResult = await storiesList()
+	expect(storiesResult.success).toBe(true)
+	assertOk(storiesResult)
+	const stories = storiesResult.data
 	expect(stories.includes(`${filenameWithoutExt}.md`)).toBe(true)
 	await storyDelete(`${filenameWithoutExt}.md`)
 })

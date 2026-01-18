@@ -3,6 +3,19 @@ import { rmSync, existsSync } from "node:fs"
 import { storiesList } from "@/cli/core/storiesList"
 import { storyCreate } from "@/cli/core/storyCreate"
 import { storyDelete } from "@/cli/core/storyDelete"
+import type { Result } from "~utils/result/Result"
+
+function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
+	if (!result.success) {
+		throw new Error(`Expected success but got error: ${result.errorMessage}`)
+	}
+}
+
+function assertErr<T>(result: Result<T>): asserts result is Extract<typeof result, { success: false }> {
+	if (result.success) {
+		throw new Error(`Expected error but got success`)
+	}
+}
 
 const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
 const testStoryFilename = "test_story.md"
@@ -42,15 +55,25 @@ beforeEach(() => {
 
 test("deleteStory removes story file", async () => {
 	await storyCreate(testStoryFilename, testStoryContent)
-	const storiesBefore = await storiesList()
+	const storiesBeforeResult = await storiesList()
+	expect(storiesBeforeResult.success).toBe(true)
+	assertOk(storiesBeforeResult)
+	const storiesBefore = storiesBeforeResult.data
 	const result = await storyDelete(testStoryFilename)
-	expect(result).toBe(true)
-	const storiesAfter = await storiesList()
+	expect(result.success).toBe(true)
+	assertOk(result)
+	expect(result.data).toBe(true)
+	const storiesAfterResult = await storiesList()
+	expect(storiesAfterResult.success).toBe(true)
+	assertOk(storiesAfterResult)
+	const storiesAfter = storiesAfterResult.data
 	expect(storiesAfter.length).toBe(storiesBefore.length - 1)
 	expect(storiesAfter.includes(testStoryFilename)).toBe(false)
 })
 
-test("deleteStory returns false for non-existent story", async () => {
+test("deleteStory returns error for non-existent story", async () => {
 	const result = await storyDelete("non_existent_story.md")
-	expect(result).toBe(false)
+	expect(result.success).toBe(false)
+	assertErr(result)
+	expect(result.errorMessage).toContain('Story "non_existent_story.md" not found')
 })

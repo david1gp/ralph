@@ -20,15 +20,57 @@ interface CreateFlags {
 }
 
 export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
-	const tasks = await tasksRead()
+	const tasksResult = await tasksRead()
+	if (!tasksResult.success) {
+		console.error(JSON.stringify(tasksResult))
+		process.exit(1)
+	}
+	const tasks = tasksResult.data
 	const maxPriority = tasks.length > 0 ? Math.max(...tasks.map((t) => t.priority)) : 0
 	const parsed = JSON.parse(flags.acceptanceCriteria)
 	const result = safeParse(array(string()), parsed)
 	if (!result.success) {
-		throw new Error(`Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.`)
+		const errorResult = { success: false, op: "taskCreateCommand", errorMessage: `Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.` }
+		console.error(JSON.stringify(errorResult))
+		process.exit(1)
 	}
 	const acceptanceCriteria = result.output
 	const storyValue = flags.story.endsWith(".md") ? flags.story : `${flags.story}.md`
+	const storyResult = await storyPathGet(storyValue)
+	if (!storyResult.success) {
+		console.error(JSON.stringify(storyResult))
+		process.exit(1)
+	}
+	let startedAt: string | undefined
+	if (flags.start !== undefined && flags.start !== "") {
+		const startResult = parseDateTime(flags.start)
+		if (!startResult) {
+			const errorResult = { success: false, op: "taskCreateCommand", errorMessage: `Invalid start date format: "${flags.start}"` }
+			console.error(JSON.stringify(errorResult))
+			process.exit(1)
+		}
+		if (!startResult.success) {
+			console.error(JSON.stringify(startResult))
+			process.exit(1)
+		}
+		startedAt = startResult.data
+	}
+
+	let endedAt: string | undefined
+	if (flags.end !== undefined && flags.end !== "") {
+		const endResult = parseDateTime(flags.end)
+		if (!endResult) {
+			const errorResult = { success: false, op: "taskCreateCommand", errorMessage: `Invalid end date format: "${flags.end}"` }
+			console.error(JSON.stringify(errorResult))
+			process.exit(1)
+		}
+		if (!endResult.success) {
+			console.error(JSON.stringify(endResult))
+			process.exit(1)
+		}
+		endedAt = endResult.data
+	}
+
 	const newTask: Task = {
 		id: `T-${String(tasks.length + 1).padStart(3, "0")}`,
 		dir: flags.dir,
@@ -38,12 +80,16 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 		priority: flags.priority ?? maxPriority + 1,
 		passes: flags.passes ?? false,
 		note: flags.note ?? "",
-		startedAt: flags.start !== undefined ? parseDateTime(flags.start) : undefined,
-		endedAt: flags.end !== undefined ? parseDateTime(flags.end) : undefined,
-		story: await storyPathGet(storyValue),
+		startedAt,
+		endedAt,
+		story: storyResult.data,
 	}
-	const created = await taskCreate(newTask)
-	this.process.stdout.write(created.id)
+	const createdResult = await taskCreate(newTask)
+	if (!createdResult.success) {
+		console.error(JSON.stringify(createdResult))
+		process.exit(1)
+	}
+	this.process.stdout.write(createdResult.data.id)
 }
 
 export const taskCreateCommand = buildCommand({

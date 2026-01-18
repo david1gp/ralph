@@ -3,8 +3,12 @@ import { storyRead } from "@/cli/core/storyRead"
 
 export const storyReadCommand = buildCommand({
 	async func(this: CommandContext, _: {}, filename: string) {
-		const story = await storyRead(filename)
-		this.process.stdout.write(JSON.stringify(story, null, 2))
+		const storyResult = await storyRead(filename)
+		if (!storyResult.success) {
+			console.error(JSON.stringify(storyResult))
+			process.exit(1)
+		}
+		this.process.stdout.write(JSON.stringify(storyResult.data, null, 2))
 	},
 	parameters: {
 		positional: {

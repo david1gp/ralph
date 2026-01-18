@@ -3,6 +3,19 @@ import { setConfigPath, getConfigPath, clearConfigPath } from "@/cli/core/config
 import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
 import { writeFileSync, rmSync, existsSync, mkdirSync } from "node:fs"
 import { join } from "node:path"
+import type { Result } from "~utils/result/Result"
+
+function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
+	if (!result.success) {
+		throw new Error(`Expected success but got error: ${result.errorMessage}`)
+	}
+}
+
+function assertErr<T>(result: Result<T>): asserts result is Extract<typeof result, { success: false }> {
+	if (result.success) {
+		throw new Error(`Expected error but got success`)
+	}
+}
 
 const testTaskiDir = "/home/david/Coding/personal-taski-cli/.taski_test"
 const testConfigPath = join(testTaskiDir, "taski.json")
@@ -27,7 +40,10 @@ afterAll(() => {
 })
 
 test("configGet returns correct paths from taski.json", async () => {
-	const config = await configGet()
+	const result = await configGet()
+	expect(result.success).toBe(true)
+	assertOk(result)
+	const config = result.data
 	expect(config.tasksFile).toBe("/home/david/Coding/personal-taski-cli/.taski/tasks.json")
 	expect(config.storiesFolder).toBe("/home/david/Coding/personal-taski-cli/.taski/stories")
 })
@@ -44,7 +60,10 @@ test("configGet returns correct paths from nested taski.json", async () => {
 	process.chdir(nestedDir)
 
 	try {
-		const config = await configGet()
+		const result = await configGet()
+		expect(result.success).toBe(true)
+		assertOk(result)
+		const config = result.data
 		expect(config.tasksFile).toBe(join(nestedTaskiDir, "my_tasks.json"))
 		expect(config.storiesFolder).toBe(join(nestedTaskiDir, "my_stories"))
 	} finally {
@@ -53,7 +72,7 @@ test("configGet returns correct paths from nested taski.json", async () => {
 	}
 })
 
-test("configGet throws error when taski.json is missing in isolated directory", async () => {
+test("configGet returns error when taski.json is missing in isolated directory", async () => {
 	const tempDir = "/tmp/taski_test_isolated_" + Date.now()
 	mkdirSync(tempDir, { recursive: true })
 
@@ -61,14 +80,15 @@ test("configGet throws error when taski.json is missing in isolated directory", 
 	process.chdir(tempDir)
 
 	try {
-		expect(configGet()).rejects.toThrow()
+		const result = await configGet()
+		expect(result.success).toBe(false)
 	} finally {
 		process.chdir(originalCwd)
 		rmSync(tempDir, { recursive: true, force: true })
 	}
 })
 
-test("configGet validates taski.json against schema and throws", async () => {
+test("configGet validates taski.json against schema and returns error", async () => {
 	const tempDir = "/tmp/taski_test_invalid_" + Date.now()
 	const tempTaskiDir = join(tempDir, ".taski")
 	mkdirSync(tempTaskiDir, { recursive: true })
@@ -78,55 +98,53 @@ test("configGet validates taski.json against schema and throws", async () => {
 	process.chdir(tempDir)
 
 	try {
-		expect(configGet()).rejects.toThrow()
+		const result = await configGet()
+		expect(result.success).toBe(false)
 	} finally {
 		process.chdir(originalCwd)
 		rmSync(tempDir, { recursive: true, force: true })
 	}
 })
 
-test("setConfigPath overrides config location with valid directory", async () => {
+	test("setConfigPath overrides config location with valid directory", async () => {
 	setConfigPath(testTaskiDir)
 	expect(getConfigPath()).toBe(testTaskiDir)
 
-	const config = await configGet()
+	const result = await configGet()
+	expect(result.success).toBe(true)
+	assertOk(result)
+	const config = result.data
 	expect(config.tasksFile).toBe(join(testTaskiDir, "tasks.json"))
 	expect(config.storiesFolder).toBe(join(testTaskiDir, "stories"))
 })
 
-test("setConfigPath with non-existent directory throws error with attempted path", async () => {
-	const nonExistentPath = "/tmp/non_existent_taski_dir_" + Date.now()
-	setConfigPath(nonExistentPath)
+	test("setConfigPath with non-existent directory returns error", async () => {
+		const nonExistentPath = "/tmp/non_existent_taski_dir_" + Date.now()
+		setConfigPath(nonExistentPath)
 
-	try {
-		expect(configGet()).rejects.toThrow()
-	} catch (error) {
-		expect(error instanceof Error).toBe(true)
-		const errorMessage = (error as Error).message
-		const parsed = JSON.parse(errorMessage)
-		expect(parsed.error).toBe(".taski directory not found")
-		expect(parsed.attempted).toBe(join(nonExistentPath, "taski.json"))
+		try {
+			const result = await configGet()
+			expect(result.success).toBe(false)
+			assertErr(result)
+			expect(result.errorMessage).toContain("Config file not found")
 	} finally {
 		clearConfigPath()
 	}
 })
 
-test("setConfigPath with invalid taski.json shows validation error with path", async () => {
-	const tempDir = "/tmp/taski_test_invalid_override_" + Date.now()
-	const tempTaskiDir = join(tempDir, ".taski")
-	mkdirSync(tempTaskiDir, { recursive: true })
-	writeFileSync(join(tempTaskiDir, "taski.json"), '{"tasksFile":123,"storiesFolder":"./stories"}')
+	test("setConfigPath with invalid taski.json returns validation error", async () => {
+		const tempDir = "/tmp/taski_test_invalid_override_" + Date.now()
+		const tempTaskiDir = join(tempDir, ".taski")
+		mkdirSync(tempTaskiDir, { recursive: true })
+		writeFileSync(join(tempTaskiDir, "taski.json"), '{"tasksFile":123,"storiesFolder":"./stories"}')
 
-	setConfigPath(tempTaskiDir)
+		setConfigPath(tempTaskiDir)
 
-	try {
-		expect(configGet()).rejects.toThrow()
-	} catch (error) {
-		expect(error instanceof Error).toBe(true)
-		const errorMessage = (error as Error).message
-		const parsed = JSON.parse(errorMessage)
-		expect(parsed.error).toBe("Invalid taski.json configuration")
-		expect(parsed.path).toBe(join(tempTaskiDir, "taski.json"))
+		try {
+			const result = await configGet()
+			expect(result.success).toBe(false)
+			assertErr(result)
+			expect(result.errorMessage).toContain("Invalid configuration")
 	} finally {
 		clearConfigPath()
 		rmSync(tempDir, { recursive: true, force: true })
@@ -141,12 +159,15 @@ test("clearConfigPath resets the override", async () => {
 	expect(getConfigPath()).toBeNull()
 })
 
-test("configGet works with relative path override", async () => {
-	const relativePath = ".taski_test"
-	setConfigPath(relativePath)
+	test("configGet works with relative path override", async () => {
+		const relativePath = ".taski_test"
+		setConfigPath(relativePath)
 
-	try {
-		const config = await configGet()
+		try {
+			const result = await configGet()
+			expect(result.success).toBe(true)
+			assertOk(result)
+			const config = result.data
 		expect(config.tasksFile).toBe(join(relativePath, "tasks.json"))
 		expect(config.storiesFolder).toBe(join(relativePath, "stories"))
 	} finally {

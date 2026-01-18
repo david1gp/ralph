@@ -2,20 +2,25 @@ import { storyFolderPathGet } from "@/cli/core/storyFolderPathGet"
 import { storyParse } from "@/cli/data/storyParse"
 import type { Story } from "@/cli/data/StoryType"
 import { existsSync, readFileSync } from "node:fs"
+import { createResult, createError, type PromiseResult } from "~utils/result/Result"
 
-export async function storyRead(filename: string): Promise<Story> {
-	const storiesPath = await storyFolderPathGet()
+export async function storyRead(filename: string): PromiseResult<Story> {
+	const storiesPathResult = await storyFolderPathGet()
+	if (!storiesPathResult.success) {
+		return storiesPathResult
+	}
+	const storiesPath = storiesPathResult.data
 	const filePath = `${storiesPath}/${filename}`
 	if (!existsSync(filePath)) {
-		throw new Error(`Story "${filename}" not found`)
+		return createError("storyRead", `Story "${filename}" not found`)
 	}
 	const content = readFileSync(filePath, "utf-8")
 	const story = parseMarkdownToStory(content)
 	const result = storyParse(story)
 	if (!result.success) {
-		throw new Error(`Invalid story structure: ${result.issues}`)
+		return createError("storyRead", `Invalid story structure: ${result.issues}`)
 	}
-	return result.data
+	return createResult(result.data)
 }
 
 function parseMarkdownToStory(content: string): Partial<Story> {

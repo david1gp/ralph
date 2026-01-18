@@ -30,7 +30,12 @@ export const storyUpdateCommand = buildCommand({
 		if (flags.userTasks !== undefined) {
 			updates.userTasks = parseArray(flags.userTasks)
 		}
-		const updated = await storyUpdate(filename, updates as Parameters<typeof storyUpdate>[1])
+		const updatedResult = await storyUpdate(filename, updates as Parameters<typeof storyUpdate>[1])
+		if (!updatedResult.success) {
+			console.error(JSON.stringify(updatedResult))
+			process.exit(1)
+		}
+		const updated = updatedResult.data
 		this.process.stdout.write(`Story "${updated.title}" updated successfully`)
 	},
 	parameters: {

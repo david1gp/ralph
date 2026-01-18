@@ -3,24 +3,33 @@ import { storyRead } from "@/cli/core/storyRead"
 import { storyValidate } from "@/cli/data/storyValidate"
 import type { Story } from "@/cli/data/StoryType"
 import { existsSync, writeFileSync } from "node:fs"
+import { createResult, createError, type PromiseResult } from "~utils/result/Result"
 
-export async function storyUpdate(filename: string, updates: Partial<Story>): Promise<Story> {
-	const storiesPath = await storyFolderPathGet()
+export async function storyUpdate(filename: string, updates: Partial<Story>): PromiseResult<Story> {
+	const storiesPathResult = await storyFolderPathGet()
+	if (!storiesPathResult.success) {
+		return storiesPathResult
+	}
+	const storiesPath = storiesPathResult.data
 	let filePath = `${storiesPath}/${filename}`
 	if (!existsSync(`${filePath}`) && existsSync(`${filePath}.md`)) {
 		filePath = `${filePath}.md`
 	}
 	if (!existsSync(filePath)) {
-		throw new Error(`Story "${filename}" not found`)
+		return createError("storyUpdate", `Story "${filename}" not found`)
 	}
 
-	const existingStory = await storyRead(filename)
+	const existingStoryResult = await storyRead(filename)
+	if (!existingStoryResult.success) {
+		return existingStoryResult
+	}
+	const existingStory = existingStoryResult.data
 	const updatedStory = storyValidate({ ...existingStory, ...updates })
 
 	const content = storyToMarkdown(updatedStory)
 	writeFileSync(filePath, content)
 
-	return updatedStory
+	return createResult(updatedStory)
 }
 
 function storyToMarkdown(story: Story): string {

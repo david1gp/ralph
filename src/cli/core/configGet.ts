@@ -1,6 +1,6 @@
-import { ConfigNotFoundError, ConfigValidationError } from "@/cli/core/configError"
 import { configSchema } from "@/cli/data/configSchema"
 import { getConfigPath } from "@/cli/core/configStore"
+import { createResult, createError, type PromiseResult } from "~utils/result/Result"
 import { existsSync } from "node:fs"
 import { join } from "node:path"
 import { parse } from "valibot"
@@ -14,24 +14,24 @@ function resolveConfigPaths(taskiDir: string, rawConfig: { tasksFile: string; st
 	}
 }
 
-async function readConfigFromPath(taskiDir: string): Promise<{ tasksFile: string; storiesFolder: string }> {
+async function readConfigFromPath(taskiDir: string): PromiseResult<{ tasksFile: string; storiesFolder: string }> {
 	const taskiPath = join(taskiDir, "taski.json")
 	const taskiFile = Bun.file(taskiPath)
 
 	if (!await taskiFile.exists()) {
-		throw new ConfigNotFoundError([], taskiPath)
+		return createError("configGet", `Config file not found at ${taskiPath}`)
 	}
 
 	try {
 		const rawConfig = await taskiFile.json()
 		const validatedConfig = parse(configSchema, rawConfig)
-		return resolveConfigPaths(taskiDir, validatedConfig)
+		return createResult(resolveConfigPaths(taskiDir, validatedConfig))
 	} catch {
-		throw new ConfigValidationError(taskiPath)
+		return createError("configGet", `Invalid configuration in ${taskiPath}`)
 	}
 }
 
-export async function configGet(): Promise<{ tasksFile: string; storiesFolder: string }> {
+export async function configGet(): PromiseResult<{ tasksFile: string; storiesFolder: string }> {
 	const overridePath = getConfigPath()
 	if (overridePath !== null) {
 		return readConfigFromPath(overridePath)
@@ -51,15 +51,15 @@ export async function configGet(): Promise<{ tasksFile: string; storiesFolder: s
 			try {
 				const rawConfig = await taskiFile.json()
 				const validatedConfig = parse(configSchema, rawConfig)
-				return resolveConfigPaths(taskiDir, validatedConfig)
+				return createResult(resolveConfigPaths(taskiDir, validatedConfig))
 			} catch {
-				throw new ConfigValidationError(`Invalid configuration in ${taskiPath}`)
+				return createError("configGet", `Invalid configuration in ${taskiPath}`)
 			}
 		}
 
 		const parentDir = join(currentDir, "..")
 		if (currentDir === "/" || (homeDir && currentDir === homeDir)) {
-			throw new ConfigNotFoundError(tried, currentDir)
+			return createError("configGet", `.taski directory not found, searched: ${tried.join(", ")}`)
 		}
 		currentDir = parentDir
 	}

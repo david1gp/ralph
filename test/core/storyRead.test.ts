@@ -1,10 +1,26 @@
 import { expect, test } from "bun:test"
 import { storyRead } from "@/cli/core/storyRead"
+import type { Result } from "~utils/result/Result"
+
+function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
+	if (!result.success) {
+		throw new Error(`Expected success but got error: ${result.errorMessage}`)
+	}
+}
+
+function assertErr<T>(result: Result<T>): asserts result is Extract<typeof result, { success: false }> {
+	if (result.success) {
+		throw new Error(`Expected error but got success`)
+	}
+}
 
 const existingStoryFilename = "taski_cli.md"
 
 test("readStory parses existing story correctly", async () => {
-	const story = await storyRead(existingStoryFilename)
+	const result = await storyRead(existingStoryFilename)
+	expect(result.success).toBe(true)
+	assertOk(result)
+	const story = result.data
 	expect(story.title).toBe("Taski CLI Tool")
 	expect(story.description).toContain("CLI tool")
 	expect(Array.isArray(story.goals)).toBe(true)
@@ -13,20 +29,27 @@ test("readStory parses existing story correctly", async () => {
 	expect(story.userTasks.includes("S-001")).toBe(true)
 })
 
-test("readStory throws error for non-existent story", async () => {
-	expect(storyRead("non_existent_story.md")).rejects.toThrow(
-		'Story "non_existent_story.md" not found',
-	)
+test("readStory returns error for non-existent story", async () => {
+	const result = await storyRead("non_existent_story.md")
+	expect(result.success).toBe(false)
+	assertErr(result)
+	expect(result.errorMessage).toContain('Story "non_existent_story.md" not found')
 })
 
 test("readStory parses goals correctly", async () => {
-	const story = await storyRead(existingStoryFilename)
+	const result = await storyRead(existingStoryFilename)
+	expect(result.success).toBe(true)
+	assertOk(result)
+	const story = result.data
 	expect(story.goals).toContain("Create a fully functional CLI tool for task/story management")
 	expect(story.goals).toContain("Implement type-safe schemas with valibot validation")
 })
 
 test("readStory parses userTasks correctly", async () => {
-	const story = await storyRead(existingStoryFilename)
+	const result = await storyRead(existingStoryFilename)
+	expect(result.success).toBe(true)
+	assertOk(result)
+	const story = result.data
 	expect(story.userTasks).toContain("S-001")
 	expect(story.userTasks).toContain("S-002")
 	expect(story.userTasks).toContain("S-003")
