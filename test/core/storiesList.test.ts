@@ -1,0 +1,11 @@
+import { expect, test, beforeEach } from "bun:test"
+import { storiesList } from "@/cli/core/storiesList"
+
+const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
+
+test("listStories returns all markdown filenames in stories folder", async () => {
+	const stories = await storiesList()
+	expect(Array.isArray(stories)).toBe(true)
+	expect(stories.length).toBeGreaterThanOrEqual(1)
+	expect(stories.includes("taski_cli.md")).toBe(true)
+})
