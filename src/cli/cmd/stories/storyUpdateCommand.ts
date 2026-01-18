@@ -1,4 +1,5 @@
 import { configLoad } from "@/cli/core/config/configLoad"
+import { markdownRestoreWhitespaces } from "@/cli/core/markdownRestoreWhitespaces"
 import { storyUpdate } from "@/cli/core/stories/storyUpdate"
 import type { StoryType } from "@/cli/data/StoryType"
 import { buildCommand, type CommandContext } from "@stricli/core"
@@ -35,7 +36,7 @@ export const storyUpdateCommand = buildCommand({
       updates.title = flags.title
     }
     if (flags.description !== undefined) {
-      updates.description = flags.description
+      updates.description = markdownRestoreWhitespaces(flags.description)
     }
     if (flags.goals !== undefined) {
       updates.goals = parseArray(flags.goals)

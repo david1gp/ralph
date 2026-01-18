@@ -1,4 +1,5 @@
 import { configLoad } from "@/cli/core/config/configLoad"
+import { markdownRestoreWhitespaces } from "@/cli/core/markdownRestoreWhitespaces"
 import { storyPathGet } from "@/cli/core/stories/storyPathGet"
 import { taskUpdate } from "@/cli/core/tasks/taskUpdate"
 import type { TaskType } from "@/cli/data/TaskType"
@@ -20,84 +21,86 @@ interface UpdateFlags {
   config?: string
 }
 
-export const taskUpdateCommand = buildCommand({
-  async func(this: CommandContext, flags: UpdateFlags, id: string) {
-    const configResult = await configLoad(flags.config)
-    if (!configResult.success) {
-      console.error(configResult)
-      process.exit(1)
-    }
-    const config = configResult.data
+export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, id: string) {
+  const configResult = await configLoad(flags.config)
+  if (!configResult.success) {
+    console.error(configResult)
+    process.exit(1)
+  }
+  const config = configResult.data
 
-    const updates: Partial<TaskType> = {}
-    if (flags.passes !== undefined) {
-      updates.passes = flags.passes
-    }
-    if (flags.start !== undefined) {
-      const startResult = parseDateTime(flags.start)
-      if (startResult && !startResult.success) {
-        console.error(startResult)
-        process.exit(1)
-      }
-      updates.startedAt = startResult?.data
-    }
-    if (flags.end !== undefined) {
-      const endResult = parseDateTime(flags.end)
-      if (endResult && !endResult.success) {
-        console.error(endResult)
-        process.exit(1)
-      }
-      updates.endedAt = endResult?.data
-    }
-    if (flags.created !== undefined) {
-      const createdResult = parseDateTime(flags.created)
-      if (createdResult && !createdResult.success) {
-        console.error(createdResult)
-        process.exit(1)
-      }
-      updates.createdAt = createdResult?.data
-    }
-    if (flags.note !== undefined) {
-      updates.note = flags.note
-    }
-    if (flags.title !== undefined) {
-      updates.title = flags.title
-    }
-    if (flags.description !== undefined) {
-      updates.description = flags.description
-    }
-    if (flags.acceptanceCriteria !== undefined) {
-      const result = safeParse(array(string()), flags.acceptanceCriteria)
-      if (!result.success) {
-        const errorResult = {
-          success: false,
-          op: "taskUpdateCommand",
-          errorMessage: `Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.`,
-        }
-        console.error(errorResult)
-        process.exit(1)
-      }
-      updates.acceptanceCriteria = result.output
-    }
-    if (flags.priority !== undefined) {
-      updates.priority = flags.priority
-    }
-    if (flags.story !== undefined) {
-      const storyResult = await storyPathGet(config, flags.story)
-      if (!storyResult.success) {
-        console.error(storyResult)
-        process.exit(1)
-      }
-      updates.story = storyResult.data
-    }
-    const updatedResult = await taskUpdate(config, id, updates)
-    if (!updatedResult.success) {
-      console.error(updatedResult)
+  const updates: Partial<TaskType> = {}
+  if (flags.passes !== undefined) {
+    updates.passes = flags.passes
+  }
+  if (flags.start !== undefined) {
+    const startResult = parseDateTime(flags.start)
+    if (startResult && !startResult.success) {
+      console.error(startResult)
       process.exit(1)
     }
-    const updated = updatedResult.data
-    this.process.stdout.write(`Task "${updated.id}" updated successfully`)
-  },
+    updates.startedAt = startResult?.data
+  }
+  if (flags.end !== undefined) {
+    const endResult = parseDateTime(flags.end)
+    if (endResult && !endResult.success) {
+      console.error(endResult)
+      process.exit(1)
+    }
+    updates.endedAt = endResult?.data
+  }
+  if (flags.created !== undefined) {
+    const createdResult = parseDateTime(flags.created)
+    if (createdResult && !createdResult.success) {
+      console.error(createdResult)
+      process.exit(1)
+    }
+    updates.createdAt = createdResult?.data
+  }
+  if (flags.note !== undefined) {
+    updates.note = markdownRestoreWhitespaces(flags.note)
+  }
+  if (flags.title !== undefined) {
+    updates.title = flags.title
+  }
+  if (flags.description !== undefined) {
+    updates.description = markdownRestoreWhitespaces(flags.description)
+  }
+  if (flags.acceptanceCriteria !== undefined) {
+    const result = safeParse(array(string()), flags.acceptanceCriteria)
+    if (!result.success) {
+      const errorResult = {
+        success: false,
+        op: "taskUpdateCommand",
+        errorMessage: `Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.`,
+      }
+      console.error(errorResult)
+      process.exit(1)
+    }
+    updates.acceptanceCriteria = result.output
+  }
+  if (flags.priority !== undefined) {
+    updates.priority = flags.priority
+  }
+  if (flags.story !== undefined) {
+    const storyResult = await storyPathGet(config, flags.story)
+    if (!storyResult.success) {
+      console.error(storyResult)
+      process.exit(1)
+    }
+    updates.story = storyResult.data
+  }
+  const updatedResult = await taskUpdate(config, id, updates)
+  if (!updatedResult.success) {
+    console.error(updatedResult)
+    process.exit(1)
+  }
+  const updated = updatedResult.data
+  this.process.stdout.write(`Task "${updated.id}" updated successfully`)
+}
+
+export const taskUpdateCommand = buildCommand({
+  func: taskUpdateFunc,
   parameters: {
     positional: {
       kind: "tuple",

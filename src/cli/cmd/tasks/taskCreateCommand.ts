@@ -1,5 +1,6 @@
 import { configGet } from "@/cli/core/config/configGet"
 import { configSave } from "@/cli/core/config/configSave"
+import { markdownRestoreWhitespaces } from "@/cli/core/markdownRestoreWhitespaces"
 import { storyPathGet } from "@/cli/core/stories/storyPathGet"
 import { taskCreate } from "@/cli/core/tasks/taskCreate"
 import { taskIdGenerate } from "@/cli/core/tasks/taskIdGenerate"
@@ -100,11 +101,11 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
     id: id,
     dir: flags.dir,
     title: flags.title,
-    description: flags.description,
+    description: markdownRestoreWhitespaces(flags.description),
     acceptanceCriteria: acceptanceCriteria,
     priority: flags.priority ?? maxPriority + 1,
     passes: flags.passes ?? false,
-    note: flags.note ?? "",
+    note: markdownRestoreWhitespaces(flags.note ?? ""),
     startedAt,
     endedAt,
     story: storyResult.data,

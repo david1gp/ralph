@@ -1,10 +1,11 @@
+import { storyCreateFunc } from "@/cli/cmd/stories/storyCreateCommand"
 import { storiesList } from "@/cli/core/stories/storiesList"
-import { storyCreate } from "@/cli/core/stories/storyCreate"
 import { storyRead } from "@/cli/core/stories/storyRead"
-import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import { existsSync, rmSync } from "node:fs"
+import { afterAll, beforeAll, beforeEach, expect, mock, test } from "bun:test"
+import { existsSync, readFileSync, rmSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+import type { Result } from "~utils/result/Result"
 import { assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../testHelpers"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -33,22 +34,35 @@ This is a test story for unit testing purposes.
 const testConfig = getTestConfig()
 const testStoriesPath = testConfig.storiesFolder
 
-beforeAll(testBeforeAll)
-afterAll(testAfterAll)
-beforeEach(resetTasksFile)
+let stdout: string[] = []
 
-beforeEach(() => {
-  const files = ["S-001_test-001_test-story.md", "S-001_test-002_another-test.md"]
-  for (const file of files) {
-    const testFile = testStoriesPath + "/" + file
-    if (existsSync(testFile)) {
-      rmSync(testFile)
-    }
-  }
+const mockProcess = {
+  stdout: {
+    write: mock((text: string) => {
+      stdout.push(text)
+    }),
+  },
+}
+
+function createMockContext() {
+  return {
+    process: mockProcess,
+  } as any
+}
+
+beforeAll(() => {
+  testBeforeAll()
+  stdout = []
 })
 
 afterAll(() => {
-  const files = ["S-001_test-001_test-story.md", "S-001_test-002_another-test.md"]
+  testAfterAll()
+})
+
+beforeEach(() => {
+  stdout = []
+  resetTasksFile()
+  const files = ["S-001_test-001_test-story.md", "S-001_test-002_another-test.md", "S-001_test-003_escape-test.md"]
   for (const file of files) {
     const testFile = testStoriesPath + "/" + file
     if (existsSync(testFile)) {
@@ -57,41 +71,31 @@ afterAll(() => {
   }
 })
 
-test("createStory creates new story file", async () => {
-  const storiesBeforeResult = await storiesList(testConfig)
-  expect(storiesBeforeResult.success).toBe(true)
-  assertOk(storiesBeforeResult)
-  const result = await storyCreate(testConfig, {
-    shortStoryTitle: "test-story",
-    projectDir: testDir,
-    content: testStoryContent,
-  })
-  expect(result.success).toBe(true)
-  assertOk(result)
-  const createdFilename = result.data.filePath.split("/").pop()
-  expect(createdFilename).toBeDefined()
-  const storiesAfterResult = await storiesList(testConfig)
-  expect(storiesAfterResult.success).toBe(true)
-  assertOk(storiesAfterResult)
-  const storiesAfter = storiesAfterResult.data
-  expect(storiesAfter.includes(createdFilename!)).toBe(true)
+test("storyCreateFunc creates story with escape sequences transformed", async () => {
+  const originalCwd = process.cwd()
+  process.chdir(testDir)
+  try {
+    const context = createMockContext()
+    const params = {
+      shortStoryTitle: "escape-test",
+      projectDir: testDir,
+      content:
+        "# Story: Escape Test\\n\\n## Description\\n\\nLine one\\nLine two\\n\\n## Goals\\n\\n- Goal one\\n- Goal two\\n\\n## User Tasks\\n\\n### T-ESC-001: Task\\twith\\ttabs",
+      config: undefined,
+    }
+    await storyCreateFunc.call(context, params)
 
-  const storyResult = await storyRead(testConfig, createdFilename!)
-  expect(storyResult.success).toBe(true)
-  assertOk(storyResult)
-  const story = storyResult.data
-  expect(story.title).toBe("Test Story")
-  expect(story.description).toContain("test story")
-})
-
-test("createStory creates story with correct filename format", async () => {
-  const result = await storyCreate(testConfig, {
-    shortStoryTitle: "another-test",
-    projectDir: testDir,
-    content: testStoryContent,
-  })
-  expect(result.success).toBe(true)
-  assertOk(result)
-  const filename = result.data.filePath.split("/").pop()
-  expect(filename).toMatch(/S-\d{3}_core-\d{3}_another-test\.md/)
+    expect(stdout[0]).toMatch(/S-\d{3}_core-\d{3}_escape-test\.md/)
+    const filename = stdout[0]!.split("/").pop() ?? ""
+    const storyFilePath = join(testStoriesPath, filename)
+    const fileContent = readFileSync(storyFilePath, "utf-8")
+    expect(fileContent).toContain("# Story: Escape Test")
+    expect(fileContent).toContain("## Description")
+    expect(fileContent).toContain("Line one\nLine two")
+    expect(fileContent).toContain("  with  tab")
+    expect(fileContent).not.toContain("\\n")
+    expect(fileContent).not.toContain("\\t")
+  } finally {
+    process.chdir(originalCwd)
+  }
 })

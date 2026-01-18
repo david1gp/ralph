@@ -1,5 +1,6 @@
 import { configGet } from "@/cli/core/config/configGet"
 import { configSave } from "@/cli/core/config/configSave"
+import { markdownRestoreWhitespaces } from "@/cli/core/markdownRestoreWhitespaces"
 import { storyCreate } from "@/cli/core/stories/storyCreate"
 import { shortStoryTitleFormat } from "@/cli/core/stories/storyInputValidate"
 import { buildCommand, type CommandContext } from "@stricli/core"
@@ -34,7 +35,7 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
   const result = await storyCreate(config, {
     shortStoryTitle: titleResult.data,
     projectDir: flags.projectDir,
-    content: flags.content,
+    content: markdownRestoreWhitespaces(flags.content),
   })
   if (!result.success) {
     console.error(result)
