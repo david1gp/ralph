@@ -2,9 +2,8 @@ import { expect, test, beforeAll, afterAll } from "bun:test"
 import { storiesList } from "@/cli/core/storiesList"
 import { getTestConfig, assertOk, testBeforeAll, testAfterAll } from "../testHelpers"
 
-const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
-
 const testConfig = getTestConfig()
+const testStoriesPath = testConfig.storiesFolder
 
 beforeAll(testBeforeAll)
 afterAll(testAfterAll)

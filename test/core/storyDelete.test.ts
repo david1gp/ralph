@@ -5,7 +5,6 @@ import { storyCreate } from "@/cli/core/storyCreate"
 import { storyDelete } from "@/cli/core/storyDelete"
 import { getTestConfig, assertOk, assertErr, testBeforeAll, testAfterAll, resetTasksFile } from "../testHelpers"
 
-const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
 const testStoryFilename = "test_story.md"
 const testStoryContent = `# Story: Test Story
 
@@ -28,6 +27,7 @@ This is a test story for unit testing purposes.
 `
 
 const testConfig = getTestConfig()
+const testStoriesPath = testConfig.storiesFolder
 
 beforeAll(testBeforeAll)
 afterAll(testAfterAll)
