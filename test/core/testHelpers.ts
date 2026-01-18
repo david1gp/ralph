@@ -7,7 +7,7 @@ import type { Result } from "~utils/result/Result"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const testTaskiDir = join(__dirname, "..", ".taski")
-const projectRoot = join(__dirname, "..")
+export const projectRoot = join(__dirname, "..")
 
 const originalTasksPath = join(testTaskiDir, "tasks.json")
 let originalContent: string | null = null

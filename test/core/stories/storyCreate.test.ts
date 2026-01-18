@@ -85,5 +85,5 @@ test("createStory creates story with correct filename format", async () => {
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const filename = result.data.filePath.split("/").pop()
-	expect(filename).toMatch(/S-\d{3}_test-\d{3}_another-test\.md/)
+	expect(filename).toMatch(/S-\d{3}_core-\d{3}_another-test\.md/)
 })
