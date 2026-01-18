@@ -4,7 +4,7 @@ import { storySchema, storyValidate } from "@/cli/data/storyValidate"
 
 	test("taskSchema validates correct task data", () => {
 	const validTask = {
-		id: "T-001",
+		id: "TEST-001",
 		dir: "/home/david/Coding/project",
 		story: "test-story.md",
 		title: "Test Task",
@@ -19,7 +19,7 @@ import { storySchema, storyValidate } from "@/cli/data/storyValidate"
 
 test("taskSchema rejects missing required fields", () => {
 	const invalidTask = {
-		id: "T-001",
+		id: "TEST-001",
 		dir: "/home/david/Coding/project",
 		title: "Test Task",
 	}
@@ -28,7 +28,7 @@ test("taskSchema rejects missing required fields", () => {
 
 	test("taskSchema accepts passes as true or false", () => {
 	const taskTrue = {
-		id: "T-001",
+		id: "TEST-001",
 		dir: "/home/david/Coding/project",
 		story: "test-story.md",
 		title: "Test Task",
@@ -38,7 +38,7 @@ test("taskSchema rejects missing required fields", () => {
 		passes: true,
 	}
 	const taskFalse = {
-		id: "T-001",
+		id: "TEST-001",
 		dir: "/home/david/Coding/project",
 		story: "test-story.md",
 		title: "Test Task",

@@ -4,7 +4,7 @@ import { storyParse } from "@/cli/data/storyParse"
 
 	test("taskParse returns success for valid data", () => {
 	const validTask = {
-		id: "T-001",
+		id: "TEST-001",
 		dir: "/home/david/Coding/project",
 		story: "test-story.md",
 		title: "Test Task",
@@ -16,13 +16,13 @@ import { storyParse } from "@/cli/data/storyParse"
 	const result = taskParse(validTask)
 	expect(result.success).toBe(true)
 	if (result.success) {
-		expect(result.data.id).toBe("T-001")
+		expect(result.data.id).toBe("TEST-001")
 	}
 })
 
 test("taskParse returns failure for invalid data", () => {
 	const invalidTask = {
-		id: "T-001",
+		id: "TEST-001",
 	}
 	const result = taskParse(invalidTask)
 	expect(result.success).toBe(false)

@@ -185,8 +185,8 @@ A story with user tasks.
 
 ## User Tasks
 
-### T-001: First task
-### T-002: Second task
+### TEST-001: First task
+### TEST-002: Second task
 ### S-003: Story task
 
 ## Goals
@@ -204,7 +204,7 @@ A story with user tasks.
 		expect(storyResult.success).toBe(true)
 		assertOk(storyResult)
 		const story = storyResult.data
-		expect(story.userTasks).toEqual(["T-001", "T-002", "S-003"])
+		expect(story.userTasks).toEqual(["TEST-001", "TEST-002", "S-003"])
 	} finally {
 		process.chdir(originalCwd)
 	}

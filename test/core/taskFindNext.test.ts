@@ -25,7 +25,7 @@ test("taskFindNext returns first task with passes=false", async () => {
 	const next = result.data
 	expect(next).not.toBeUndefined()
 	expect(next!.passes).toBe(false)
-	expect(next!.id).toBe("T-001")
+	expect(next!.id).toBe("TEST-001")
 })
 
 test("taskFindNext returns undefined when all tasks pass", async () => {

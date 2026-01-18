@@ -29,10 +29,9 @@ test("tasksRead returns all tasks from tasks.json", async () => {
 	expect(result.success).toBe(true)
 	assertOk(result)
 	const tasks = result.data
-	expect(tasks.length).toBe(10)
-	expect(tasks[0]!.id).toBe("T-001")
-	expect(tasks[1]!.id).toBe("T-002")
-	expect(tasks[3]!.id).toBe("T-004")
+	expect(tasks.length).toBe(2)
+	expect(tasks[0]!.id).toBe("TEST-001")
+	expect(tasks[1]!.id).toBe("TEST-002")
 })
 
 test("tasksRead returns empty array when file does not exist", async () => {

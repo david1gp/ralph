@@ -35,8 +35,8 @@ This is the initial description text
 
 ## User Tasks
 
-### T-001: Initial task one
-### T-002: Initial task two
+### TEST-001: Initial task one
+### TEST-002: Initial task two
 `
 
 beforeEach(() => {
@@ -119,7 +119,7 @@ test("storyUpdate performs partial update on existing story", async () => {
 	expect(updated.title).toBe("Partially Updated Title")
 	expect(updated.description).toBe("This is the initial description text")
 	expect(updated.goals).toEqual(["Initial goal one", "Initial goal two"])
-	expect(updated.userTasks).toEqual(["T-001", "T-002"])
+	expect(updated.userTasks).toEqual(["TEST-001", "TEST-002"])
 })
 
 test("storyUpdate returns error for non-existent story", async () => {

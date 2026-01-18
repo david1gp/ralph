@@ -37,7 +37,7 @@ test("taskDelete removes task by ID", async () => {
 	assertOk(initialResult)
 	const initialTasks = initialResult.data
 	const initialCount = initialTasks.length
-	const result = await taskDelete(testConfig, "T-004")
+	const result = await taskDelete(testConfig, "TEST-001")
 	expect(result.success).toBe(true)
 	assertOk(result)
 	expect(result.data).toBe(true)
@@ -46,7 +46,7 @@ test("taskDelete removes task by ID", async () => {
 	assertOk(tasksResult)
 	const tasks = tasksResult.data
 	expect(tasks.length).toBe(initialCount - 1)
-	expect(tasks.find((t) => t.id === "T-004")).toBeUndefined()
+	expect(tasks.find((t) => t.id === "TEST-001")).toBeUndefined()
 })
 
 test("taskDelete returns error for non-existent task", async () => {
