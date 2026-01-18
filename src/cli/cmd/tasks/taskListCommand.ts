@@ -1,6 +1,7 @@
 import { configLoad } from "@/cli/core/config/configLoad"
 import { tasksRead } from "@/cli/core/tasks/tasksRead"
 import { buildCommand, type CommandContext } from "@stricli/core"
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 interface ListFlags {
   config?: string
@@ -17,11 +18,11 @@ export const taskListCommand = buildCommand({
 
     const tasksResult = await tasksRead(config)
     if (!tasksResult.success) {
-      this.process.stdout.write(JSON.stringify([]))
+      this.process.stdout.write(jsonStringifyPretty([]))
       return
     }
     const tasks = tasksResult.data
-    this.process.stdout.write(JSON.stringify(tasks))
+    this.process.stdout.write(jsonStringifyPretty(tasks))
   },
   parameters: {
     flags: {
