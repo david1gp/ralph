@@ -1,11 +1,9 @@
 import { configSchema } from "@/cli/data/configSchema"
 import { getConfigPath } from "@/cli/core/configStore"
 import { createResult, createError, type PromiseResult } from "~utils/result/Result"
-import { existsSync } from "node:fs"
-import { join } from "node:path"
+import { join, dirname } from "node:path"
+import { homedir } from "os"
 import { parse } from "valibot"
-
-const homeDir = process.env.HOME || ""
 
 function resolveConfigPaths(taskiDir: string, rawConfig: { tasksFile: string; storiesFolder: string }) {
 	return {
@@ -14,12 +12,14 @@ function resolveConfigPaths(taskiDir: string, rawConfig: { tasksFile: string; st
 	}
 }
 
-async function readConfigFromPath(taskiDir: string): PromiseResult<{ tasksFile: string; storiesFolder: string }> {
-	const taskiPath = join(taskiDir, "taski.json")
-	const taskiFile = Bun.file(taskiPath)
+async function readConfigFromPath(taskiPath: string): PromiseResult<{ tasksFile: string; storiesFolder: string }> {
+	const isDirectFilePath = taskiPath.endsWith("taski.json")
+	const configPath = isDirectFilePath ? taskiPath : join(taskiPath, "taski.json")
+	const taskiDir = isDirectFilePath ? dirname(taskiPath) : taskiPath
 
+	const taskiFile = Bun.file(configPath)
 	if (!await taskiFile.exists()) {
-		return createError("configGet", `Config file not found at ${taskiPath}`)
+		return createError("configGet", `Config file not found at ${configPath}`)
 	}
 
 	try {
@@ -27,40 +27,31 @@ async function readConfigFromPath(taskiDir: string): PromiseResult<{ tasksFile: 
 		const validatedConfig = parse(configSchema, rawConfig)
 		return createResult(resolveConfigPaths(taskiDir, validatedConfig))
 	} catch {
-		return createError("configGet", `Invalid configuration in ${taskiPath}`)
+		return createError("configGet", `Invalid configuration in ${configPath}`)
 	}
 }
 
 export async function configGet(): PromiseResult<{ tasksFile: string; storiesFolder: string }> {
+	const tried: string[] = []
+
 	const overridePath = getConfigPath()
 	if (overridePath !== null) {
 		return readConfigFromPath(overridePath)
 	}
 
-	let currentDir = process.cwd()
-	const tried: string[] = []
-
-	while (true) {
-		const taskiPath = join(currentDir, ".taski", "taski.json")
-		tried.push(taskiPath)
-
-		const taskiDir = join(currentDir, ".taski")
-		const taskiFile = Bun.file(taskiPath)
-
-		if (await taskiFile.exists()) {
-			try {
-				const rawConfig = await taskiFile.json()
-				const validatedConfig = parse(configSchema, rawConfig)
-				return createResult(resolveConfigPaths(taskiDir, validatedConfig))
-			} catch {
-				return createError("configGet", `Invalid configuration in ${taskiPath}`)
-			}
-		}
-
-		const parentDir = join(currentDir, "..")
-		if (currentDir === "/" || (homeDir && currentDir === homeDir)) {
-			return createError("configGet", `.taski directory not found, searched: ${tried.join(", ")}`)
-		}
-		currentDir = parentDir
+	const currentDirConfig = join(process.cwd(), ".taski", "taski.json")
+	tried.push(currentDirConfig)
+	const currentDirResult = await readConfigFromPath(currentDirConfig)
+	if (currentDirResult.success) {
+		return currentDirResult
 	}
+
+	const homedirConfig = join(homedir(), ".config", "taski", "taski.json")
+	tried.push(homedirConfig)
+	const homedirResult = await readConfigFromPath(homedirConfig)
+	if (homedirResult.success) {
+		return homedirResult
+	}
+
+	return createError("configGet", `Config file not found, searched: ${tried.join(", ")}`)
 }
