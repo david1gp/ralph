@@ -1,6 +1,6 @@
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { storyCreate } from "@/cli/core/storyCreate"
-import { configLoad } from "@/cli/core/configLoad"
+import { configGet } from "@/cli/core/configGet"
 
 interface CreateFlags {
 	filename: string
@@ -9,7 +9,7 @@ interface CreateFlags {
 }
 
 export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) {
-	const configResult = await configLoad(flags.config)
+	const configResult = await configGet()
 	if (!configResult.success) {
 		console.error(JSON.stringify(configResult))
 		process.exit(1)

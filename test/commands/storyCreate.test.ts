@@ -3,9 +3,8 @@ import { writeFileSync, rmSync, existsSync } from "node:fs"
 import { storyCreateFunc, storyCreateCommand } from "@/cli/cmd/stories/storyCreateCommand"
 import { storiesList } from "@/cli/core/storiesList"
 import { storyRead } from "@/cli/core/storyRead"
-import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
-import { getTestConfig } from "../testHelpers"
+import { testBeforeAll, testAfterAll, getTestConfig } from "../testHelpers"
 import { join, dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -18,7 +17,7 @@ function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result
 	}
 }
 
-const testConfig: ConfigType = getTestConfig()
+const testConfig = getTestConfig()
 const storiesPath = testConfig.storiesFolder
 
 let stdout: string[] = []
@@ -56,10 +55,12 @@ This is a test story created by the command test.
 `
 
 beforeAll(() => {
+	testBeforeAll()
 	stdout = []
 })
 
 afterAll(() => {
+	testAfterAll()
 	const testFile = `${storiesPath}/${testStoryFilename}`
 	if (existsSync(testFile)) {
 		rmSync(testFile)

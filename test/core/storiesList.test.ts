@@ -14,6 +14,8 @@ const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
 const testConfig: ConfigType = {
 	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
 	storiesFolder: testStoriesPath,
+	projectTaskPrefix: {},
+	projectTaskIdNumber: {},
 }
 
 test("listStories returns all markdown filenames in stories folder", async () => {

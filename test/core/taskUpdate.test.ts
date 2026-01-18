@@ -1,9 +1,8 @@
 import { tasksRead } from "@/cli/core/tasksRead"
 import { taskUpdate } from "@/cli/core/taskUpdate"
-import type { ConfigType } from "@/cli/data/ConfigType"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import type { Result } from "~utils/result/Result"
+import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig } from "../testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
 	if (!result.success) {
@@ -17,27 +16,18 @@ function assertErr<T>(result: Result<T>): asserts result is Extract<typeof resul
 	}
 }
 
-const originalTasksPath = "/home/david/Coding/personal-taski-cli/.taski/tasks.json"
-
-const originalContent: string = readFileSync(originalTasksPath, "utf-8")
-
-const testConfig: ConfigType = {
-	tasksFile: originalTasksPath,
-	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
-}
+const testConfig = getTestConfig()
 
 beforeAll(() => {
-	if (!existsSync(originalTasksPath)) {
-		throw new Error(`Tasks file not found at ${originalTasksPath}`)
-	}
+	testBeforeAll()
 })
 
 afterAll(() => {
-	writeFileSync(originalTasksPath, originalContent)
+	testAfterAll()
 })
 
 beforeEach(() => {
-	writeFileSync(originalTasksPath, originalContent)
+	resetTasksFile()
 })
 
 test("taskUpdate updates existing task", async () => {

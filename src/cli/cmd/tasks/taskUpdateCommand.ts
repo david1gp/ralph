@@ -10,6 +10,7 @@ interface UpdateFlags {
 	passes?: boolean
 	start?: string
 	end?: string
+	created?: string
 	note?: string
 	title?: string
 	description?: string
@@ -47,6 +48,14 @@ export const taskUpdateCommand = buildCommand({
 				process.exit(1)
 			}
 			updates.endedAt = endResult?.data
+		}
+		if (flags.created !== undefined) {
+			const createdResult = parseDateTime(flags.created)
+			if (createdResult && !createdResult.success) {
+				console.error(JSON.stringify(createdResult))
+				process.exit(1)
+			}
+			updates.createdAt = createdResult?.data
 		}
 		if (flags.note !== undefined) {
 			updates.note = flags.note
@@ -115,6 +124,13 @@ export const taskUpdateCommand = buildCommand({
 				optional: true,
 				inferEmpty: true,
 				brief: "Set endedAt (use 'now', empty to clear, or ISO 8601 timestamp)",
+			},
+			created: {
+				kind: "parsed",
+				parse: String,
+				optional: true,
+				inferEmpty: true,
+				brief: "Set createdAt (use 'now', empty to clear, or ISO 8601 timestamp)",
 			},
 			note: {
 				kind: "parsed",

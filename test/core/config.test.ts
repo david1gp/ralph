@@ -25,11 +25,11 @@ const originalContent: string = "{\"tasksFile\":\"./tasks.json\",\"storiesFolder
 
 beforeAll(() => {
 	clearConfigPath()
-	if (!existsSync(testTaskiDir)) {
-		mkdirSync(testTaskiDir, { recursive: true })
-		mkdirSync(join(testTaskiDir, "stories"), { recursive: true })
-		writeFileSync(testConfigPath, '{"tasksFile":"./tasks.json","storiesFolder":"./stories"}')
-	}
+		if (!existsSync(testTaskiDir)) {
+			mkdirSync(testTaskiDir, { recursive: true })
+			mkdirSync(join(testTaskiDir, "stories"), { recursive: true })
+			writeFileSync(testConfigPath, '{"tasksFile":"./tasks.json","storiesFolder":"./stories","testing":true}')
+		}
 })
 
 afterAll(() => {

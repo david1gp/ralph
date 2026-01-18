@@ -11,8 +11,9 @@ export const taskSchema = object({
 	title: string(),
 	description: string(),
 	acceptanceCriteria: array(string()),
-  // optional
+	// optional
 	note: optional(string()),
 	startedAt: optional(string()),
 	endedAt: optional(string()),
+	createdAt: optional(string()),
 })

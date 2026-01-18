@@ -1,3 +1,5 @@
+import { configSave } from "@/cli/core/configSave"
+import { taskIdGenerate } from "@/cli/core/taskIdGenerate"
 import { storyPathGet } from "@/cli/core/storyPathGet"
 import { taskCreate } from "@/cli/core/taskCreate"
 import { tasksRead } from "@/cli/core/tasksRead"
@@ -5,7 +7,7 @@ import type { TaskType } from "@/cli/data/TaskType"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { array, safeParse, string } from "valibot"
-import { configLoad } from "@/cli/core/configLoad"
+import { configGet } from "@/cli/core/configGet"
 
 interface CreateFlags {
 	title: string
@@ -22,7 +24,7 @@ interface CreateFlags {
 }
 
 export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
-	const configResult = await configLoad(flags.config)
+	const configResult = await configGet()
 	if (!configResult.success) {
 		console.error(JSON.stringify(configResult))
 		process.exit(1)
@@ -80,8 +82,10 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 		endedAt = endResult.data
 	}
 
+	const { id, idNumber } = taskIdGenerate(config, flags.dir)
+
 	const newTask: TaskType = {
-		id: `T-${String(tasks.length + 1).padStart(3, "0")}`,
+		id: id,
 		dir: flags.dir,
 		title: flags.title,
 		description: flags.description,
@@ -92,12 +96,18 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
 		startedAt,
 		endedAt,
 		story: storyResult.data,
+		createdAt: new Date().toISOString(),
 	}
 	const createdResult = await taskCreate(config, newTask)
 	if (!createdResult.success) {
 		console.error(JSON.stringify(createdResult))
 		process.exit(1)
 	}
+
+	config.projectTaskIdNumber = config.projectTaskIdNumber ?? {}
+	config.projectTaskIdNumber[flags.dir] = idNumber + 1
+	await configSave(config)
+
 	this.process.stdout.write(createdResult.data.id)
 }
 

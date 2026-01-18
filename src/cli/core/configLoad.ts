@@ -7,6 +7,7 @@ import { createError, createResult, type PromiseResult } from "~utils/result/Res
 
 function resolveConfigPaths(taskiDir: string, rawConfig: ConfigType) {
 	return {
+		...rawConfig,
 		tasksFile: join(taskiDir, rawConfig.tasksFile),
 		storiesFolder: join(taskiDir, rawConfig.storiesFolder),
 	}
@@ -25,6 +26,12 @@ async function readConfigFromPath(taskiPath: string): PromiseResult<ConfigType> 
 	try {
 		const rawConfig = await taskiFile.json()
 		const validatedConfig = parse(configSchema, rawConfig)
+
+		const isTestConfig = taskiPath.includes("/test/.taski/")
+		if (isTestConfig && !validatedConfig.testing) {
+			return createError("configLoad", `Test config at ${configPath} must have 'testing: true'`)
+		}
+
 		return createResult(resolveConfigPaths(taskiDir, validatedConfig))
 	} catch {
 		return createError("configLoad", `Invalid configuration in ${configPath}`)

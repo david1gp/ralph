@@ -1,9 +1,9 @@
 import { expect, test, beforeAll, afterAll, beforeEach, mock } from "bun:test"
-import { writeFileSync, readFileSync, rmSync } from "node:fs"
+import { writeFileSync, readFileSync } from "node:fs"
 import { taskCreateFunc, taskCreateCommand } from "@/cli/cmd/tasks/taskCreateCommand"
 import { tasksRead } from "@/cli/core/tasksRead"
-import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
+import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig } from "../testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
 	if (!result.success) {
@@ -11,13 +11,7 @@ function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result
 	}
 }
 
-const originalTasksPath = "/home/david/Coding/personal-taski-cli/.taski/tasks.json"
-const originalContent: string = readFileSync(originalTasksPath, "utf-8")
-
-const testConfig: ConfigType = {
-	tasksFile: originalTasksPath,
-	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
-}
+const testConfig = getTestConfig()
 
 let stdout: string[] = []
 
@@ -36,16 +30,17 @@ function createMockContext() {
 }
 
 beforeAll(() => {
+	testBeforeAll()
 	stdout = []
 })
 
 afterAll(() => {
-	writeFileSync(originalTasksPath, originalContent)
+	testAfterAll()
 })
 
 beforeEach(() => {
 	stdout = []
-	writeFileSync(originalTasksPath, originalContent)
+	resetTasksFile()
 })
 
 test("taskCreateCommand creates task with required --title flag", async () => {

@@ -1,9 +1,9 @@
 import { expect, test, beforeAll, afterAll, beforeEach } from "bun:test"
-import { writeFileSync, readFileSync, existsSync } from "node:fs"
+import { writeFileSync, readFileSync } from "node:fs"
 import { taskDelete } from "@/cli/core/taskDelete"
 import { tasksRead } from "@/cli/core/tasksRead"
-import type { ConfigType } from "@/cli/data/ConfigType"
 import type { Result } from "~utils/result/Result"
+import { testBeforeAll, testAfterAll, resetTasksFile, getTestConfig } from "../testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
 	if (!result.success) {
@@ -17,26 +17,18 @@ function assertErr<T>(result: Result<T>): asserts result is Extract<typeof resul
 	}
 }
 
-const originalTasksPath = "/home/david/Coding/personal-taski-cli/.taski/tasks.json"
-const originalContent: string = readFileSync(originalTasksPath, "utf-8")
-
-const testConfig: ConfigType = {
-	tasksFile: originalTasksPath,
-	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
-}
+const testConfig = getTestConfig()
 
 beforeAll(() => {
-	if (!existsSync("/home/david/Coding/personal-taski-cli/.taski")) {
-		throw new Error(".taski directory does not exist")
-	}
+	testBeforeAll()
 })
 
 afterAll(() => {
-	writeFileSync(originalTasksPath, originalContent)
+	testAfterAll()
 })
 
 beforeEach(() => {
-	writeFileSync(originalTasksPath, originalContent)
+	resetTasksFile()
 })
 
 test("taskDelete removes task by ID", async () => {

@@ -43,6 +43,8 @@ This is a test story for unit testing purposes.
 const testConfig: ConfigType = {
 	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
 	storiesFolder: testStoriesPath,
+	projectTaskPrefix: {},
+	projectTaskIdNumber: {},
 }
 
 afterAll(() => {

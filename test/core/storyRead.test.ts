@@ -20,6 +20,8 @@ const existingStoryFilename = "taski_cli.md"
 const testConfig: ConfigType = {
 	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
 	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
+	projectTaskPrefix: {},
+	projectTaskIdNumber: {},
 }
 
 test("readStory parses existing story correctly", async () => {
