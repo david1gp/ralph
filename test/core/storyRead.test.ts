@@ -1,28 +1,13 @@
-import { expect, test } from "bun:test"
+import { expect, test, beforeAll, afterAll } from "bun:test"
 import { storyRead } from "@/cli/core/storyRead"
-import type { ConfigType } from "@/cli/data/ConfigType"
-import type { Result } from "~utils/result/Result"
-
-function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
-	if (!result.success) {
-		throw new Error(`Expected success but got error: ${result.errorMessage}`)
-	}
-}
-
-function assertErr<T>(result: Result<T>): asserts result is Extract<typeof result, { success: false }> {
-	if (result.success) {
-		throw new Error(`Expected error but got success`)
-	}
-}
+import { getTestConfig, assertOk, assertErr, testBeforeAll, testAfterAll } from "../testHelpers"
 
 const existingStoryFilename = "taski_cli.md"
 
-const testConfig: ConfigType = {
-	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
-	storiesFolder: "/home/david/Coding/personal-taski-cli/.taski/stories",
-	projectTaskPrefix: {},
-	projectTaskIdNumber: {},
-}
+const testConfig = getTestConfig()
+
+beforeAll(testBeforeAll)
+afterAll(testAfterAll)
 
 test("readStory parses existing story correctly", async () => {
 	const result = await storyRead(testConfig, existingStoryFilename)

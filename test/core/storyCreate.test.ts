@@ -2,16 +2,9 @@ import { storiesList } from "@/cli/core/storiesList"
 import { storyCreate } from "@/cli/core/storyCreate"
 import { storyDelete } from "@/cli/core/storyDelete"
 import { storyRead } from "@/cli/core/storyRead"
-import type { ConfigType } from "@/cli/data/ConfigType"
-import { afterAll, beforeEach, expect, test } from "bun:test"
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import { existsSync, rmSync } from "node:fs"
-import type { Result } from "~utils/result/Result"
-
-function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
-	if (!result.success) {
-		throw new Error(`Expected success but got error: ${result.errorMessage}`)
-	}
-}
+import { getTestConfig, assertOk, testBeforeAll, testAfterAll, resetTasksFile } from "../testHelpers"
 
 const testStoriesPath = "/home/david/Coding/personal-taski-cli/.taski/stories"
 const testStoryFilename = "test_story.md"
@@ -35,12 +28,11 @@ This is a test story for unit testing purposes.
 ### T-TEST3: Third test task
 `
 
-const testConfig: ConfigType = {
-	tasksFile: "/home/david/Coding/personal-taski-cli/.taski/tasks.json",
-	storiesFolder: testStoriesPath,
-	projectTaskPrefix: {},
-	projectTaskIdNumber: {},
-}
+const testConfig = getTestConfig()
+
+beforeAll(testBeforeAll)
+afterAll(testAfterAll)
+beforeEach(resetTasksFile)
 
 beforeEach(() => {
 	const testFile = `${testStoriesPath}/${testStoryFilename}`

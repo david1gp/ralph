@@ -3,18 +3,21 @@ import { join, dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import type { ConfigType } from "@/cli/data/ConfigType"
+import type { Result } from "~utils/result/Result"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const testTaskiDir = join(__dirname, ".taski")
+const testTaskiDir = join(__dirname, "..", ".taski")
+const projectRoot = join(__dirname, "..")
 
 const originalTasksPath = join(testTaskiDir, "tasks.json")
 let originalContent: string | null = null
 
-const defaultTestTasks = `[
+function getDefaultTestTasks(): string {
+	return `[
   {
     "id": "TEST-001",
-    "dir": "/home/david/Coding/personal-taski-cli",
-    "story": "/home/david/Coding/personal-taski-cli/.taski/stories/test-story-1.md",
+    "dir": "${projectRoot}",
+    "story": "${join(testTaskiDir, "stories", "test-story-1.md")}",
     "priority": 1,
     "passes": false,
     "title": "Task 1",
@@ -24,8 +27,8 @@ const defaultTestTasks = `[
   },
   {
     "id": "TEST-002",
-    "dir": "/home/david/Coding/personal-taski-cli",
-    "story": "/home/david/Coding/personal-taski-cli/.taski/stories/test-story-2.md",
+    "dir": "${projectRoot}",
+    "story": "${join(testTaskiDir, "stories", "test-story-2.md")}",
     "priority": 2,
     "passes": false,
     "title": "Task 2",
@@ -34,6 +37,7 @@ const defaultTestTasks = `[
     "note": ""
   }
 ]`
+}
 
 export function testBeforeAll(): void {
 	if (!existsSync(testTaskiDir)) {
@@ -41,7 +45,7 @@ export function testBeforeAll(): void {
 	}
 	setConfigPath(testTaskiDir)
 	if (!existsSync(originalTasksPath)) {
-		writeFileSync(originalTasksPath, defaultTestTasks)
+		writeFileSync(originalTasksPath, getDefaultTestTasks())
 	}
 	originalContent = readFileSync(originalTasksPath, "utf-8")
 }
@@ -59,12 +63,27 @@ export function resetTasksFile(): void {
 	}
 }
 
-export function getTestConfig(): ConfigType {
-	return {
+export function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
+	if (!result.success) {
+		throw new Error(`Expected success but got error: ${result.errorMessage}`)
+	}
+}
+
+export function assertErr<T>(result: Result<T>): asserts result is Extract<typeof result, { success: false }> {
+	if (result.success) {
+		throw new Error(`Expected error but got success`)
+	}
+}
+
+export function getTestConfig(overrides: Partial<ConfigType> = {}): ConfigType {
+	const base: ConfigType = {
 		tasksFile: join(testTaskiDir, "tasks.json"),
 		storiesFolder: join(testTaskiDir, "stories"),
-		projectTaskPrefix: { "/home/david/Coding/personal-taski-cli": "TEST" },
+		projectTaskPrefix: { [projectRoot]: "TEST" },
 		projectTaskIdNumber: {},
+		storyIdNumber: 0,
+		projectStoryIdNumber: {},
 		testing: true,
 	}
+	return { ...base, ...overrides }
 }
