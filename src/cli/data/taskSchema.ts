@@ -3,7 +3,7 @@ import { array, literal, number, object, optional, string, union } from "valibot
 export const taskSchema = object({
   // meta
   id: string(),
-  dir: string(),
+  projectDir: string(),
   story: string(),
   priority: number(),
   passes: union([literal(true), literal(false)]),

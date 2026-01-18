@@ -5,7 +5,7 @@ import { storySchema, storyValidate } from "@/cli/data/storyValidate"
 test("taskSchema validates correct task data", () => {
   const validTask = {
     id: "TEST-001",
-    dir: "/home/david/Coding/project",
+    projectDir: "/home/david/Coding/project",
     story: "test-story.md",
     title: "Test Task",
     description: "A test task",
@@ -20,7 +20,7 @@ test("taskSchema validates correct task data", () => {
 test("taskSchema rejects missing required fields", () => {
   const invalidTask = {
     id: "TEST-001",
-    dir: "/home/david/Coding/project",
+    projectDir: "/home/david/Coding/project",
     title: "Test Task",
   }
   expect(() => taskValidate(invalidTask)).toThrow()
@@ -29,7 +29,7 @@ test("taskSchema rejects missing required fields", () => {
 test("taskSchema accepts passes as true or false", () => {
   const taskTrue = {
     id: "TEST-001",
-    dir: "/home/david/Coding/project",
+    projectDir: "/home/david/Coding/project",
     story: "test-story.md",
     title: "Test Task",
     description: "A test task",
@@ -39,7 +39,7 @@ test("taskSchema accepts passes as true or false", () => {
   }
   const taskFalse = {
     id: "TEST-001",
-    dir: "/home/david/Coding/project",
+    projectDir: "/home/david/Coding/project",
     story: "test-story.md",
     title: "Test Task",
     description: "A test task",
@@ -57,6 +57,7 @@ test("storySchema validates correct story data", () => {
     description: "A description",
     goals: ["Goal 1", "Goal 2"],
     userTasks: ["S-001", "S-002"],
+    projectDir: "/home/david/Coding/project",
   }
   expect(() => storyValidate(validStory)).not.toThrow()
 })

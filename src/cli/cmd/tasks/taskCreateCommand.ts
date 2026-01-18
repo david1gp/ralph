@@ -20,7 +20,7 @@ interface CreateFlags {
   end?: string
   note?: string
   story: string
-  dir: string
+  projectDir: string
   config?: string
 }
 
@@ -95,11 +95,11 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
     endedAt = endResult.data
   }
 
-  const { id, idNumber } = taskIdGenerate(config, flags.dir)
+  const { id, idNumber } = taskIdGenerate(config, flags.projectDir)
 
   const newTask: TaskType = {
     id: id,
-    dir: flags.dir,
+    projectDir: flags.projectDir,
     title: flags.title,
     description: markdownRestoreWhitespaces(flags.description),
     acceptanceCriteria: acceptanceCriteria,
@@ -118,7 +118,7 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
   }
 
   config.projectTaskIdNumber = config.projectTaskIdNumber ?? {}
-  config.projectTaskIdNumber[flags.dir] = idNumber + 1
+  config.projectTaskIdNumber[flags.projectDir] = idNumber + 1
   await configSave(config)
 
   this.process.stdout.write(createdResult.data.id)
@@ -183,11 +183,11 @@ export const taskCreateCommand = buildCommand({
         optional: false,
         brief: "Set story reference (filename or path, .md extension optional)",
       },
-      dir: {
+      projectDir: {
         kind: "parsed",
         parse: String,
         optional: false,
-        brief: "Set task directory path",
+        brief: "Project directory path",
       },
       config: {
         kind: "parsed",

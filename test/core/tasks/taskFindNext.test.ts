@@ -41,7 +41,7 @@ test("taskFindNext with same priority returns first in list", async () => {
   const tasksContent = jsonStringifyPretty([
     {
       id: "T1",
-      dir: "/test",
+      projectDir: "/test",
       story: "/test/story.md",
       priority: 5,
       passes: false,
@@ -52,7 +52,7 @@ test("taskFindNext with same priority returns first in list", async () => {
     },
     {
       id: "T2",
-      dir: "/test",
+      projectDir: "/test",
       story: "/test/story.md",
       priority: 5,
       passes: false,
@@ -63,7 +63,7 @@ test("taskFindNext with same priority returns first in list", async () => {
     },
     {
       id: "T3",
-      dir: "/test",
+      projectDir: "/test",
       story: "/test/story.md",
       priority: 5,
       passes: false,
@@ -84,7 +84,7 @@ test("taskFindNext higher priority wins over lower", async () => {
   const tasksContent = jsonStringifyPretty([
     {
       id: "LOW",
-      dir: "/test",
+      projectDir: "/test",
       story: "/test/story.md",
       priority: 1,
       passes: false,
@@ -95,7 +95,7 @@ test("taskFindNext higher priority wins over lower", async () => {
     },
     {
       id: "HIGH",
-      dir: "/test",
+      projectDir: "/test",
       story: "/test/story.md",
       priority: 99,
       passes: false,
@@ -106,7 +106,7 @@ test("taskFindNext higher priority wins over lower", async () => {
     },
     {
       id: "MED",
-      dir: "/test",
+      projectDir: "/test",
       story: "/test/story.md",
       priority: 50,
       passes: false,
