@@ -1,9 +1,9 @@
 import { configLoad } from "@/cli/core/config/configLoad"
 import { markdownRestoreWhitespaces } from "@/cli/core/markdownRestoreWhitespaces"
-import { storyPathGet } from "@/cli/core/stories/storyPathGet"
 import { taskUpdate } from "@/cli/core/tasks/taskUpdate"
 import type { TaskType } from "@/cli/data/TaskType"
 import { parseDateTime } from "@/cli/utils/dateTime"
+import { storyExists } from "@/cli/utils/storyExists"
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { array, safeParse, string } from "valibot"
 
@@ -84,7 +84,7 @@ export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, i
     updates.priority = flags.priority
   }
   if (flags.story !== undefined) {
-    const storyResult = await storyPathGet(config, flags.story)
+    const storyResult = await storyExists(config, flags.story)
     if (!storyResult.success) {
       console.error(storyResult)
       process.exit(1)

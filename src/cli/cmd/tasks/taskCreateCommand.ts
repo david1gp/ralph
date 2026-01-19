@@ -1,12 +1,12 @@
 import { configLoad } from "@/cli/core/config/configLoad"
 import { configSave } from "@/cli/core/config/configSave"
 import { markdownRestoreWhitespaces } from "@/cli/core/markdownRestoreWhitespaces"
-import { storyPathGet } from "@/cli/core/stories/storyPathGet"
 import { taskCreate } from "@/cli/core/tasks/taskCreate"
 import { taskIdGenerate } from "@/cli/core/tasks/taskIdGenerate"
 import { tasksRead } from "@/cli/core/tasks/tasksRead"
 import type { TaskType } from "@/cli/data/TaskType"
 import { parseDateTime } from "@/cli/utils/dateTime"
+import { storyExists } from "@/cli/utils/storyExists"
 import { buildCommand, type CommandContext } from "@stricli/core"
 import { array, safeParse, string } from "valibot"
 
@@ -51,8 +51,7 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
     process.exit(1)
   }
   const acceptanceCriteria = result.output
-  const storyValue = flags.story.endsWith(".md") ? flags.story : `${flags.story}.md`
-  const storyResult = await storyPathGet(config, storyValue)
+  const storyResult = await storyExists(config, flags.story)
   if (!storyResult.success) {
     console.error(storyResult)
     process.exit(1)
