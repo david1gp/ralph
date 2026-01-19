@@ -2,12 +2,12 @@ import { configLoad } from "@/cli/core/config/configLoad"
 import { configSave } from "@/cli/core/config/configSave"
 import { markdownRestoreWhitespaces } from "@/cli/core/markdownRestoreWhitespaces"
 import { storyCreate } from "@/cli/core/stories/storyCreate"
-import { shortStoryTitleFormat } from "@/cli/core/stories/storyInputValidate"
+import { projectPathExists, shortStoryTitleFormat } from "@/cli/core/stories/storyInputValidate"
 import { buildCommand, type CommandContext } from "@stricli/core"
 
 interface CreateFlags {
   shortStoryTitle: string
-  projectDir: string
+  projectPath: string
   content: string
   config?: string
 }
@@ -20,11 +20,11 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
   }
   const config = configResult.data
 
-  // const dirResult = await projectDirExists(flags.projectDir)
-  // if (!dirResult.success) {
-  //   console.error(dirResult)
-  //   process.exit(1)
-  // }
+  const dirResult = await projectPathExists(flags.projectPath)
+  if (!dirResult.success) {
+    console.error(dirResult)
+    process.exit(1)
+  }
 
   const titleResult = shortStoryTitleFormat(flags.shortStoryTitle)
   if (!titleResult.success) {
@@ -34,7 +34,7 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
 
   const result = await storyCreate(config, {
     shortStoryTitle: titleResult.data,
-    projectDir: flags.projectDir,
+    projectPath: flags.projectPath,
     content: markdownRestoreWhitespaces(flags.content),
   })
   if (!result.success) {
@@ -44,7 +44,7 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
 
   config.storyIdNumber = (config.storyIdNumber ?? 1) + 1
   config.projectStoryIdNumber = config.projectStoryIdNumber ?? {}
-  config.projectStoryIdNumber[flags.projectDir] = (config.projectStoryIdNumber[flags.projectDir] ?? 1) + 1
+  config.projectStoryIdNumber[flags.projectPath] = (config.projectStoryIdNumber[flags.projectPath] ?? 1) + 1
   await configSave(config)
 
   const filename = result.data.filePath.split("/").pop()!
@@ -61,11 +61,11 @@ export const storyCreateCommand = buildCommand({
         optional: false,
         brief: "Short story title (spaces and underscores will be replaced with dashes)",
       },
-      projectDir: {
+      projectPath: {
         kind: "parsed",
         parse: String,
         optional: false,
-        brief: "Project directory path",
+        brief: "Project path",
       },
       content: {
         kind: "parsed",

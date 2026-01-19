@@ -5,7 +5,7 @@ import { storyParse } from "@/cli/data/storyParse"
 test("taskParse returns success for valid data", () => {
   const validTask = {
     id: "TEST-001",
-    projectDir: "/home/david/Coding/project",
+    projectPath: "/home/david/Coding/project",
     story: "test-story.md",
     title: "Test Task",
     description: "A test task",
@@ -37,7 +37,7 @@ test("storyParse returns success for valid data", () => {
     description: "A description",
     goals: ["Goal 1"],
     userTasks: ["S-001"],
-    projectDir: "/home/david/Coding/project",
+    projectPath: "/home/david/Coding/project",
   }
   const result = storyParse(validStory)
   expect(result.success).toBe(true)

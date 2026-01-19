@@ -54,7 +54,7 @@ beforeEach(() => {
 test("deleteStory removes story file", async () => {
   const createResult = await storyCreate(testConfig, {
     shortStoryTitle: "delete-test-story",
-    projectDir: testDir,
+    projectPath: testDir,
     content: testStoryContent,
   })
   expect(createResult.success).toBe(true)

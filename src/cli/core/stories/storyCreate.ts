@@ -6,7 +6,7 @@ import { createResult, type PromiseResult } from "~utils/result/Result"
 
 export interface StoryCreateParams {
   shortStoryTitle: string
-  projectDir: string
+  projectPath: string
   content: string
 }
 
@@ -19,7 +19,7 @@ export async function storyCreate(
     return storiesPathResult
   }
   const storiesPath = storiesPathResult.data
-  const idResult = storyIdGenerate(config, params.projectDir)
+  const idResult = storyIdGenerate(config, params.projectPath)
   const filename =
     idResult.globalIdFormatted +
     "_" +

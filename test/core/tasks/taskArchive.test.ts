@@ -14,7 +14,7 @@ const tasksPath = join(testTaskiDir, "tasks.json")
 const testTasksWithDates = [
   {
     id: "TEST-001",
-    projectDir: testTaskiDir,
+    projectPath: testTaskiDir,
     story: join(testTaskiDir, "stories", "test-story-1.md"),
     priority: 1,
     passes: false,
@@ -28,7 +28,7 @@ const testTasksWithDates = [
   },
   {
     id: "TEST-002",
-    projectDir: testTaskiDir,
+    projectPath: testTaskiDir,
     story: join(testTaskiDir, "stories", "test-story-2.md"),
     priority: 2,
     passes: false,
@@ -44,7 +44,7 @@ const testTasksWithDates = [
 const testTasksNoDates = [
   {
     id: "TEST-003",
-    projectDir: testTaskiDir,
+    projectPath: testTaskiDir,
     story: join(testTaskiDir, "stories", "test-story-1.md"),
     priority: 3,
     passes: false,
@@ -133,7 +133,7 @@ test("taskArchive appends to existing month file", async () => {
   if (!existsSync(archiveDir)) {
     mkdirSync(archiveDir, { recursive: true })
   }
-  writeFileSync(join(archiveDir, "2025-01.json"), JSON.stringify([{ id: "EXISTING-001", projectDir: "/test", story: "/test/story.md", priority: 1, passes: false, title: "Existing", description: "Existing task", acceptanceCriteria: [], note: "" }]))
+  writeFileSync(join(archiveDir, "2025-01.json"), JSON.stringify([{ id: "EXISTING-001", projectPath: "/test", story: "/test/story.md", priority: 1, passes: false, title: "Existing", description: "Existing task", acceptanceCriteria: [], note: "" }]))
   await taskArchive(testConfig, "TEST-001")
 
   const archivedResult = await tasksArchivedRead(testConfig, "2025-01")

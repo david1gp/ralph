@@ -5,5 +5,5 @@ export const storySchema = object({
   description: string(),
   goals: array(string()),
   userTasks: array(string()),
-  projectDir: optional(string()),
+  projectPath: optional(string()),
 })

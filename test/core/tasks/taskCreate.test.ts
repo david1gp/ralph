@@ -26,7 +26,7 @@ test("taskCreate appends new task to tasks array", async () => {
   const initialCount = initialTasks.length
   const newTask: TaskType = {
     id: "T-NEW",
-    projectDir: "/home/david/Coding/test",
+    projectPath: "/home/david/Coding/test",
     story: "test-story.md",
     title: "New Task",
     description: "Newly created task",
@@ -50,7 +50,7 @@ test("taskCreate appends new task to tasks array", async () => {
 test("taskCreate initializes task with new fields", async () => {
   const newTask: TaskType = {
     id: "T-CREATE-TEST",
-    projectDir: "/home/david/Coding/test",
+    projectPath: "/home/david/Coding/test",
     story: "test-story.md",
     title: "Create Test Task",
     description: "A task to test creation",

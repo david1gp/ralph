@@ -15,7 +15,7 @@ function getDefaultTestTasks(): string {
   return `[
   {
     "id": "TEST-001",
-    "projectDir": "${projectRoot}",
+    "projectPath": "${projectRoot}",
     "story": "${join(testTaskiDir, "stories", "test-story-1.md")}",
     "priority": 1,
     "passes": false,
@@ -29,7 +29,7 @@ function getDefaultTestTasks(): string {
   },
   {
     "id": "TEST-002",
-    "projectDir": "${projectRoot}",
+    "projectPath": "${projectRoot}",
     "story": "${join(testTaskiDir, "stories", "test-story-2.md")}",
     "priority": 2,
     "passes": false,

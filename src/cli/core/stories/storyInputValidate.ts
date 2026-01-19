@@ -22,20 +22,20 @@ export function shortStoryTitleFormat(title: string): Result<string> {
   return { success: true, data: formatted }
 }
 
-export async function projectDirExists(dir: string): PromiseResult<boolean> {
-  const op = "projectDirExists"
+export async function projectPathExists(projectPath: string): PromiseResult<boolean> {
+  const op = "projectPathExists"
   try {
-    const stats = await stat(dir)
+    const stats = await stat(projectPath)
     if (!stats.isDirectory()) {
       return {
         op,
         success: false,
         errorMessage: "Path is not a directory",
-        errorData: dir,
+        errorData: projectPath,
       }
     }
     return { success: true, data: true }
   } catch {
-    return { op, success: false, errorMessage: "Directory does not exist", errorData: dir }
+    return { op, success: false, errorMessage: "Directory does not exist", errorData: projectPath }
   }
 }

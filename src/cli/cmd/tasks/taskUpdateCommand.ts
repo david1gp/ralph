@@ -20,7 +20,7 @@ interface UpdateFlags {
   acceptanceCriteria?: string
   priority?: number
   story?: string
-  projectDir?: string
+  projectPath?: string
   config?: string
 }
 
@@ -90,8 +90,8 @@ export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, i
     }
     updates.story = storyResult.data
   }
-  if (flags.projectDir !== undefined) {
-    updates.projectDir = flags.projectDir
+  if (flags.projectPath !== undefined) {
+    updates.projectPath = flags.projectPath
   }
 
   const shouldArchive = flags.passes === true || flags.archive === true
@@ -204,11 +204,11 @@ export const taskUpdateCommand = buildCommand({
         inferEmpty: true,
         brief: "Set story reference (filename or path, empty to clear)",
       },
-      projectDir: {
+      projectPath: {
         kind: "parsed",
         parse: String,
         optional: true,
-        brief: "Set project directory path",
+        brief: "Project path",
       },
       config: {
         kind: "parsed",

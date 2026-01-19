@@ -9,7 +9,7 @@ interface UpdateFlags {
   description?: string
   goals?: string
   userTasks?: string
-  projectDir?: string
+  projectPath?: string
   config?: string
 }
 
@@ -45,8 +45,8 @@ export const storyUpdateCommand = buildCommand({
     if (flags.userTasks !== undefined) {
       updates.userTasks = parseArray(flags.userTasks)
     }
-    if (flags.projectDir !== undefined) {
-      updates.projectDir = flags.projectDir
+    if (flags.projectPath !== undefined) {
+      updates.projectPath = flags.projectPath
     }
     const updatedResult = await storyUpdate(config, filename, updates)
     if (!updatedResult.success) {
@@ -92,11 +92,11 @@ export const storyUpdateCommand = buildCommand({
         optional: true,
         brief: "Set story user tasks (comma-separated)",
       },
-      projectDir: {
+      projectPath: {
         kind: "parsed",
         parse: String,
         optional: true,
-        brief: "Set project directory path",
+        brief: "Project path",
       },
       config: {
         kind: "parsed",
