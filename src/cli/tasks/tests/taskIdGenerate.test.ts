@@ -1,6 +1,6 @@
 import { taskIdGenerate } from "@/cli/tasks/logic/taskIdGenerate"
+import { getTestConfig, projectRoot } from "@/cli/utils/test/testHelpers"
 import { expect, test } from "bun:test"
-import { getTestConfig, projectRoot } from "../../utils/test/testHelpers"
 
 test("taskIdGenerate uses TEST prefix from projectTaskPrefix config", () => {
   const config = getTestConfig()

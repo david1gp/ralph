@@ -1,13 +1,19 @@
 import { taskArchive } from "@/cli/tasks/logic/archive/taskArchive"
 import { tasksArchivedRead } from "@/cli/tasks/logic/archive/tasksArchivedRead"
 import { tasksRead } from "@/cli/tasks/logic/tasksRead"
+import {
+  assertErr,
+  assertOk,
+  getTestConfig,
+  testAfterAll,
+  testBeforeAll,
+  testTaskiDir,
+} from "@/cli/utils/test/testHelpers"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
-import { assertErr, assertOk, getTestConfig, testAfterAll, testBeforeAll } from "../../utils/test/testHelpers"
 
 const testConfig = getTestConfig()
-const testTaskiDir = join(__dirname, "..", "..", ".taski")
 const archiveDir = testConfig.tasksArchivedDir
 const tasksPath = join(testTaskiDir, "tasks.json")
 
@@ -133,7 +139,22 @@ test("taskArchive appends to existing month file", async () => {
   if (!existsSync(archiveDir)) {
     mkdirSync(archiveDir, { recursive: true })
   }
-  writeFileSync(join(archiveDir, "2025-01.json"), JSON.stringify([{ id: "EXISTING-001", projectPath: "/test", story: "/test/story.md", priority: 1, passes: false, title: "Existing", description: "Existing task", acceptanceCriteria: [], note: "" }]))
+  writeFileSync(
+    join(archiveDir, "2025-01.json"),
+    JSON.stringify([
+      {
+        id: "EXISTING-001",
+        projectPath: "/test",
+        story: "/test/story.md",
+        priority: 1,
+        passes: false,
+        title: "Existing",
+        description: "Existing task",
+        acceptanceCriteria: [],
+        note: "",
+      },
+    ]),
+  )
   await taskArchive(testConfig, "TEST-001")
 
   const archivedResult = await tasksArchivedRead(testConfig, "2025-01")

@@ -1,6 +1,6 @@
 import { storyRead } from "@/cli/stories/logic/storyRead"
+import { assertErr, assertOk, getTestConfig, testAfterAll, testBeforeAll } from "@/cli/utils/test/testHelpers"
 import { afterAll, beforeAll, expect, test } from "bun:test"
-import { assertErr, assertOk, getTestConfig, testAfterAll, testBeforeAll } from "../../utils/test/testHelpers"
 
 const existingStoryFilename = "storyRead.md"
 

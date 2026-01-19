@@ -1,8 +1,8 @@
 import { tasksRead } from "@/cli/tasks/logic/tasksRead"
 import { taskUpdate } from "@/cli/tasks/logic/taskUpdate"
+import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "@/cli/utils/test/testHelpers"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import type { Result } from "~utils/result/Result"
-import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../../utils/test/testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
   if (!result.success) {

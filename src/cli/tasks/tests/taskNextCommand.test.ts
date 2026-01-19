@@ -1,18 +1,15 @@
 import { taskNextFunc } from "@/cli/tasks/cli/taskNextCommand"
 import { tasksRead } from "@/cli/tasks/logic/tasksRead"
-import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import { dirname, join } from "node:path"
-import { fileURLToPath } from "node:url"
-import { parseJson, pipe, safeParse, string } from "valibot"
 import {
   getTestConfig,
+  projectRoot,
   resetTasksFile,
   testAfterAll,
   testBeforeAll,
-} from "../../utils/test/testHelpers"
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const testTaskiDir = join(__dirname, "..", "..", ".taski")
+  testTaskiDir,
+} from "@/cli/utils/test/testHelpers"
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
+import { parseJson, pipe, safeParse, string } from "valibot"
 
 beforeAll(testBeforeAll)
 afterAll(testAfterAll)
@@ -36,7 +33,7 @@ function createMockContext() {
 
 test("taskNextCommand with --start now sets startedAt to current time", async () => {
   const originalCwd = process.cwd()
-  process.chdir(join(__dirname, "..", ".."))
+  process.chdir(projectRoot)
   try {
     const { process: mockProcess, stdout } = createMockContext()
     const mockContext = { process: mockProcess } as any
@@ -69,7 +66,7 @@ test("taskNextCommand with --start now sets startedAt to current time", async ()
 
 test("taskNextCommand with --start '' clears startedAt", async () => {
   const originalCwd = process.cwd()
-  process.chdir(join(__dirname, "..", ".."))
+  process.chdir(projectRoot)
   try {
     const { process: mockProcess, stdout } = createMockContext()
     const mockContext = { process: mockProcess } as any
@@ -98,7 +95,7 @@ test("taskNextCommand with --start '' clears startedAt", async () => {
 
 test("taskNextCommand with --start '2025-01-17T10:00:00.000Z' sets specific timestamp", async () => {
   const originalCwd = process.cwd()
-  process.chdir(join(__dirname, "..", ".."))
+  process.chdir(projectRoot)
   try {
     const { process: mockProcess, stdout } = createMockContext()
     const mockContext = { process: mockProcess } as any
@@ -128,7 +125,7 @@ test("taskNextCommand with --start '2025-01-17T10:00:00.000Z' sets specific time
 
 test("taskNextCommand with --start 'invalid' prints error", async () => {
   const originalCwd = process.cwd()
-  process.chdir(join(__dirname, "..", ".."))
+  process.chdir(projectRoot)
   try {
     const { process: mockProcess } = createMockContext()
     const mockContext = { process: mockProcess } as any
@@ -155,7 +152,7 @@ test("taskNextCommand with --start 'invalid' prints error", async () => {
 
 test("taskNextCommand without --start returns task without modification", async () => {
   const originalCwd = process.cwd()
-  process.chdir(join(__dirname, "..", ".."))
+  process.chdir(projectRoot)
   try {
     const { process: mockProcess, stdout } = createMockContext()
     const mockContext = { process: mockProcess } as any

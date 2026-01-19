@@ -6,7 +6,11 @@ import { join } from "node:path"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 import { createResult, type PromiseResult } from "~utils/result/Result"
 
-export async function tasksArchivedWrite(config: ConfigType, yearMonth: string, tasks: TaskType[]): PromiseResult<void> {
+export async function tasksArchivedWrite(
+  config: ConfigType,
+  yearMonth: string,
+  tasks: TaskType[],
+): PromiseResult<void> {
   const dirResult = await taskArchivedDirPathGet(config)
   if (!dirResult.success) {
     return dirResult

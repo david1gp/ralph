@@ -2,9 +2,9 @@ import type { ConfigType } from "@/cli/config/ConfigType"
 import type { TaskType } from "@/cli/tasks/data/TaskType"
 import { taskCreate } from "@/cli/tasks/logic/taskCreate"
 import { tasksRead } from "@/cli/tasks/logic/tasksRead"
+import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "@/cli/utils/test/testHelpers"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import type { Result } from "~utils/result/Result"
-import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../../utils/test/testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
   if (!result.success) {

@@ -1,10 +1,10 @@
 import type { ConfigType } from "@/cli/config/ConfigType"
 import { storyRead } from "@/cli/stories/logic/storyRead"
 import { storyUpdate } from "@/cli/stories/logic/storyUpdate"
+import { getTestConfig } from "@/cli/utils/test/testHelpers"
 import { beforeEach, expect, test } from "bun:test"
 import { existsSync, rmSync, writeFileSync } from "node:fs"
 import type { Result } from "~utils/result/Result"
-import { getTestConfig } from "../../utils/test/testHelpers"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
   if (!result.success) {

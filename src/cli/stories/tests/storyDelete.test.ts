@@ -1,14 +1,17 @@
 import { storiesList } from "@/cli/stories/logic/storiesList"
 import { storyCreate } from "@/cli/stories/logic/storyCreate"
 import { storyDelete } from "@/cli/stories/logic/storyDelete"
+import {
+  assertErr,
+  assertOk,
+  getTestConfig,
+  projectRoot,
+  resetTasksFile,
+  testAfterAll,
+  testBeforeAll,
+} from "@/cli/utils/test/testHelpers"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import { existsSync, rmSync } from "node:fs"
-import { dirname, join } from "node:path"
-import { fileURLToPath } from "node:url"
-import { assertErr, assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../../utils/test/testHelpers"
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const testDir = join(__dirname, "..")
 
 const testStoryContent = `# Story: Test Story
 
@@ -54,7 +57,7 @@ beforeEach(() => {
 test("deleteStory removes story file", async () => {
   const createResult = await storyCreate(testConfig, {
     shortStoryTitle: "delete-test-story",
-    projectPath: testDir,
+    projectPath: projectRoot,
     content: testStoryContent,
   })
   expect(createResult.success).toBe(true)

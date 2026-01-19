@@ -2,10 +2,10 @@ import type { ConfigType } from "@/cli/config/ConfigType"
 import { taskFindNext } from "@/cli/tasks/logic/taskFindNext"
 import { tasksRead } from "@/cli/tasks/logic/tasksRead"
 import { taskUpdate } from "@/cli/tasks/logic/taskUpdate"
+import { assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "@/cli/utils/test/testHelpers"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import { writeFileSync } from "node:fs"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
-import { assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../../utils/test/testHelpers"
 
 beforeAll(testBeforeAll)
 afterAll(testAfterAll)

@@ -1,6 +1,6 @@
 import { storiesList } from "@/cli/stories/logic/storiesList"
+import { assertOk, getTestConfig, testAfterAll, testBeforeAll } from "@/cli/utils/test/testHelpers"
 import { afterAll, beforeAll, expect, test } from "bun:test"
-import { assertOk, getTestConfig, testAfterAll, testBeforeAll } from "../../utils/test/testHelpers"
 
 const testConfig = getTestConfig()
 const testStoriesPath = testConfig.storiesFolder

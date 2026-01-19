@@ -1,13 +1,15 @@
 import { storyCreateFunc } from "@/cli/stories/cli/storyCreateCommand"
+import {
+  getTestConfig,
+  projectRoot,
+  resetTasksFile,
+  testAfterAll,
+  testBeforeAll,
+  testTaskiDir,
+} from "@/cli/utils/test/testHelpers"
 import { afterAll, beforeAll, beforeEach, expect, mock, test } from "bun:test"
 import { existsSync, readFileSync, rmSync } from "node:fs"
-import { dirname, join } from "node:path"
-import { fileURLToPath } from "node:url"
-import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../../utils/test/testHelpers"
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const testDir = join(__dirname, "..")
-const testTaskiDir = join(__dirname, "..", "..", ".taski")
+import { join } from "node:path"
 
 const testStoryContent = `# Story: Test Story
 
@@ -58,7 +60,7 @@ beforeEach(() => {
       rmSync(testFile)
     }
   }
-  const oldEscapeFiles = ["S-000_core-001_escape-test.md"]
+  const oldEscapeFiles = ["S-000_personal-taski-cli-001_escape-test.md"]
   for (const file of oldEscapeFiles) {
     const testFile = testStoriesPath + "/" + file
     if (existsSync(testFile)) {
@@ -69,20 +71,20 @@ beforeEach(() => {
 
 test("storyCreateFunc creates story with escape sequences transformed", async () => {
   const originalCwd = process.cwd()
-  process.chdir(testDir)
+  process.chdir(projectRoot)
   let createdFile: string | null = null
   try {
     const context = createMockContext()
     const params = {
       shortStoryTitle: "escape-test",
-      projectPath: testDir,
+      projectPath: projectRoot,
       content:
         "# Story: Escape Test\\n\\n## Description\\n\\nLine one\\nLine two\\n\\n## Goals\\n\\n- Goal one\\n- Goal two\\n\\n## User Tasks\\n\\n### T-ESC-001: Task\\twith\\ttabs",
       config: testTaskiDir,
     }
     await storyCreateFunc.call(context, params)
 
-    expect(stdout[0]).toMatch(/S-\d{3}_core-\d{3}_escape-test\.md/)
+    expect(stdout[0]).toMatch(/S-\d{3}_personal-taski-cli-\d{3}_escape-test\.md/)
     const filename = stdout[0]!.split("/").pop() ?? ""
     createdFile = join(testStoriesPath, filename)
     const fileContent = readFileSync(createdFile, "utf-8")
