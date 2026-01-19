@@ -10,6 +10,7 @@ interface InitFlags {
 
 const defaultConfig = {
   tasksFile: "tasks.json",
+  tasksArchivedDir: "tasks-archive",
   storiesFolder: "stories",
   projectTaskPrefix: {},
   projectTaskIdNumber: {},

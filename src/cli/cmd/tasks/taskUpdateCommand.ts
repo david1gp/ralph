@@ -1,5 +1,6 @@
 import { configLoad } from "@/cli/core/config/configLoad"
 import { markdownRestoreWhitespaces } from "@/cli/core/markdownRestoreWhitespaces"
+import { taskArchive } from "@/cli/core/tasks/archive/taskArchive"
 import { taskUpdate } from "@/cli/core/tasks/taskUpdate"
 import type { TaskType } from "@/cli/data/TaskType"
 import { parseDateTime } from "@/cli/utils/dateTime"
@@ -9,6 +10,7 @@ import { array, safeParse, string } from "valibot"
 
 interface UpdateFlags {
   passes?: boolean
+  archive?: boolean
   start?: string
   end?: string
   created?: string
@@ -31,9 +33,6 @@ export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, i
   const config = configResult.data
 
   const updates: Partial<TaskType> = {}
-  if (flags.passes !== undefined) {
-    updates.passes = flags.passes
-  }
   if (flags.start !== undefined) {
     const startResult = parseDateTime(flags.start)
     if (startResult && !startResult.success) {
@@ -94,6 +93,26 @@ export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, i
   if (flags.projectDir !== undefined) {
     updates.projectDir = flags.projectDir
   }
+
+  const shouldArchive = flags.passes === true || flags.archive === true
+
+  if (shouldArchive) {
+    const updatedResult = await taskUpdate(config, id, { ...updates, passes: true })
+    if (!updatedResult.success) {
+      console.error(updatedResult)
+      process.exit(1)
+    }
+    const updated = updatedResult.data
+    const archiveResult = await taskArchive(config, id)
+    if (!archiveResult.success) {
+      console.error(archiveResult)
+      process.exit(1)
+    }
+    const archived = archiveResult.data
+    this.process.stdout.write(`Task "${archived.id}" archived successfully`)
+    return
+  }
+
   const updatedResult = await taskUpdate(config, id, updates)
   if (!updatedResult.success) {
     console.error(updatedResult)
@@ -120,7 +139,12 @@ export const taskUpdateCommand = buildCommand({
       passes: {
         kind: "boolean",
         optional: true,
-        brief: "Mark task as passing",
+        brief: "Mark task as passing and archive it",
+      },
+      archive: {
+        kind: "boolean",
+        optional: true,
+        brief: "Archive this task without marking as passing",
       },
       start: {
         kind: "parsed",

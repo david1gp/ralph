@@ -52,6 +52,7 @@ function resolveConfigPaths(taskiDir: string, rawConfig: ConfigType) {
   return {
     ...rawConfig,
     tasksFile: join(taskiDir, rawConfig.tasksFile),
+    tasksArchivedDir: join(taskiDir, rawConfig.tasksArchivedDir),
     storiesFolder: join(taskiDir, rawConfig.storiesFolder),
   }
 }

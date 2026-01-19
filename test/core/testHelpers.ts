@@ -22,7 +22,10 @@ function getDefaultTestTasks(): string {
     "title": "Task 1",
     "description": "Description for task 1",
     "acceptanceCriteria": ["Criterion 1"],
-    "note": ""
+    "note": "",
+    "startedAt": "2025-01-17T08:00:00.000Z",
+    "endedAt": "2025-01-17T10:00:00.000Z",
+    "createdAt": "2025-01-01T00:00:00.000Z"
   },
   {
     "id": "TEST-002",
@@ -33,7 +36,9 @@ function getDefaultTestTasks(): string {
     "title": "Task 2",
     "description": "Description for task 2",
     "acceptanceCriteria": ["Criterion 2"],
-    "note": ""
+    "note": "",
+    "startedAt": "2025-02-15T08:00:00.000Z",
+    "createdAt": "2025-02-01T00:00:00.000Z"
   }
 ]`
 }
@@ -75,6 +80,7 @@ export function assertErr<T>(result: Result<T>): asserts result is Extract<typeo
 export function getTestConfig(overrides: Partial<ConfigType> = {}): ConfigType {
   const base: ConfigType = {
     tasksFile: join(testTaskiDir, "tasks.json"),
+    tasksArchivedDir: join(testTaskiDir, "tasks-archive"),
     storiesFolder: join(testTaskiDir, "stories"),
     projectTaskPrefix: { [projectRoot]: "TEST" },
     projectTaskIdNumber: {},

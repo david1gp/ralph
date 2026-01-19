@@ -1,5 +1,6 @@
 export type ConfigType = {
   tasksFile: string
+  tasksArchivedDir: string
   storiesFolder: string
   projectTaskPrefix: Record<string, string>
   projectTaskIdNumber: Record<string, number>

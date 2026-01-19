@@ -167,7 +167,7 @@ test("taskNextCommand without --start returns task without modification", async 
     const result = safeParse(pipe(string(), parseJson()), output)
     expect(result.success).toBe(true)
     const task = result.output as { id: string; startedAt?: string }
-    expect(task.startedAt).toBeUndefined()
+    expect(task.startedAt).toBe("2025-02-15T08:00:00.000Z")
     expect(task.id).toBe("TEST-002")
   } finally {
     process.chdir(originalCwd)
