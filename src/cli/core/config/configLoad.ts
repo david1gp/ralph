@@ -5,12 +5,19 @@ import { homedir } from "os"
 import { parse } from "valibot"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
-function resolveConfigPaths(taskiDir: string, rawConfig: ConfigType) {
-  return {
-    ...rawConfig,
-    tasksFile: join(taskiDir, rawConfig.tasksFile),
-    storiesFolder: join(taskiDir, rawConfig.storiesFolder),
+export async function configLoad(configPath?: string): PromiseResult<ConfigType> {
+  if (configPath) {
+    return readConfigFromPath(configPath)
   }
+
+  const currentDirConfig = join(process.cwd(), ".taski", "taski.json")
+  const currentDirResult = await readConfigFromPath(currentDirConfig)
+  if (currentDirResult.success) {
+    return currentDirResult
+  }
+
+  const homedirConfig = join(homedir(), ".config", "taski", "taski.json")
+  return readConfigFromPath(homedirConfig)
 }
 
 async function readConfigFromPath(taskiPath: string): PromiseResult<ConfigType> {
@@ -38,17 +45,10 @@ async function readConfigFromPath(taskiPath: string): PromiseResult<ConfigType> 
   }
 }
 
-export async function configLoad(configPath?: string): PromiseResult<ConfigType> {
-  if (configPath) {
-    return readConfigFromPath(configPath)
+function resolveConfigPaths(taskiDir: string, rawConfig: ConfigType) {
+  return {
+    ...rawConfig,
+    tasksFile: join(taskiDir, rawConfig.tasksFile),
+    storiesFolder: join(taskiDir, rawConfig.storiesFolder),
   }
-
-  const currentDirConfig = join(process.cwd(), ".taski", "taski.json")
-  const currentDirResult = await readConfigFromPath(currentDirConfig)
-  if (currentDirResult.success) {
-    return currentDirResult
-  }
-
-  const homedirConfig = join(homedir(), ".config", "taski", "taski.json")
-  return readConfigFromPath(homedirConfig)
 }
