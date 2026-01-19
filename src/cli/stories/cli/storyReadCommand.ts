@@ -1,0 +1,49 @@
+import { configLoad } from "@/cli/config/configLoad"
+import { storyRead } from "@/cli/stories/logic/storyRead"
+import { buildCommand, type CommandContext } from "@stricli/core"
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
+
+interface ReadFlags {
+  config?: string
+}
+
+export const storyReadCommand = buildCommand({
+  async func(this: CommandContext, flags: ReadFlags, filename: string) {
+    const configResult = await configLoad(flags.config)
+    if (!configResult.success) {
+      console.error(configResult)
+      process.exit(1)
+    }
+    const config = configResult.data
+
+    const storyResult = await storyRead(config, filename)
+    if (!storyResult.success) {
+      console.error(storyResult)
+      process.exit(1)
+    }
+    this.process.stdout.write(jsonStringifyPretty(storyResult.data))
+  },
+  parameters: {
+    positional: {
+      kind: "tuple",
+      parameters: [
+        {
+          brief: "Story filename",
+          parse: String,
+          placeholder: "filename",
+        },
+      ],
+    },
+    flags: {
+      config: {
+        kind: "parsed",
+        parse: String,
+        optional: true,
+        brief: "Path to config file (directory with taski.json or direct path)",
+      },
+    },
+  },
+  docs: {
+    brief: "Read a story by filename",
+  },
+})

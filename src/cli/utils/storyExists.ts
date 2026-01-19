@@ -1,5 +1,5 @@
-import { storyPathGet } from "@/cli/core/stories/storyPathGet"
-import type { ConfigType } from "@/cli/data/ConfigType"
+import type { ConfigType } from "@/cli/config/ConfigType"
+import { storyPathGet } from "@/cli/stories/logic/storyPathGet"
 import { existsSync } from "node:fs"
 import { createError, type PromiseResult } from "~utils/result/Result"
 
@@ -17,6 +17,3 @@ export async function storyExists(config: ConfigType, storyValue: string): Promi
   }
   return pathResult
 }
-
-
-

@@ -2,7 +2,7 @@
   "name": "taski-cli",
   "version": "0.1.0",
   "scripts": {
-    "taski": "bun run src/cli/index.ts",
+    "taski": "bun run ./src/cli/taski.ts",
     "test": "bun test",
     "test:w": "bun test --watch"
   },
@@ -18,7 +18,7 @@
     "valibot": "^1.2.0"
   },
   "bin": {
-    "taski": "./src/cli/index.ts"
+    "taski": "./src/cli/taski.ts"
   },
   "prettier": {
     "semi": false,

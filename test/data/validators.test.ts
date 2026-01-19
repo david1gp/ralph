@@ -1,6 +1,6 @@
+import { storyParse } from "@/cli/stories/data/storyParse"
+import { taskParse } from "@/cli/tasks/data/taskParse"
 import { expect, test } from "bun:test"
-import { taskParse } from "@/cli/data/taskParse"
-import { storyParse } from "@/cli/data/storyParse"
 
 test("taskParse returns success for valid data", () => {
   const validTask = {

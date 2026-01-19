@@ -1,0 +1,68 @@
+import type { ConfigType } from "@/cli/config/ConfigType"
+import type { StoryType } from "@/cli/stories/data/StoryType"
+import { storyValidate } from "@/cli/stories/data/storyValidate"
+import { storyFolderPathGet } from "@/cli/stories/logic/storyFolderPathGet"
+import { storyRead } from "@/cli/stories/logic/storyRead"
+import { existsSync, writeFileSync } from "node:fs"
+import { createError, createResult, type PromiseResult } from "~utils/result/Result"
+
+export async function storyUpdate(
+  config: ConfigType,
+  filename: string,
+  updates: Partial<StoryType>,
+): PromiseResult<StoryType> {
+  const storiesPathResult = await storyFolderPathGet(config)
+  if (!storiesPathResult.success) {
+    return storiesPathResult
+  }
+  const storiesPath = storiesPathResult.data
+  let filePath = `${storiesPath}/${filename}`
+  if (!existsSync(`${filePath}`) && existsSync(`${filePath}.md`)) {
+    filePath = `${filePath}.md`
+  }
+  if (!existsSync(filePath)) {
+    return createError("storyUpdate", `Story "${filename}" not found`)
+  }
+
+  const existingStoryResult = await storyRead(config, filename)
+  if (!existingStoryResult.success) {
+    return existingStoryResult
+  }
+  const existingStory = existingStoryResult.data
+  const result = storyValidate(JSON.stringify({ ...existingStory, ...updates }))
+  if (!result.success) {
+    return createError("storyUpdate", "Invalid story")
+  }
+  const updatedStory = result.output as StoryType
+
+  const content = storyToMarkdown(updatedStory)
+  writeFileSync(filePath, content)
+
+  return createResult(updatedStory)
+}
+
+function storyToMarkdown(story: StoryType): string {
+  let content = `# Story: ${story.title}
+
+## Description
+
+${story.description}
+
+## Goals
+
+`
+  for (const goal of story.goals) {
+    content += `- ${goal}
+`
+  }
+
+  content += `
+## User Tasks
+
+`
+  for (const taskId of story.userTasks) {
+    content += `### ${taskId}: \n`
+  }
+
+  return content
+}
