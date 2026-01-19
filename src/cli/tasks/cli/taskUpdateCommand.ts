@@ -1,5 +1,3 @@
-import { buildCommand, type CommandContext } from "@stricli/core"
-import { array, safeParse, string } from "valibot"
 import { configLoad } from "@/cli/config/configLoad"
 import type { TaskType } from "@/cli/tasks/data/TaskType"
 import { taskArchive } from "@/cli/tasks/logic/archive/taskArchive"
@@ -7,6 +5,8 @@ import { taskUpdate } from "@/cli/tasks/logic/taskUpdate"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { markdownRestoreWhitespaces } from "@/cli/utils/markdownRestoreWhitespaces"
 import { storyExists } from "@/cli/utils/storyExists"
+import { buildCommand, type CommandContext } from "@stricli/core"
+import { array, safeParse, string } from "valibot"
 
 interface UpdateFlags {
   archive?: boolean
@@ -93,7 +93,7 @@ export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, i
     updates.projectPath = flags.projectPath
   }
 
-  const shouldArchive = flags.archive === true
+  const shouldArchive = flags.archive === true || !!flags.completedAt
 
   if (shouldArchive) {
     const updatedResult = await taskUpdate(config, id, updates)
