@@ -1,4 +1,4 @@
-import { configGet } from "@/cli/core/config/configGet"
+import { configLoad } from "@/cli/core/config/configLoad"
 import { configSave } from "@/cli/core/config/configSave"
 import { markdownRestoreWhitespaces } from "@/cli/core/markdownRestoreWhitespaces"
 import { storyCreate } from "@/cli/core/stories/storyCreate"
@@ -13,7 +13,7 @@ interface CreateFlags {
 }
 
 export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) {
-  const configResult = await configGet()
+  const configResult = await configLoad(flags.config)
   if (!configResult.success) {
     console.error(configResult)
     process.exit(1)

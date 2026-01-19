@@ -1,4 +1,3 @@
-import { clearConfigPath, setConfigPath } from "@/cli/core/config/configStore"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
@@ -43,7 +42,6 @@ export function testBeforeAll(): void {
   if (!existsSync(testTaskiDir)) {
     throw new Error(`.taski directory does not exist: ${testTaskiDir}`)
   }
-  setConfigPath(testTaskiDir)
   if (!existsSync(originalTasksPath)) {
     writeFileSync(originalTasksPath, getDefaultTestTasks())
   }
@@ -51,7 +49,6 @@ export function testBeforeAll(): void {
 }
 
 export function testAfterAll(): void {
-  clearConfigPath()
   if (originalContent && existsSync(originalTasksPath)) {
     writeFileSync(originalTasksPath, originalContent)
   }
