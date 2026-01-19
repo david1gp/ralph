@@ -3,7 +3,7 @@ import { tasksWrite } from "@/cli/core/tasks/tasksWrite"
 import type { ConfigType } from "@/cli/data/ConfigType"
 import type { TaskType } from "@/cli/data/TaskType"
 import { taskValidate } from "@/cli/data/taskValidate"
-import { createResult, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
 export async function taskCreate(config: ConfigType, task: TaskType): PromiseResult<TaskType> {
   const tasksResult = await tasksRead(config)
@@ -11,7 +11,11 @@ export async function taskCreate(config: ConfigType, task: TaskType): PromiseRes
     return tasksResult
   }
   const tasks = tasksResult.data
-  const newTask = taskValidate(task)
+  const result = taskValidate(JSON.stringify(task))
+  if (!result.success) {
+    return createError("taskCreate", "Invalid task")
+  }
+  const newTask = result.output as TaskType
   tasks.push(newTask)
   const writeResult = await tasksWrite(config, tasks)
   if (!writeResult.success) {

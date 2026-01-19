@@ -9,6 +9,7 @@ import {
   resetTasksFile,
   getTestConfig,
 } from "../testHelpers"
+import { parseJson, pipe, safeParse, string } from "valibot"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const testTaskiDir = join(__dirname, "..", "..", ".taski")
@@ -46,7 +47,9 @@ test("taskNextCommand with --start now sets startedAt to current time", async ()
 
     expect(stdout.length).toBe(1)
     const output = stdout[0]!
-    const task = JSON.parse(output) as { id: string; startedAt?: string }
+    const result = safeParse(pipe(string(), parseJson()), output)
+    expect(result.success).toBe(true)
+    const task = result.output as { id: string; startedAt?: string }
     expect(task.startedAt).toBeDefined()
     expect(new Date(task.startedAt!).getTime()).toBeGreaterThanOrEqual(new Date(beforeTest).getTime())
     expect(new Date(task.startedAt!).getTime()).toBeLessThanOrEqual(new Date().getTime())
@@ -75,7 +78,9 @@ test("taskNextCommand with --start '' clears startedAt", async () => {
 
     expect(stdout.length).toBe(1)
     const output = stdout[0]!
-    const task = JSON.parse(output) as { id: string; startedAt?: string }
+    const result = safeParse(pipe(string(), parseJson()), output)
+    expect(result.success).toBe(true)
+    const task = result.output as { id: string; startedAt?: string }
     expect(task.startedAt).toBeUndefined()
     expect(task.id).toBe("TEST-002")
 
@@ -103,7 +108,9 @@ test("taskNextCommand with --start '2025-01-17T10:00:00.000Z' sets specific time
 
     expect(stdout.length).toBe(1)
     const output = stdout[0]!
-    const task = JSON.parse(output) as { id: string; startedAt?: string }
+    const result = safeParse(pipe(string(), parseJson()), output)
+    expect(result.success).toBe(true)
+    const task = result.output as { id: string; startedAt?: string }
     expect(task.startedAt).toBe(timestamp)
     expect(task.id).toBe("TEST-002")
 
@@ -157,7 +164,9 @@ test("taskNextCommand without --start returns task without modification", async 
 
     expect(stdout.length).toBe(1)
     const output = stdout[0]!
-    const task = JSON.parse(output) as { id: string; startedAt?: string }
+    const result = safeParse(pipe(string(), parseJson()), output)
+    expect(result.success).toBe(true)
+    const task = result.output as { id: string; startedAt?: string }
     expect(task.startedAt).toBeUndefined()
     expect(task.id).toBe("TEST-002")
   } finally {

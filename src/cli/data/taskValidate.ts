@@ -1,8 +1,9 @@
 import { taskSchema } from "@/cli/data/taskSchema"
-import { parse } from "valibot"
+import { parseJson, pipe, safeParse, string } from "valibot"
 
 export { taskSchema }
 
-export function taskValidate(input: unknown) {
-  return parse(taskSchema, input)
+export function taskValidate(input: string) {
+  const schema = pipe(string(), parseJson(), taskSchema)
+  return safeParse(schema, input)
 }

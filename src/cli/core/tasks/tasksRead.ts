@@ -1,9 +1,10 @@
 import { taskFilePathGet } from "@/cli/core/tasks/taskFilePathGet"
 import type { ConfigType } from "@/cli/data/ConfigType"
-import { taskParse } from "@/cli/data/taskParse"
 import type { TaskType } from "@/cli/data/TaskType"
+import { taskSchema } from "@/cli/data/taskSchema"
 import { existsSync, readFileSync } from "node:fs"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
+import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
 
 export async function tasksRead(config: ConfigType): PromiseResult<TaskType[]> {
   const tasksPathResult = await taskFilePathGet(config)
@@ -15,18 +16,9 @@ export async function tasksRead(config: ConfigType): PromiseResult<TaskType[]> {
     return createResult([])
   }
   const content = readFileSync(tasksPath, "utf-8")
-  const parsed = JSON.parse(content)
-  if (!Array.isArray(parsed)) {
-    return createError("tasksRead", "tasks.json must contain an array")
+  const result = safeParse(pipe(string(), parseJson(), array(taskSchema)), content)
+  if (!result.success) {
+    return createError("tasksRead", summarize(result.issues))
   }
-  const tasks: TaskType[] = []
-  for (let index = 0; index < parsed.length; index++) {
-    const task = parsed[index]
-    const result = taskParse(task)
-    if (!result.success) {
-      return createError("tasksRead", `Invalid task at index ${index}: ${result.issues}`)
-    }
-    tasks.push(result.data)
-  }
-  return createResult(tasks)
+  return createResult(result.output)
 }

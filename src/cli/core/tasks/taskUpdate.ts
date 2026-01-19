@@ -15,7 +15,11 @@ export async function taskUpdate(config: ConfigType, id: string, updates: Partia
   if (index === -1) {
     return createError("taskUpdate", `Task with id "${id}" not found`)
   }
-  const updatedTask = taskValidate({ ...tasks[index], ...updates })
+  const result = taskValidate(JSON.stringify({ ...tasks[index], ...updates }))
+  if (!result.success) {
+    return createError("taskUpdate", "Invalid task")
+  }
+  const updatedTask = result.output as TaskType
   tasks[index] = updatedTask
   const writeResult = await tasksWrite(config, tasks)
   if (!writeResult.success) {

@@ -1,8 +1,9 @@
 import { storySchema } from "@/cli/data/storySchema"
-import { parse } from "valibot"
+import { parseJson, pipe, safeParse, string } from "valibot"
 
 export { storySchema }
 
-export function storyValidate(input: unknown) {
-  return parse(storySchema, input)
+export function storyValidate(input: string) {
+  const schema = pipe(string(), parseJson(), storySchema)
+  return safeParse(schema, input)
 }

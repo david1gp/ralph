@@ -8,7 +8,7 @@ import type { TaskType } from "@/cli/data/TaskType"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { storyExists } from "@/cli/utils/storyExists"
 import { buildCommand, type CommandContext } from "@stricli/core"
-import { array, safeParse, string } from "valibot"
+import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
 
 interface CreateFlags {
   title: string
@@ -39,13 +39,12 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
   }
   const tasks = tasksResult.data
   const maxPriority = tasks.length > 0 ? Math.max(...tasks.map((t) => t.priority)) : 0
-  const parsed = JSON.parse(flags.acceptanceCriteria)
-  const result = safeParse(array(string()), parsed)
+  const result = safeParse(pipe(string(), parseJson(), array(string())), flags.acceptanceCriteria)
   if (!result.success) {
     const errorResult = {
       success: false,
       op: "taskCreateCommand",
-      errorMessage: `Invalid acceptance criteria format: "${flags.acceptanceCriteria}". Expected JSON array of strings.`,
+      errorMessage: summarize(result.issues),
     }
     console.error(errorResult)
     process.exit(1)

@@ -14,7 +14,8 @@ test("taskSchema validates correct task data", () => {
     passes: false,
     note: "Some notes",
   }
-  expect(() => taskValidate(validTask)).not.toThrow()
+  const result = taskValidate(JSON.stringify(validTask))
+  expect(result.success).toBe(true)
 })
 
 test("taskSchema rejects missing required fields", () => {
@@ -23,7 +24,8 @@ test("taskSchema rejects missing required fields", () => {
     projectDir: "/home/david/Coding/project",
     title: "Test Task",
   }
-  expect(() => taskValidate(invalidTask)).toThrow()
+  const result = taskValidate(JSON.stringify(invalidTask))
+  expect(result.success).toBe(false)
 })
 
 test("taskSchema accepts passes as true or false", () => {
@@ -47,8 +49,10 @@ test("taskSchema accepts passes as true or false", () => {
     priority: 1,
     passes: false,
   }
-  expect(() => taskValidate(taskTrue)).not.toThrow()
-  expect(() => taskValidate(taskFalse)).not.toThrow()
+  const resultTrue = taskValidate(JSON.stringify(taskTrue))
+  const resultFalse = taskValidate(JSON.stringify(taskFalse))
+  expect(resultTrue.success).toBe(true)
+  expect(resultFalse.success).toBe(true)
 })
 
 test("storySchema validates correct story data", () => {
@@ -59,7 +63,8 @@ test("storySchema validates correct story data", () => {
     userTasks: ["S-001", "S-002"],
     projectDir: "/home/david/Coding/project",
   }
-  expect(() => storyValidate(validStory)).not.toThrow()
+  const result = storyValidate(JSON.stringify(validStory))
+  expect(result.success).toBe(true)
 })
 
 test("storySchema rejects missing required fields", () => {
@@ -67,5 +72,6 @@ test("storySchema rejects missing required fields", () => {
     title: "Test Story",
     description: "A description",
   }
-  expect(() => storyValidate(invalidStory)).toThrow()
+  const result = storyValidate(JSON.stringify(invalidStory))
+  expect(result.success).toBe(false)
 })

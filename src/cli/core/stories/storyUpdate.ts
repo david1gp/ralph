@@ -29,7 +29,11 @@ export async function storyUpdate(
     return existingStoryResult
   }
   const existingStory = existingStoryResult.data
-  const updatedStory = storyValidate({ ...existingStory, ...updates })
+  const result = storyValidate(JSON.stringify({ ...existingStory, ...updates }))
+  if (!result.success) {
+    return createError("storyUpdate", "Invalid story")
+  }
+  const updatedStory = result.output as StoryType
 
   const content = storyToMarkdown(updatedStory)
   writeFileSync(filePath, content)
