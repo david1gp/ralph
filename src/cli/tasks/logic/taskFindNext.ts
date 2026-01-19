@@ -9,7 +9,7 @@ export async function taskFindNext(config: ConfigType): PromiseResult<TaskType |
     return tasksResult
   }
   const incomplete = tasksResult.data
-    .filter((task) => task.passes === false)
+    .filter((task) => task.completedAt === undefined)
     .sort((a, b) => {
       const aIndex = tasksResult.data.indexOf(a)
       const bIndex = tasksResult.data.indexOf(b)

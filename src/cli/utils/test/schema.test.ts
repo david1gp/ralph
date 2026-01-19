@@ -1,6 +1,6 @@
+import { expect, test } from "bun:test"
 import { storyValidate } from "@/cli/stories/data/storyValidate"
 import { taskValidate } from "@/cli/tasks/data/taskValidate"
-import { expect, test } from "bun:test"
 
 test("taskSchema validates correct task data", () => {
   const validTask = {
@@ -11,7 +11,6 @@ test("taskSchema validates correct task data", () => {
     description: "A test task",
     acceptanceCriteria: ["Criterion 1", "Criterion 2"],
     priority: 1,
-    passes: false,
     note: "Some notes",
   }
   const result = taskValidate(JSON.stringify(validTask))
@@ -26,33 +25,6 @@ test("taskSchema rejects missing required fields", () => {
   }
   const result = taskValidate(JSON.stringify(invalidTask))
   expect(result.success).toBe(false)
-})
-
-test("taskSchema accepts passes as true or false", () => {
-  const taskTrue = {
-    id: "TEST-001",
-    projectPath: "/home/david/Coding/project",
-    story: "test-story.md",
-    title: "Test Task",
-    description: "A test task",
-    acceptanceCriteria: [],
-    priority: 1,
-    passes: true,
-  }
-  const taskFalse = {
-    id: "TEST-001",
-    projectPath: "/home/david/Coding/project",
-    story: "test-story.md",
-    title: "Test Task",
-    description: "A test task",
-    acceptanceCriteria: [],
-    priority: 1,
-    passes: false,
-  }
-  const resultTrue = taskValidate(JSON.stringify(taskTrue))
-  const resultFalse = taskValidate(JSON.stringify(taskFalse))
-  expect(resultTrue.success).toBe(true)
-  expect(resultFalse.success).toBe(true)
 })
 
 test("storySchema validates correct story data", () => {

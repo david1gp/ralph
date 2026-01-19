@@ -1,6 +1,6 @@
+import { expect, test } from "bun:test"
 import { storyParse } from "@/cli/stories/data/storyParse"
 import { taskParse } from "@/cli/tasks/data/taskParse"
-import { expect, test } from "bun:test"
 
 test("taskParse returns success for valid data", () => {
   const validTask = {
@@ -11,7 +11,6 @@ test("taskParse returns success for valid data", () => {
     description: "A test task",
     acceptanceCriteria: ["Criterion 1"],
     priority: 1,
-    passes: false,
   }
   const result = taskParse(validTask)
   expect(result.success).toBe(true)

@@ -20,15 +20,15 @@ export async function taskArchive(config: ConfigType, taskId: string): PromiseRe
   }
 
   const task = tasks[index]!
-  const result = taskValidate(JSON.stringify({ ...task, passes: true }))
+  const result = taskValidate(JSON.stringify(task))
   if (!result.success) {
     return createError("taskArchive", "Invalid task")
   }
   const updatedTask = result.output
 
-  const dateField = task.endedAt ?? task.startedAt ?? task.createdAt
+  const dateField = task.completedAt ?? task.startedAt ?? task.createdAt
   if (!dateField) {
-    return createError("taskArchive", `Task "${taskId}" has no date field (endedAt, startedAt, or createdAt)`)
+    return createError("taskArchive", `Task "${taskId}" has no date field (completedAt, startedAt, or createdAt)`)
   }
 
   const date = new Date(dateField)

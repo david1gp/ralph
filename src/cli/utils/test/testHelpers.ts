@@ -1,7 +1,7 @@
-import type { ConfigType } from "@/cli/config/ConfigType"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+import type { ConfigType } from "@/cli/config/ConfigType"
 import type { Result } from "~utils/result/Result"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -18,13 +18,12 @@ function getDefaultTestTasks(): string {
     "projectPath": "${projectRoot}",
     "story": "${join(testTaskiDir, "stories", "test-story-1.md")}",
     "priority": 1,
-    "passes": false,
     "title": "Task 1",
     "description": "Description for task 1",
     "acceptanceCriteria": ["Criterion 1"],
     "note": "",
     "startedAt": "2025-01-17T08:00:00.000Z",
-    "endedAt": "2025-01-17T10:00:00.000Z",
+    "completedAt": "2025-01-17T10:00:00.000Z",
     "createdAt": "2025-01-01T00:00:00.000Z"
   },
   {
@@ -32,7 +31,6 @@ function getDefaultTestTasks(): string {
     "projectPath": "${projectRoot}",
     "story": "${join(testTaskiDir, "stories", "test-story-2.md")}",
     "priority": 2,
-    "passes": false,
     "title": "Task 2",
     "description": "Description for task 2",
     "acceptanceCriteria": ["Criterion 2"],
@@ -73,7 +71,7 @@ export function assertOk<T>(result: Result<T>): asserts result is Extract<typeof
 
 export function assertErr<T>(result: Result<T>): asserts result is Extract<typeof result, { success: false }> {
   if (result.success) {
-    throw new Error(`Expected error but got success`)
+    throw new Error("Expected error but got success")
   }
 }
 

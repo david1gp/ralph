@@ -1,10 +1,10 @@
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
+import { writeFileSync } from "node:fs"
 import type { ConfigType } from "@/cli/config/ConfigType"
 import { taskFindNext } from "@/cli/tasks/logic/taskFindNext"
 import { tasksRead } from "@/cli/tasks/logic/tasksRead"
 import { taskUpdate } from "@/cli/tasks/logic/taskUpdate"
 import { assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "@/cli/utils/test/testHelpers"
-import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import { writeFileSync } from "node:fs"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 beforeAll(testBeforeAll)
@@ -19,17 +19,17 @@ test("taskFindNext returns highest priority incomplete task", async () => {
   assertOk(result)
   const next = result.data
   expect(next).not.toBeUndefined()
-  expect(next!.passes).toBe(false)
+  expect(next!.completedAt).toBeUndefined()
   expect(next!.id).toBe("TEST-002")
 })
 
-test("taskFindNext returns undefined when all tasks pass", async () => {
+test("taskFindNext returns undefined when all tasks are completed", async () => {
   const tasksResult = await tasksRead(testConfig)
   expect(tasksResult.success).toBe(true)
   assertOk(tasksResult)
   const tasks = tasksResult.data
   for (const task of tasks) {
-    await taskUpdate(testConfig, task.id, { passes: true })
+    await taskUpdate(testConfig, task.id, { completedAt: "2025-01-17T12:00:00.000Z" })
   }
   const result = await taskFindNext(testConfig)
   expect(result.success).toBe(true)
@@ -44,7 +44,6 @@ test("taskFindNext with same priority returns first in list", async () => {
       projectPath: "/test",
       story: "/test/story.md",
       priority: 5,
-      passes: false,
       title: "Task 1",
       description: "Desc",
       acceptanceCriteria: [],
@@ -55,7 +54,6 @@ test("taskFindNext with same priority returns first in list", async () => {
       projectPath: "/test",
       story: "/test/story.md",
       priority: 5,
-      passes: false,
       title: "Task 2",
       description: "Desc",
       acceptanceCriteria: [],
@@ -66,7 +64,6 @@ test("taskFindNext with same priority returns first in list", async () => {
       projectPath: "/test",
       story: "/test/story.md",
       priority: 5,
-      passes: false,
       title: "Task 3",
       description: "Desc",
       acceptanceCriteria: [],
@@ -87,7 +84,6 @@ test("taskFindNext higher priority wins over lower", async () => {
       projectPath: "/test",
       story: "/test/story.md",
       priority: 1,
-      passes: false,
       title: "Low Priority",
       description: "Desc",
       acceptanceCriteria: [],
@@ -98,7 +94,6 @@ test("taskFindNext higher priority wins over lower", async () => {
       projectPath: "/test",
       story: "/test/story.md",
       priority: 99,
-      passes: false,
       title: "High Priority",
       description: "Desc",
       acceptanceCriteria: [],
@@ -109,7 +104,6 @@ test("taskFindNext higher priority wins over lower", async () => {
       projectPath: "/test",
       story: "/test/story.md",
       priority: 50,
-      passes: false,
       title: "Med Priority",
       description: "Desc",
       acceptanceCriteria: [],

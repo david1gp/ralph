@@ -1,3 +1,5 @@
+import { buildCommand, type CommandContext } from "@stricli/core"
+import { array, safeParse, string } from "valibot"
 import { configLoad } from "@/cli/config/configLoad"
 import type { TaskType } from "@/cli/tasks/data/TaskType"
 import { taskArchive } from "@/cli/tasks/logic/archive/taskArchive"
@@ -5,14 +7,11 @@ import { taskUpdate } from "@/cli/tasks/logic/taskUpdate"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { markdownRestoreWhitespaces } from "@/cli/utils/markdownRestoreWhitespaces"
 import { storyExists } from "@/cli/utils/storyExists"
-import { buildCommand, type CommandContext } from "@stricli/core"
-import { array, safeParse, string } from "valibot"
 
 interface UpdateFlags {
-  passes?: boolean
   archive?: boolean
   start?: string
-  end?: string
+  completedAt?: string
   created?: string
   note?: string
   title?: string
@@ -41,13 +40,13 @@ export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, i
     }
     updates.startedAt = startResult?.data
   }
-  if (flags.end !== undefined) {
-    const endResult = parseDateTime(flags.end)
+  if (flags.completedAt !== undefined) {
+    const endResult = parseDateTime(flags.completedAt)
     if (endResult && !endResult.success) {
       console.error(endResult)
       process.exit(1)
     }
-    updates.endedAt = endResult?.data
+    updates.completedAt = endResult?.data
   }
   if (flags.created !== undefined) {
     const createdResult = parseDateTime(flags.created)
@@ -94,10 +93,10 @@ export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, i
     updates.projectPath = flags.projectPath
   }
 
-  const shouldArchive = flags.passes === true || flags.archive === true
+  const shouldArchive = flags.archive === true
 
   if (shouldArchive) {
-    const updatedResult = await taskUpdate(config, id, { ...updates, passes: true })
+    const updatedResult = await taskUpdate(config, id, updates)
     if (!updatedResult.success) {
       console.error(updatedResult)
       process.exit(1)
@@ -136,15 +135,10 @@ export const taskUpdateCommand = buildCommand({
       ],
     },
     flags: {
-      passes: {
-        kind: "boolean",
-        optional: true,
-        brief: "Mark task as passing and archive it",
-      },
       archive: {
         kind: "boolean",
         optional: true,
-        brief: "Archive this task without marking as passing",
+        brief: "Archive this task",
       },
       start: {
         kind: "parsed",
@@ -153,12 +147,12 @@ export const taskUpdateCommand = buildCommand({
         inferEmpty: true,
         brief: "Set startedAt (use 'now', empty to clear, or ISO 8601 timestamp)",
       },
-      end: {
+      completedAt: {
         kind: "parsed",
         parse: String,
         optional: true,
         inferEmpty: true,
-        brief: "Set endedAt (use 'now', empty to clear, or ISO 8601 timestamp)",
+        brief: "Set completedAt (use 'now', empty to clear, or ISO 8601 timestamp)",
       },
       created: {
         kind: "parsed",

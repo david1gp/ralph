@@ -1,9 +1,9 @@
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import type { ConfigType } from "@/cli/config/ConfigType"
 import type { TaskType } from "@/cli/tasks/data/TaskType"
 import { taskCreate } from "@/cli/tasks/logic/taskCreate"
 import { tasksRead } from "@/cli/tasks/logic/tasksRead"
 import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "@/cli/utils/test/testHelpers"
-import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -32,7 +32,6 @@ test("taskCreate appends new task to tasks array", async () => {
     description: "Newly created task",
     acceptanceCriteria: ["Test"],
     priority: 99,
-    passes: false,
     note: "",
   }
   const result = await taskCreate(testConfig, newTask)
@@ -56,15 +55,14 @@ test("taskCreate initializes task with new fields", async () => {
     description: "A task to test creation",
     acceptanceCriteria: ["Test"],
     priority: 100,
-    passes: false,
     note: "Initial note",
     startedAt: "2025-01-17T08:00:00.000Z",
-    endedAt: undefined,
+    completedAt: undefined,
   }
   const result = await taskCreate(testConfig, newTask)
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.note).toBe("Initial note")
   expect(result.data.startedAt).toBe("2025-01-17T08:00:00.000Z")
-  expect(result.data.endedAt).toBeUndefined()
+  expect(result.data.completedAt).toBeUndefined()
 })

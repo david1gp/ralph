@@ -1,3 +1,6 @@
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs"
+import { join } from "node:path"
 import { taskArchive } from "@/cli/tasks/logic/archive/taskArchive"
 import { tasksArchivedRead } from "@/cli/tasks/logic/archive/tasksArchivedRead"
 import { tasksRead } from "@/cli/tasks/logic/tasksRead"
@@ -9,9 +12,6 @@ import {
   testBeforeAll,
   testTaskiDir,
 } from "@/cli/utils/test/testHelpers"
-import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs"
-import { join } from "node:path"
 
 const testConfig = getTestConfig()
 const archiveDir = testConfig.tasksArchivedDir
@@ -23,13 +23,12 @@ const testTasksWithDates = [
     projectPath: testTaskiDir,
     story: join(testTaskiDir, "stories", "test-story-1.md"),
     priority: 1,
-    passes: false,
     title: "Task 1",
     description: "Description for task 1",
     acceptanceCriteria: ["Criterion 1"],
     note: "",
     startedAt: "2025-01-17T08:00:00.000Z",
-    endedAt: "2025-01-17T10:00:00.000Z",
+    completedAt: "2025-01-17T10:00:00.000Z",
     createdAt: "2025-01-01T00:00:00.000Z",
   },
   {
@@ -37,7 +36,6 @@ const testTasksWithDates = [
     projectPath: testTaskiDir,
     story: join(testTaskiDir, "stories", "test-story-2.md"),
     priority: 2,
-    passes: false,
     title: "Task 2",
     description: "Description for task 2",
     acceptanceCriteria: ["Criterion 2"],
@@ -53,7 +51,6 @@ const testTasksNoDates = [
     projectPath: testTaskiDir,
     story: join(testTaskiDir, "stories", "test-story-1.md"),
     priority: 3,
-    passes: false,
     title: "Task 3",
     description: "Description for task 3",
     acceptanceCriteria: ["Criterion 3"],
@@ -91,13 +88,13 @@ test("taskArchive returns error when task has no date field", async () => {
   expect(result.errorMessage).toContain("no date field")
 })
 
-test("taskArchive moves task to archive with endedAt date", async () => {
+test("taskArchive moves task to archive with completedAt date", async () => {
   const archiveResult = await taskArchive(testConfig, "TEST-001")
   expect(archiveResult.success).toBe(true)
   assertOk(archiveResult)
   const archived = archiveResult.data
   expect(archived.id).toBe("TEST-001")
-  expect(archived.passes).toBe(true)
+  expect(archived.completedAt).toBe("2025-01-17T10:00:00.000Z")
 
   const tasksResult = await tasksRead(testConfig)
   expect(tasksResult.success).toBe(true)
@@ -113,10 +110,10 @@ test("taskArchive moves task to archive with endedAt date", async () => {
   const archivedTasks = archivedResult.data
   expect(archivedTasks.length).toBe(1)
   expect(archivedTasks[0]!.id).toBe("TEST-001")
-  expect(archivedTasks[0]!.passes).toBe(true)
+  expect(archivedTasks[0]!.completedAt).toBe("2025-01-17T10:00:00.000Z")
 })
 
-test("taskArchive uses startedAt when endedAt is missing", async () => {
+test("taskArchive uses startedAt when completedAt is missing", async () => {
   const archiveResult = await taskArchive(testConfig, "TEST-002")
   expect(archiveResult.success).toBe(true)
   assertOk(archiveResult)
@@ -147,7 +144,6 @@ test("taskArchive appends to existing month file", async () => {
         projectPath: "/test",
         story: "/test/story.md",
         priority: 1,
-        passes: false,
         title: "Existing",
         description: "Existing task",
         acceptanceCriteria: [],

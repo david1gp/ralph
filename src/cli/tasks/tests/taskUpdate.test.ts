@@ -1,7 +1,7 @@
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import { tasksRead } from "@/cli/tasks/logic/tasksRead"
 import { taskUpdate } from "@/cli/tasks/logic/taskUpdate"
 import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "@/cli/utils/test/testHelpers"
-import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import type { Result } from "~utils/result/Result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -12,7 +12,7 @@ function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result
 
 function assertErr<T>(result: Result<T>): asserts result is Extract<typeof result, { success: false }> {
   if (result.success) {
-    throw new Error(`Expected error but got success`)
+    throw new Error("Expected error but got success")
   }
 }
 
@@ -31,20 +31,23 @@ beforeEach(() => {
 })
 
 test("taskUpdate updates existing task", async () => {
-  const result = await taskUpdate(testConfig, "TEST-001", { title: "Updated Title", passes: true })
+  const result = await taskUpdate(testConfig, "TEST-001", {
+    title: "Updated Title",
+    completedAt: "2025-01-17T12:00:00.000Z",
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   const updated = result.data
   expect(updated.id).toBe("TEST-001")
   expect(updated.title).toBe("Updated Title")
-  expect(updated.passes).toBe(true)
+  expect(updated.completedAt).toBe("2025-01-17T12:00:00.000Z")
   const tasksResult = await tasksRead(testConfig)
   expect(tasksResult.success).toBe(true)
   assertOk(tasksResult)
   const tasks = tasksResult.data
   const found = tasks.find((t) => t.id === "TEST-001")
   expect(found!.title).toBe("Updated Title")
-  expect(found!.passes).toBe(true)
+  expect(found!.completedAt).toBe("2025-01-17T12:00:00.000Z")
 })
 
 test("taskUpdate returns error for non-existent task", async () => {
@@ -67,17 +70,17 @@ test("taskUpdate sets startedAt field", async () => {
   expect(found!.startedAt).toBe("2025-01-17T10:00:00.000Z")
 })
 
-test("taskUpdate sets endedAt field", async () => {
-  const result = await taskUpdate(testConfig, "TEST-002", { endedAt: "2025-01-17T12:00:00.000Z" })
+test("taskUpdate sets completedAt field", async () => {
+  const result = await taskUpdate(testConfig, "TEST-002", { completedAt: "2025-01-17T12:00:00.000Z" })
   expect(result.success).toBe(true)
   assertOk(result)
-  expect(result.data.endedAt).toBe("2025-01-17T12:00:00.000Z")
+  expect(result.data.completedAt).toBe("2025-01-17T12:00:00.000Z")
   const tasksResult = await tasksRead(testConfig)
   expect(tasksResult.success).toBe(true)
   assertOk(tasksResult)
   const tasks = tasksResult.data
   const found = tasks.find((t) => t.id === "TEST-002")
-  expect(found!.endedAt).toBe("2025-01-17T12:00:00.000Z")
+  expect(found!.completedAt).toBe("2025-01-17T12:00:00.000Z")
 })
 
 test("taskUpdate sets note field", async () => {
@@ -107,18 +110,18 @@ test("taskUpdate clears startedAt field when set to undefined", async () => {
   expect(found!.startedAt).toBeUndefined()
 })
 
-test("taskUpdate clears endedAt field when set to undefined", async () => {
-  await taskUpdate(testConfig, "TEST-002", { endedAt: "2025-01-17T12:00:00.000Z" })
-  const result = await taskUpdate(testConfig, "TEST-002", { endedAt: undefined })
+test("taskUpdate clears completedAt field when set to undefined", async () => {
+  await taskUpdate(testConfig, "TEST-002", { completedAt: "2025-01-17T12:00:00.000Z" })
+  const result = await taskUpdate(testConfig, "TEST-002", { completedAt: undefined })
   expect(result.success).toBe(true)
   assertOk(result)
-  expect(result.data.endedAt).toBeUndefined()
+  expect(result.data.completedAt).toBeUndefined()
   const tasksResult = await tasksRead(testConfig)
   expect(tasksResult.success).toBe(true)
   assertOk(tasksResult)
   const tasks = tasksResult.data
   const found = tasks.find((t) => t.id === "TEST-002")
-  expect(found!.endedAt).toBeUndefined()
+  expect(found!.completedAt).toBeUndefined()
 })
 
 test("taskUpdate clears note field when set to undefined", async () => {
@@ -139,14 +142,14 @@ test("taskUpdate updates multiple fields at once", async () => {
   const result = await taskUpdate(testConfig, "TEST-002", {
     note: "Updated note",
     startedAt: "2025-01-17T09:00:00.000Z",
-    endedAt: "2025-01-17T17:00:00.000Z",
+    completedAt: "2025-01-17T17:00:00.000Z",
   })
   expect(result.success).toBe(true)
   assertOk(result)
   const updated = result.data
   expect(updated.note).toBe("Updated note")
   expect(updated.startedAt).toBe("2025-01-17T09:00:00.000Z")
-  expect(updated.endedAt).toBe("2025-01-17T17:00:00.000Z")
+  expect(updated.completedAt).toBe("2025-01-17T17:00:00.000Z")
 })
 
 test("taskUpdate updates title field", async () => {
@@ -246,10 +249,9 @@ test("taskUpdate updates all fields at once", async () => {
     description: "Full task overhaul",
     acceptanceCriteria: ["New criterion 1", "New criterion 2"],
     priority: 99,
-    passes: true,
     note: "All fields updated",
     startedAt: "2025-01-17T08:00:00.000Z",
-    endedAt: "2025-01-17T18:00:00.000Z",
+    completedAt: "2025-01-17T18:00:00.000Z",
   })
   expect(result.success).toBe(true)
   assertOk(result)
@@ -258,8 +260,7 @@ test("taskUpdate updates all fields at once", async () => {
   expect(updated.description).toBe("Full task overhaul")
   expect(updated.acceptanceCriteria).toEqual(["New criterion 1", "New criterion 2"])
   expect(updated.priority).toBe(99)
-  expect(updated.passes).toBe(true)
   expect(updated.note).toBe("All fields updated")
   expect(updated.startedAt).toBe("2025-01-17T08:00:00.000Z")
-  expect(updated.endedAt).toBe("2025-01-17T18:00:00.000Z")
+  expect(updated.completedAt).toBe("2025-01-17T18:00:00.000Z")
 })

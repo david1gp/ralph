@@ -1,4 +1,4 @@
-import { array, literal, number, object, optional, string, union } from "valibot"
+import { array, number, object, optional, string } from "valibot"
 
 export const taskSchema = object({
   // meta
@@ -6,7 +6,6 @@ export const taskSchema = object({
   projectPath: string(),
   story: string(),
   priority: number(),
-  passes: union([literal(true), literal(false)]),
   // data
   title: string(),
   description: string(),
@@ -14,6 +13,6 @@ export const taskSchema = object({
   // optional
   note: optional(string()),
   startedAt: optional(string()),
-  endedAt: optional(string()),
+  completedAt: optional(string()),
   createdAt: optional(string()),
 })

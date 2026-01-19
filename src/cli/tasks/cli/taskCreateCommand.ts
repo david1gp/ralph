@@ -1,3 +1,5 @@
+import { buildCommand, type CommandContext } from "@stricli/core"
+import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
 import { configLoad } from "@/cli/config/configLoad"
 import { configSave } from "@/cli/config/configSave"
 import type { TaskType } from "@/cli/tasks/data/TaskType"
@@ -7,17 +9,14 @@ import { tasksRead } from "@/cli/tasks/logic/tasksRead"
 import { parseDateTime } from "@/cli/utils/dateTime"
 import { markdownRestoreWhitespaces } from "@/cli/utils/markdownRestoreWhitespaces"
 import { storyExists } from "@/cli/utils/storyExists"
-import { buildCommand, type CommandContext } from "@stricli/core"
-import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
 
 interface CreateFlags {
   title: string
   description: string
   acceptanceCriteria: string
   priority?: number
-  passes?: boolean
   start?: string
-  end?: string
+  completedAt?: string
   note?: string
   story: string
   projectPath: string
@@ -74,14 +73,14 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
     startedAt = startResult.data
   }
 
-  let endedAt: string | undefined
-  if (flags.end !== undefined && flags.end !== "") {
-    const endResult = parseDateTime(flags.end)
+  let completedAt: string | undefined
+  if (flags.completedAt !== undefined && flags.completedAt !== "") {
+    const endResult = parseDateTime(flags.completedAt)
     if (!endResult) {
       const errorResult = {
         success: false,
         op: "taskCreateCommand",
-        errorMessage: `Invalid end date format: "${flags.end}"`,
+        errorMessage: `Invalid completed-at date format: "${flags.completedAt}"`,
       }
       console.error(errorResult)
       process.exit(1)
@@ -90,7 +89,7 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
       console.error(endResult)
       process.exit(1)
     }
-    endedAt = endResult.data
+    completedAt = endResult.data
   }
 
   const { id, idNumber } = taskIdGenerate(config, flags.projectPath)
@@ -102,10 +101,9 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
     description: markdownRestoreWhitespaces(flags.description),
     acceptanceCriteria: acceptanceCriteria,
     priority: flags.priority ?? maxPriority + 1,
-    passes: flags.passes ?? false,
     note: markdownRestoreWhitespaces(flags.note ?? ""),
     startedAt,
-    endedAt,
+    completedAt,
     story: storyResult.data,
     createdAt: new Date().toISOString(),
   }
@@ -150,11 +148,6 @@ export const taskCreateCommand = buildCommand({
         optional: true,
         brief: "Set task priority (number)",
       },
-      passes: {
-        kind: "boolean",
-        optional: true,
-        brief: "Mark task as passing",
-      },
       start: {
         kind: "parsed",
         parse: String,
@@ -162,12 +155,12 @@ export const taskCreateCommand = buildCommand({
         inferEmpty: true,
         brief: "Set startedAt (use 'now', empty to clear, or ISO 8601 timestamp)",
       },
-      end: {
+      completedAt: {
         kind: "parsed",
         parse: String,
         optional: true,
         inferEmpty: true,
-        brief: "Set endedAt (use 'now', empty to clear, or ISO 8601 timestamp)",
+        brief: "Set completedAt (use 'now', empty to clear, or ISO 8601 timestamp)",
       },
       note: {
         kind: "parsed",
