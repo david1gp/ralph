@@ -15,5 +15,5 @@ test("listStories returns all markdown filenames in stories folder", async () =>
   const stories = result.data
   expect(Array.isArray(stories)).toBe(true)
   expect(stories.length).toBeGreaterThanOrEqual(1)
-  expect(stories.includes("taski_cli.md")).toBe(true)
+  expect(stories.includes("listStories.md")).toBe(true)
 })

@@ -1,7 +1,7 @@
 import { storyExists } from "@/cli/utils/storyExists"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import { assertErr, assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../testHelpers"
 import { join } from "node:path"
+import { assertErr, assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "../testHelpers"
 
 const testConfig = getTestConfig()
 
@@ -10,23 +10,23 @@ afterAll(testAfterAll)
 beforeEach(resetTasksFile)
 
 test("storyExists returns path for existing story with .md extension", async () => {
-  const storyPath = join(testConfig.storiesFolder, "test_story.md")
-  const result = await storyExists(testConfig, "test_story.md")
+  const storyPath = join(testConfig.storiesFolder, "storyExists.md")
+  const result = await storyExists(testConfig, "storyExists.md")
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data).toBe(storyPath)
 })
 
 test("storyExists returns path for existing story without .md extension", async () => {
-  const storyPath = join(testConfig.storiesFolder, "test_story.md")
-  const result = await storyExists(testConfig, "test_story")
+  const storyPath = join(testConfig.storiesFolder, "storyExists.md")
+  const result = await storyExists(testConfig, "storyExists")
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data).toBe(storyPath)
 })
 
 test("storyExists returns error for non-existent story", async () => {
-  const result = await storyExists(testConfig, "non-existent-story")
+  const result = await storyExists(testConfig, "nonExistentStory")
   expect(result.success).toBe(false)
   assertErr(result)
   expect(result.errorMessage).toContain("not found")

@@ -2,7 +2,7 @@ import { storyRead } from "@/cli/core/stories/storyRead"
 import { afterAll, beforeAll, expect, test } from "bun:test"
 import { assertErr, assertOk, getTestConfig, testAfterAll, testBeforeAll } from "../testHelpers"
 
-const existingStoryFilename = "taski_cli.md"
+const existingStoryFilename = "storyRead.md"
 
 const testConfig = getTestConfig()
 
