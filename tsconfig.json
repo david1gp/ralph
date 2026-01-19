@@ -44,5 +44,14 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitOverride": true,
-  }
+  },
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    ".taski*",
+    "dist",
+    "docs",
+    "ops"
+  ]
 }
