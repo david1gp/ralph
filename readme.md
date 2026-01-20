@@ -4,12 +4,18 @@
 
 Keep your work organized in simple files that both you and your AI assistants can navigate effortlessly.
 
-## Why taski?
+Why taski?
 
 - **100% local** — Everything lives in your filesystem. No cloud, no accounts, no lock-in.
 - **AI-friendly** — Stories and tasks are plain files (Markdown + JSON) that any agent can read, parse, and update.
 - **Ralph-ready** — The `next` command returns a single pending task. Perfect for ralph agent loops that need one next task at a time.
 - **Flexible** — Configure custom paths for stories, tasks, and archives. Works with any project structure.
+
+Quick Links
+
+- code - https://github.com/adaptive-shield-matrix/taski
+- ralph - https://github.com/adaptive-shield-matrix/ralph
+- opencode - https://opencode.ai
 
 ## Project structure
 
