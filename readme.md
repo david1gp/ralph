@@ -1,4 +1,4 @@
-# taski-cli
+# @adaptive-sm/taski
 
 **Your personal task manager, built for AI agents.**
 

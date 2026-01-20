@@ -1,5 +1,5 @@
 {
-  "name": "taski-cli",
+  "name": "@adaptive-sm/taski",
   "version": "0.1.0",
   "scripts": {
     "taski": "bun run ./src/cli/taski.ts",
@@ -26,5 +26,18 @@
     "trailingComma": "all"
   },
   "type": "module",
-  "private": true
+  "private": false,
+  "license": "MIT",
+  "homepage": "https://github.com/adaptive-shield-matrix/taski",
+  "description": "Your personal task manager, built for AI agents.",
+  "keywords": [
+    "taski",
+    "task-management",
+    "ai-agents",
+    "cli",
+    "ralph"
+  ],
+  "repository": {
+    "url": "git+https://github.com/adaptive-shield-matrix/taski.git"
+  }
 }
