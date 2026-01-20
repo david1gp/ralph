@@ -9,17 +9,17 @@ const testConfig = getTestConfig()
 beforeAll(testBeforeAll)
 afterAll(testAfterAll)
 
-test("readStory parses existing story correctly", async () => {
+test("readStory returns story content as plain text", async () => {
   const result = await storyRead(testConfig, existingStoryFilename)
   expect(result.success).toBe(true)
   assertOk(result)
-  const story = result.data
-  expect(story.title).toBe("Taski CLI Tool")
-  expect(story.description).toContain("CLI tool")
-  expect(Array.isArray(story.goals)).toBe(true)
-  expect(story.goals.length).toBeGreaterThan(0)
-  expect(Array.isArray(story.userTasks)).toBe(true)
-  expect(story.userTasks.includes("S-001")).toBe(true)
+  const content = result.data
+  expect(typeof content).toBe("string")
+  expect(content).toContain("# Story: Taski CLI Tool")
+  expect(content).toContain("## Description")
+  expect(content).toContain("## Goals")
+  expect(content).toContain("- Create a fully functional CLI tool for task/story management")
+  expect(content).toContain("### S-001")
 })
 
 test("readStory returns error for non-existent story", async () => {
@@ -33,17 +33,17 @@ test("readStory parses goals correctly", async () => {
   const result = await storyRead(testConfig, existingStoryFilename)
   expect(result.success).toBe(true)
   assertOk(result)
-  const story = result.data
-  expect(story.goals).toContain("Create a fully functional CLI tool for task/story management")
-  expect(story.goals).toContain("Implement type-safe schemas with valibot validation")
+  const content = result.data
+  expect(content).toContain("Create a fully functional CLI tool for task/story management")
+  expect(content).toContain("Implement type-safe schemas with valibot validation")
 })
 
 test("readStory parses userTasks correctly", async () => {
   const result = await storyRead(testConfig, existingStoryFilename)
   expect(result.success).toBe(true)
   assertOk(result)
-  const story = result.data
-  expect(story.userTasks).toContain("S-001")
-  expect(story.userTasks).toContain("S-002")
-  expect(story.userTasks).toContain("S-003")
+  const content = result.data
+  expect(content).toContain("### S-001")
+  expect(content).toContain("### S-002")
+  expect(content).toContain("### S-003")
 })

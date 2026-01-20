@@ -1,26 +1,10 @@
 import { configLoad } from "@/cli/config/configLoad"
-import type { StoryType } from "@/cli/stories/data/StoryType"
 import { storyUpdate } from "@/cli/stories/logic/storyUpdate"
-import { markdownRestoreWhitespaces } from "@/cli/utils/markdownRestoreWhitespaces"
 import { buildCommand, type CommandContext } from "@stricli/core"
 
 interface UpdateFlags {
-  title?: string
-  description?: string
-  goals?: string
-  userTasks?: string
-  projectPath?: string
+  content: string
   config?: string
-}
-
-function parseArray(value: string | undefined): Array<string> | undefined {
-  if (value === undefined || value === "") {
-    return undefined
-  }
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter((item) => item !== "")
 }
 
 export const storyUpdateCommand = buildCommand({
@@ -32,29 +16,23 @@ export const storyUpdateCommand = buildCommand({
     }
     const config = configResult.data
 
-    const updates: Partial<StoryType> = {}
-    if (flags.title !== undefined) {
-      updates.title = flags.title
+    let content: string
+    if (flags.content === "-") {
+      const chunks: string[] = []
+      for await (const chunk of process.stdin) {
+        chunks.push(chunk)
+      }
+      content = chunks.join("").trim()
+    } else {
+      content = flags.content
     }
-    if (flags.description !== undefined) {
-      updates.description = markdownRestoreWhitespaces(flags.description)
-    }
-    if (flags.goals !== undefined) {
-      updates.goals = parseArray(flags.goals)
-    }
-    if (flags.userTasks !== undefined) {
-      updates.userTasks = parseArray(flags.userTasks)
-    }
-    if (flags.projectPath !== undefined) {
-      updates.projectPath = flags.projectPath
-    }
-    const updatedResult = await storyUpdate(config, filename, updates)
-    if (!updatedResult.success) {
-      console.error(updatedResult)
+
+    const result = await storyUpdate(config, filename, content)
+    if (!result.success) {
+      console.error(result)
       process.exit(1)
     }
-    const updated = updatedResult.data
-    this.process.stdout.write(`Story "${updated.title}" updated successfully`)
+    this.process.stdout.write("Story updated successfully")
   },
   parameters: {
     positional: {
@@ -68,35 +46,11 @@ export const storyUpdateCommand = buildCommand({
       ],
     },
     flags: {
-      title: {
+      content: {
         kind: "parsed",
         parse: String,
-        optional: true,
-        brief: "Set story title",
-      },
-      description: {
-        kind: "parsed",
-        parse: String,
-        optional: true,
-        brief: "Set story description",
-      },
-      goals: {
-        kind: "parsed",
-        parse: String,
-        optional: true,
-        brief: "Set story goals (comma-separated)",
-      },
-      userTasks: {
-        kind: "parsed",
-        parse: String,
-        optional: true,
-        brief: "Set story user tasks (comma-separated)",
-      },
-      projectPath: {
-        kind: "parsed",
-        parse: String,
-        optional: true,
-        brief: "Project path",
+        optional: false,
+        brief: "Story content",
       },
       config: {
         kind: "parsed",
