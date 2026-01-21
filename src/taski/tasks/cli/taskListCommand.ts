@@ -5,6 +5,7 @@ import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 interface ListFlags {
   config?: string
+  story?: string
 }
 
 export const taskListCommand = buildCommand({
@@ -21,7 +22,12 @@ export const taskListCommand = buildCommand({
       this.process.stdout.write(jsonStringifyPretty([]))
       return
     }
-    const tasks = tasksResult.data
+    let tasks = tasksResult.data
+
+    if (flags.story !== undefined) {
+      tasks = tasks.filter(task => task.story === flags.story)
+    }
+
     this.process.stdout.write(jsonStringifyPretty(tasks))
   },
   parameters: {
@@ -31,6 +37,12 @@ export const taskListCommand = buildCommand({
         parse: String,
         optional: true,
         brief: "Path to config file (directory with taski.json or direct path)",
+      },
+      story: {
+        kind: "parsed",
+        parse: String,
+        optional: true,
+        brief: "Filter tasks by story filename",
       },
     },
   },
