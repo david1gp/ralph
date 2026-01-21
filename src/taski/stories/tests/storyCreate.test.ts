@@ -138,3 +138,31 @@ test("storyCreateFunc creates story from file using --from-file", async () => {
     }
   }
 })
+
+test("storyCreateFunc does not add .md extension if shortTitle already ends with .md", async () => {
+  const originalCwd = process.cwd()
+  process.chdir(projectRoot)
+  let createdFile: string | null = null
+  try {
+    const context = createMockContext()
+    const params = {
+      shortTitle: "custom-title.md",
+      projectPath: projectRoot,
+      content: testStoryContent,
+      config: testTaskiDir,
+    }
+    await storyCreateFunc.call(context, params)
+
+    expect(stdout[0]).toMatch(/S-\d{3}_adaptive-ralph-\d{3}_custom-title\.md$/)
+    const filename = stdout[0]!.split("/").pop() ?? ""
+    expect(filename.endsWith("custom-title.md")).toBe(true)
+    createdFile = join(testStoriesPath, filename)
+    const fileContent = readFileSync(createdFile, "utf-8")
+    expect(fileContent).toContain("# Story: Test Story")
+  } finally {
+    process.chdir(originalCwd)
+    if (createdFile && existsSync(createdFile)) {
+      rmSync(createdFile)
+    }
+  }
+})

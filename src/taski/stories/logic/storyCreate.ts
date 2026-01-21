@@ -28,7 +28,7 @@ export async function storyCreate(
     idResult.projectIdFormatted +
     "_" +
     params.shortTitle +
-    ".md"
+    (params.shortTitle.endsWith(".md") ? "" : ".md")
   const filePath = storiesPath + "/" + filename
   writeFileSync(filePath, params.content)
   return createResult({ filePath, idResult })
