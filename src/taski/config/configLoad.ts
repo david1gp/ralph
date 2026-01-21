@@ -10,10 +10,23 @@ export async function configLoad(configPath?: string): PromiseResult<ConfigType>
     return readConfigFromPath(configPath)
   }
 
-  const currentDirConfig = join(process.cwd(), ".taski", "taski.json")
-  const currentDirResult = await readConfigFromPath(currentDirConfig)
-  if (currentDirResult.success) {
-    return currentDirResult
+  const cwdConfig = join(process.cwd(), ".taski", "taski.json")
+  const cwdResult = await readConfigFromPath(cwdConfig)
+  if (cwdResult.success) {
+    return cwdResult
+  }
+
+  let currentDir = process.cwd()
+  const root = "/"
+  const home = homedir()
+
+  while (currentDir !== home && currentDir !== root) {
+    const parentConfig = join(currentDir, ".taski", "taski.json")
+    const result = await readConfigFromPath(parentConfig)
+    if (result.success) {
+      return result
+    }
+    currentDir = dirname(currentDir)
   }
 
   const homedirConfig = join(homedir(), ".config", "taski", "taski.json")
