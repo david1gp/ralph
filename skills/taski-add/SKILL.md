@@ -94,9 +94,7 @@ Each criterion must be verifiable, not vague.
 
 ## Step 3: Generate Story Markdown
 
-
 Create a user story.
-Make it extremly concise, sacrifice grammar for the sake of concision.
 
 The User Story reader may be a junior developer or AI agent. Therefore:
 
@@ -106,11 +104,7 @@ The User Story reader may be a junior developer or AI agent. Therefore:
 - Number requirements for easy reference
 - Use concrete examples where helpful
 
----
-
-## Step 4: Save Story via taski CLI
-
-Example:
+use taski cli, example:
 
 ```bash
 taski stories create \
@@ -121,7 +115,7 @@ taski stories create \
 
 ---
 
-## Step 4: Parse and Create Tasks
+## Step 4: Create Tasks
 
 ### Task Sizing Rule
 
