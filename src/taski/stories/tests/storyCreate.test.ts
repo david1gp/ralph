@@ -60,7 +60,7 @@ beforeEach(() => {
       rmSync(testFile)
     }
   }
-  const oldEscapeFiles = ["S-000_personal-taski-cli-001_escape-test.md"]
+  const oldEscapeFiles = ["S-000_adaptive-ralph-001_escape-test.md"]
   for (const file of oldEscapeFiles) {
     const testFile = testStoriesPath + "/" + file
     if (existsSync(testFile)) {
@@ -84,7 +84,7 @@ test("storyCreateFunc creates story with escape sequences transformed", async ()
     }
     await storyCreateFunc.call(context, params)
 
-    expect(stdout[0]).toMatch(/S-\d{3}_personal-taski-cli-\d{3}_escape-test\.md/)
+    expect(stdout[0]).toMatch(/S-\d{3}_adaptive-ralph-\d{3}_escape-test\.md/)
     const filename = stdout[0]!.split("/").pop() ?? ""
     createdFile = join(testStoriesPath, filename)
     const fileContent = readFileSync(createdFile, "utf-8")
