@@ -16,6 +16,7 @@
   "dependencies": {
     "@adaptive-sm/utils": "link:@adaptive-sm/utils",
     "@stricli/core": "^1.2.5",
+    "ms": "^2.1.3",
     "valibot": "^1.2.0"
   },
   "bin": {

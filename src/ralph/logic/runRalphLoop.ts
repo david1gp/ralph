@@ -1,19 +1,27 @@
 import { buildPrompt } from "@/ralph/logic/buildPrompt"
 import { getNextTask } from "@/ralph/logic/getNextTask"
 import { runOpencode } from "@/ralph/logic/runOpencode"
+import { configLoad } from "@/taski/config/configLoad"
+import { taskUpdate } from "@/taski/tasks/logic/taskUpdate"
+import ms from "ms"
+import { execSync } from "node:child_process"
 import type { RalphConfig } from "../data/RalphConfig"
 
 export async function runRalphLoop(config: RalphConfig): Promise<void> {
-  for (let i = 1; i <= config.maxIterations; i++) {
+  const loopStartTime = performance.now()
+  let completedTasks = 0
 
+  for (let i = 1; i <= config.maxIterations; i++) {
     const task = await getNextTask()
 
     if (task === null) {
       console.log(`${i} / ${config.maxIterations}: No pending tasks found. Exiting.`)
-      return
-    } else {
-      console.log(`${i} / ${config.maxIterations}: ${task.id} - ${task.title}`)
+      break
     }
+
+    console.log(`${i} / ${config.maxIterations}: ${task.id} - ${task.title}`)
+
+    const taskStartTime = performance.now()
 
     const prompt = await buildPrompt(task)
 
@@ -25,8 +33,26 @@ export async function runRalphLoop(config: RalphConfig): Promise<void> {
     await runOpencode(prompt)
 
     process.stdout.write(`: completed`)
+
+    const taskEndTime = performance.now()
+    const taskDuration = taskEndTime - taskStartTime
+
+    const gitDiffRaw = execSync("git diff --shortstat", { cwd: task.projectPath, encoding: "utf-8" })
+    const gitDiff = gitDiffRaw.trim() || "No changes"
+
+    console.log("Changes:", gitDiff, "Duration:", ms(taskDuration))
+
+    const configResult = await configLoad()
+    if (configResult.success) {
+      await taskUpdate(configResult.data, task.id, { gitDiff })
+    }
+
+    completedTasks++
   }
 
+  const loopEndTime = performance.now()
+  const loopDuration = loopEndTime - loopStartTime
+
   console.log("")
-  console.log(`Ralph reached max iterations (${config.maxIterations}).`)
+  console.log(`Ralph completed ${completedTasks} task${completedTasks !== 1 ? "s" : ""} in ${ms(loopDuration)}.`)
 }
