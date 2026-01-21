@@ -6,11 +6,14 @@ import { parseJson, pipe, safeParse, string, summarize } from "valibot"
 import { createError, createResult, type PromiseResult } from "~utils/result/Result"
 
 export async function configLoad(configPath?: string): PromiseResult<ConfigType> {
+  const triedPaths: string[] = []
+
   if (configPath) {
     return readConfigFromPath(configPath)
   }
 
   const cwdConfig = join(process.cwd(), ".taski", "taski.json")
+  triedPaths.push(cwdConfig)
   const cwdResult = await readConfigFromPath(cwdConfig)
   if (cwdResult.success) {
     return cwdResult
@@ -22,6 +25,7 @@ export async function configLoad(configPath?: string): PromiseResult<ConfigType>
 
   while (currentDir !== home && currentDir !== root) {
     const parentConfig = join(currentDir, ".taski", "taski.json")
+    triedPaths.push(parentConfig)
     const result = await readConfigFromPath(parentConfig)
     if (result.success) {
       return result
@@ -30,7 +34,13 @@ export async function configLoad(configPath?: string): PromiseResult<ConfigType>
   }
 
   const homedirConfig = join(homedir(), ".config", "taski", "taski.json")
-  return readConfigFromPath(homedirConfig)
+  triedPaths.push(homedirConfig)
+  const homedirResult = await readConfigFromPath(homedirConfig)
+  if (homedirResult.success) {
+    return homedirResult
+  }
+
+  return createError("configLoad", `Config file not found`, JSON.stringify(triedPaths))
 }
 
 async function readConfigFromPath(taskiPath: string): PromiseResult<ConfigType> {
