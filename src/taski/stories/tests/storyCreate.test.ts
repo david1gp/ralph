@@ -8,7 +8,7 @@ import {
     testTaskiDir,
 } from "@/taski/utils/test/testHelpers"
 import { afterAll, beforeAll, beforeEach, expect, mock, test } from "bun:test"
-import { existsSync, readFileSync, rmSync } from "node:fs"
+import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
 const testStoryContent = `# Story: Test Story
@@ -98,6 +98,43 @@ test("storyCreateFunc creates story with escape sequences transformed", async ()
     process.chdir(originalCwd)
     if (createdFile && existsSync(createdFile)) {
       rmSync(createdFile)
+    }
+  }
+})
+
+test("storyCreateFunc creates story from file using --from-file", async () => {
+  const originalCwd = process.cwd()
+  process.chdir(projectRoot)
+  let createdFile: string | null = null
+  const tempSourceFile = join(projectRoot, "temp-test-story.md")
+  try {
+    writeFileSync(tempSourceFile, testStoryContent, "utf-8")
+
+    const context = createMockContext()
+    const params = {
+      shortTitle: "from-file-test",
+      projectPath: projectRoot,
+      fromFile: tempSourceFile,
+      config: testTaskiDir,
+    }
+    await storyCreateFunc.call(context, params)
+
+    expect(stdout[0]).toMatch(/S-\d{3}_adaptive-ralph-\d{3}_from-file-test\.md/)
+    const filename = stdout[0]!.split("/").pop() ?? ""
+    createdFile = join(testStoriesPath, filename)
+    const fileContent = readFileSync(createdFile, "utf-8")
+    expect(fileContent).toContain("# Story: Test Story")
+    expect(fileContent).toContain("## Description")
+    expect(fileContent).toContain("This is a test story for unit testing purposes.")
+    expect(fileContent).toContain("## Goals")
+    expect(fileContent).toContain("- Test listStories function")
+  } finally {
+    process.chdir(originalCwd)
+    if (createdFile && existsSync(createdFile)) {
+      rmSync(createdFile)
+    }
+    if (existsSync(tempSourceFile)) {
+      rmSync(tempSourceFile)
     }
   }
 })

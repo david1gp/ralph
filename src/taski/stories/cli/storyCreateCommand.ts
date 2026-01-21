@@ -4,15 +4,18 @@ import { storyCreate } from "@/taski/stories/logic/storyCreate"
 import { projectPathExists, shortTitleFormat } from "@/taski/stories/logic/storyInputValidate"
 import { markdownRestoreWhitespaces } from "@/taski/utils/markdownRestoreWhitespaces"
 import { buildCommand, type CommandContext } from "@stricli/core"
+import { existsSync, readFileSync } from "node:fs"
 
 interface CreateFlags {
   shortTitle: string
   projectPath: string
-  content: string
+  content?: string
+  fromFile?: string
   config?: string
 }
 
 export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) {
+  const op = "storyCreate"
   const configResult = await configLoad(flags.config)
   if (!configResult.success) {
     console.error(configResult)
@@ -32,10 +35,29 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
     process.exit(1)
   }
 
+  let content = flags.content
+  if (flags.fromFile) {
+    if (!existsSync(flags.fromFile)) {
+      console.error({ op, success: false, errorMessage: `File not found: ${flags.fromFile}`, errorData: flags.fromFile })
+      process.exit(1)
+    }
+    try {
+      content = readFileSync(flags.fromFile, "utf-8")
+    } catch {
+      console.error({ op, success: false, errorMessage: `Failed to read file: ${flags.fromFile}`, errorData: flags.fromFile })
+      process.exit(1)
+    }
+  }
+
+  if (content === undefined) {
+    console.error({ op, success: false, errorMessage: "Either --content or --from-file is required" })
+    process.exit(1)
+  }
+
   const result = await storyCreate(config, {
     shortTitle: titleResult.data,
     projectPath: flags.projectPath,
-    content: markdownRestoreWhitespaces(flags.content),
+    content: markdownRestoreWhitespaces(content),
   })
   if (!result.success) {
     console.error(result)
@@ -70,8 +92,14 @@ export const storyCreateCommand = buildCommand({
       content: {
         kind: "parsed",
         parse: String,
-        optional: false,
+        optional: true,
         brief: "Story content",
+      },
+      fromFile: {
+        kind: "parsed",
+        parse: String,
+        optional: true,
+        brief: "Path to an existing markdown file to copy as the story content",
       },
       config: {
         kind: "parsed",
