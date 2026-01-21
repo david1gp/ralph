@@ -115,7 +115,6 @@ Example:
 ```bash
 taski stories create \
   --shortStoryTitle "dark-mode" \
-  --projectDir "dcc-app" \
   --content "Content..."
 -> "returns the filename, required later for task creation"
 ```
@@ -156,8 +155,7 @@ taski tasks create \
   --title "{title}" \
   --description "{description}" \
   --acceptanceCriteria '["criterion1", "criterion2", "bun run tsc passes"]' \
-  --story "{story-filename-from-taski-stories-create}" \
-  --projectDir "dcc-app"
+  --story "{story-filename-from-taski-stories-create}"
 ```
 
 ### Acceptance Criteria Rules

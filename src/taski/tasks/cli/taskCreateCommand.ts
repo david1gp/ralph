@@ -92,11 +92,13 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
     completedAt = endResult.data
   }
 
-  const { id, idNumber } = taskIdGenerate(config, flags.projectPath)
+  const projectPath = flags.projectPath ?? process.cwd()
+
+  const { id, idNumber } = taskIdGenerate(config, projectPath)
 
   const newTask: TaskType = {
     id: id,
-    projectPath: flags.projectPath,
+    projectPath: projectPath,
     title: flags.title,
     description: markdownRestoreWhitespaces(flags.description),
     acceptanceCriteria: acceptanceCriteria,
@@ -114,7 +116,7 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
   }
 
   config.projectTaskIdNumber = config.projectTaskIdNumber ?? {}
-  config.projectTaskIdNumber[flags.projectPath] = idNumber + 1
+  config.projectTaskIdNumber[projectPath] = idNumber + 1
   await configSave(config)
 
   this.process.stdout.write(createdResult.data.id)
