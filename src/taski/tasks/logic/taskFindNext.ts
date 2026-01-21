@@ -15,7 +15,7 @@ export async function taskFindNext(config: ConfigType): PromiseResult<TaskType |
       const bIndex = tasksResult.data.indexOf(b)
       const aVirtual = a.priority * 1000 - aIndex
       const bVirtual = b.priority * 1000 - bIndex
-      return bVirtual - aVirtual
+      return aVirtual - bVirtual
     })
   return createResult(incomplete[0])
 }
