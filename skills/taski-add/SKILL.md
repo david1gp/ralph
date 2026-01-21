@@ -114,7 +114,7 @@ Example:
 
 ```bash
 taski stories create \
-  --shortStoryTitle "dark-mode" \
+  --shortTitle "dark-mode" \
   --content "Content..."
 -> "returns the filename, required later for task creation"
 ```

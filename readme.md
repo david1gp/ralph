@@ -128,7 +128,7 @@ taski init
 
 ```bash
 # Create a story (content is full markdown)
-taski stories create --shortStoryTitle "Story title" --projectPath "." --content "Full description..."
+taski stories create --shortTitle "Story title" --projectPath "." --content "Full description..."
 
 # List all stories
 taski stories list

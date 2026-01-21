@@ -1,12 +1,12 @@
 import { configLoad } from "@/taski/config/configLoad"
 import { configSave } from "@/taski/config/configSave"
 import { storyCreate } from "@/taski/stories/logic/storyCreate"
-import { projectPathExists, shortStoryTitleFormat } from "@/taski/stories/logic/storyInputValidate"
+import { projectPathExists, shortTitleFormat } from "@/taski/stories/logic/storyInputValidate"
 import { markdownRestoreWhitespaces } from "@/taski/utils/markdownRestoreWhitespaces"
 import { buildCommand, type CommandContext } from "@stricli/core"
 
 interface CreateFlags {
-  shortStoryTitle: string
+  shortTitle: string
   projectPath: string
   content: string
   config?: string
@@ -26,14 +26,14 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
     process.exit(1)
   }
 
-  const titleResult = shortStoryTitleFormat(flags.shortStoryTitle)
+  const titleResult = shortTitleFormat(flags.shortTitle)
   if (!titleResult.success) {
     console.error(titleResult)
     process.exit(1)
   }
 
   const result = await storyCreate(config, {
-    shortStoryTitle: titleResult.data,
+    shortTitle: titleResult.data,
     projectPath: flags.projectPath,
     content: markdownRestoreWhitespaces(flags.content),
   })
@@ -55,7 +55,7 @@ export const storyCreateCommand = buildCommand({
   func: storyCreateFunc,
   parameters: {
     flags: {
-      shortStoryTitle: {
+      shortTitle: {
         kind: "parsed",
         parse: String,
         optional: false,

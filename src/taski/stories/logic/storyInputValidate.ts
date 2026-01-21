@@ -7,11 +7,11 @@ export interface StoryTitleResult {
   error?: string
 }
 
-export function shortStoryTitleFormat(title: string): Result<string> {
+export function shortTitleFormat(title: string): Result<string> {
   const allowedPattern = /^[a-zA-Z0-9 _\-]+$/
   if (!allowedPattern.test(title)) {
     return {
-      op: "shortStoryTitleFormat",
+      op: "shortTitleFormat",
       success: false,
       errorMessage:
         "Title contains invalid characters. Only alphanumeric, spaces, underscores, and dashes are allowed.",

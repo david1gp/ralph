@@ -5,7 +5,7 @@ import { writeFileSync } from "node:fs"
 import { createResult, type PromiseResult } from "~utils/result/Result"
 
 export interface StoryCreateParams {
-  shortStoryTitle: string
+  shortTitle: string
   projectPath: string
   content: string
 }
@@ -27,7 +27,7 @@ export async function storyCreate(
     "-" +
     idResult.projectIdFormatted +
     "_" +
-    params.shortStoryTitle +
+    params.shortTitle +
     ".md"
   const filePath = storiesPath + "/" + filename
   writeFileSync(filePath, params.content)

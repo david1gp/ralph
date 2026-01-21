@@ -76,7 +76,7 @@ test("storyCreateFunc creates story with escape sequences transformed", async ()
   try {
     const context = createMockContext()
     const params = {
-      shortStoryTitle: "escape-test",
+      shortTitle: "escape-test",
       projectPath: projectRoot,
       content:
         "# Story: Escape Test\\n\\n## Description\\n\\nLine one\\nLine two\\n\\n## Goals\\n\\n- Goal one\\n- Goal two\\n\\n## User Tasks\\n\\n### T-ESC-001: Task\\twith\\ttabs",

@@ -56,7 +56,7 @@ beforeEach(() => {
 
 test("deleteStory removes story file", async () => {
   const createResult = await storyCreate(testConfig, {
-    shortStoryTitle: "delete-test-story",
+    shortTitle: "delete-test-story",
     projectPath: projectRoot,
     content: testStoryContent,
   })
