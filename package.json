@@ -1,5 +1,5 @@
 {
-  "name": "@adaptive-sm/taski",
+  "name": "@adaptive-sm/ralph",
   "version": "0.1.0",
   "scripts": {
     "ralph": "bun run ./src/ralph/ralph.ts",
@@ -30,7 +30,7 @@
   "type": "module",
   "private": false,
   "license": "MIT",
-  "homepage": "https://github.com/adaptive-shield-matrix/taski",
+  "homepage": "https://github.com/adaptive-shield-matrix/ralph",
   "description": "Your personal task manager, built for AI agents.",
   "keywords": [
     "taski",
@@ -40,7 +40,7 @@
     "ralph"
   ],
   "repository": {
-    "url": "git+https://github.com/adaptive-shield-matrix/taski.git"
+    "url": "git+https://github.com/adaptive-shield-matrix/ralph.git"
   },
   "files": [
     "src/ralph",
