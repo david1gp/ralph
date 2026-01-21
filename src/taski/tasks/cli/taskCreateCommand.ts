@@ -19,7 +19,7 @@ interface CreateFlags {
   completedAt?: string
   note?: string
   story: string
-  projectPath: string
+  projectPath?: string
   config?: string
 }
 
@@ -179,7 +179,7 @@ export const taskCreateCommand = buildCommand({
       projectPath: {
         kind: "parsed",
         parse: String,
-        optional: false,
+        optional: true,
         brief: "Project path",
       },
       config: {
