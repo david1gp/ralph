@@ -1,4 +1,4 @@
-import type { TaskType } from "@/ralph/data/TaskType"
+import type { TaskType } from "@/taski/tasks/data/TaskType"
 import { describe, expect, it } from "bun:test"
 
 const testPromptContent = `# Ralph Agent Instructions

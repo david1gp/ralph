@@ -1,4 +1,4 @@
-import type { TaskType } from "../data/TaskType"
+import type { TaskType } from "@/taski/tasks/data/TaskType"
 
 export async function buildPrompt(task: TaskType): Promise<string> {
   const storyContent = await Bun.file(task.story).text()
