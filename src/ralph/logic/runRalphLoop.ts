@@ -4,37 +4,27 @@ import { runOpencode } from "@/ralph/logic/runOpencode"
 import type { RalphConfig } from "../data/RalphConfig"
 
 export async function runRalphLoop(config: RalphConfig): Promise<void> {
-  console.log(`Starting Ralph - Max iterations: ${config.maxIterations}`)
-
   for (let i = 1; i <= config.maxIterations; i++) {
-    console.log("")
-    console.log("═══════════════════════════════════════════════════════")
-    console.log(`  Ralph Iteration ${i} of ${config.maxIterations}`)
-    console.log("═══════════════════════════════════════════════════════")
 
     const task = await getNextTask()
 
     if (task === null) {
-      console.log("No pending tasks found. Exiting.")
+      console.log(`${i} / ${config.maxIterations}: No pending tasks found. Exiting.`)
       return
+    } else {
+      console.log(`${i} / ${config.maxIterations}: ${task.id} - ${task.title}`)
     }
 
     const prompt = await buildPrompt(task)
 
     if (config.verbose) {
-      console.log(`$ taski tasks next`)
-      console.log(`Task: ${task.id} - ${task.title}`)
       console.log(task)
       console.log(prompt)
     }
 
-    if (config.verbose) {
-      console.log(`$ opencode run "..."`)
-    }
-
     await runOpencode(prompt)
 
-    console.log(`Iteration ${i} complete. Continuing...`)
+    process.stdout.write(`: completed`)
   }
 
   console.log("")
