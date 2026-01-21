@@ -21,6 +21,7 @@ interface UpdateFlags {
   story?: string
   projectPath?: string
   config?: string
+  gitDiff?: string
 }
 
 export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, id: string) {
@@ -91,6 +92,9 @@ export async function taskUpdateFunc(this: CommandContext, flags: UpdateFlags, i
   }
   if (flags.projectPath !== undefined) {
     updates.projectPath = flags.projectPath
+  }
+  if (flags.gitDiff !== undefined) {
+    updates.gitDiff = flags.gitDiff
   }
 
   const shouldArchive = flags.archive === true || !!flags.completedAt
@@ -203,6 +207,12 @@ export const taskUpdateCommand = buildCommand({
         parse: String,
         optional: true,
         brief: "Project path",
+      },
+      gitDiff: {
+        kind: "parsed",
+        parse: String,
+        optional: true,
+        brief: "Git diff shortstat output",
       },
       config: {
         kind: "parsed",

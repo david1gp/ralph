@@ -15,4 +15,5 @@ export const taskSchema = object({
   startedAt: optional(string()),
   completedAt: optional(string()),
   createdAt: optional(string()),
+  gitDiff: optional(string()),
 })
