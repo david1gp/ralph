@@ -1,4 +1,5 @@
 import { buildRouteMap } from "@stricli/core"
+import { taskCountCommand } from "./taskCountCommand"
 import { taskCreateCommand } from "./taskCreateCommand"
 import { taskDeleteCommand } from "./taskDeleteCommand"
 import { taskListCommand } from "./taskListCommand"
@@ -8,12 +9,13 @@ import { taskUpdateCommand } from "./taskUpdateCommand"
 
 export const taskCommands = buildRouteMap({
   routes: {
-    list: taskListCommand,
-    read: taskReadCommand,
+    count: taskCountCommand,
     create: taskCreateCommand,
-    update: taskUpdateCommand,
-    next: taskNextCommand,
     delete: taskDeleteCommand,
+    list: taskListCommand,
+    next: taskNextCommand,
+    read: taskReadCommand,
+    update: taskUpdateCommand,
   },
   docs: {
     brief: "Manage tasks",
