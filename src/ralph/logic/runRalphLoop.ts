@@ -11,6 +11,14 @@ export async function runRalphLoop(config: RalphConfig): Promise<void> {
   const loopStartTime = performance.now()
   let completedTasks = 0
 
+  const totalCountRaw = execSync("taski tasks count", { encoding: "utf-8" })
+  const totalCount = Number(totalCountRaw.trim())
+
+  if (totalCount === 0) {
+    console.log("No tasks found. Exiting.")
+    return
+  }
+
   for (let i = 1; i <= config.maxIterations; i++) {
     const task = await getNextTask()
 
@@ -19,7 +27,7 @@ export async function runRalphLoop(config: RalphConfig): Promise<void> {
       break
     }
 
-    console.log(`${i} / ${config.maxIterations}: ${task.id} - ${task.title}`)
+    console.log(`${i} / ${totalCount} / ${config.maxIterations}: ${task.id} - ${task.title}`)
 
     const taskStartTime = performance.now()
 
