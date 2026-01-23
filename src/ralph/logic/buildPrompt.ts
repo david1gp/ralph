@@ -1,7 +1,7 @@
 import type { TaskType } from "@/taski/tasks/data/TaskType"
 
 export async function buildPrompt(task: TaskType): Promise<string> {
-  const storyContent = await Bun.file(task.story).text()
+  // const storyContent = await Bun.file(task.story).text()
   const acceptanceCriteria = task.acceptanceCriteria.map((c) => `- ${c}`).join("\n")
   return `# ${task.id} - ${task.title}
 
@@ -20,6 +20,9 @@ ${task.description}
 
 Acceptance Criteria:
 ${acceptanceCriteria}
+
+User Story:
+${task.story}
 
 ## Implementation Steps
 
@@ -64,11 +67,5 @@ taski tasks update \
   ${task.id} \
 --completedAt now
 \`\`\`
-
-## User Story
-
-${task.story}
-
-${storyContent}
 `
 }
