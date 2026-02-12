@@ -48,7 +48,7 @@ export async function runRalphLoop(config: RalphConfig): Promise<void> {
     const gitDiffRaw = execSync("git diff --shortstat", { cwd: task.projectPath, encoding: "utf-8" })
     const gitDiff = gitDiffRaw.trim() || "No changes"
 
-    console.log("Changes:", gitDiff, "Duration:", ms(taskDuration))
+    console.log(" - " + gitDiff + ", duration: " + ms(taskDuration))
 
     const configResult = await configLoad()
     if (configResult.success) {
