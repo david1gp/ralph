@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
     // Environment setup & latest features
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",
@@ -21,12 +19,8 @@
     // absolute import paths
     //
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "~utils/*": [
-        "./node_modules/@adaptive-sm/utils/dist/*"
-      ]
+      "@/*": ["./src/*"],
+      "~utils/*": ["./node_modules/@adaptive-ds/utils/dist/*"],
     },
     //
     // https://devblogs.microsoft.com/typescript/announcing-typescript-5-8/#the---erasablesyntaxonly-option
@@ -45,13 +39,6 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitOverride": true,
   },
-  "include": [
-    "./src"
-  ],
-  "exclude": [
-    ".taski*",
-    "dist",
-    "docs",
-    "ops"
-  ]
+  "include": ["./src"],
+  "exclude": [".taski*", "dist", "docs", "ops"],
 }

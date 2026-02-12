@@ -1,4 +1,4 @@
-# @adaptive-sm/ralph - An autonomous opencode agent
+# @adaptive-ds/ralph - An autonomous opencode agent
 
 Ralph is an AI that never sleeps. 
 It runs opencode on loop, grinding through tasks until everything's done. 
@@ -13,7 +13,7 @@ Together, they form a system that never stops until the work is done.
 
 Quick Links
 
-- code - https://github.com/adaptive-shield-matrix/ralph
+- code - https://github.com/david1gp/ralph
 - opencode - https://opencode.ai
 
 ---
