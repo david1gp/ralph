@@ -24,6 +24,7 @@ interface CreateFlags {
 }
 
 export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
+  const op = "taskCreateCommand"
   const configResult = await configLoad(flags.config)
   if (!configResult.success) {
     console.error(configResult)
@@ -42,7 +43,7 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
   if (!result.success) {
     const errorResult = {
       success: false,
-      op: "taskCreateCommand",
+      op,
       errorMessage: summarize(result.issues),
     }
     console.error(errorResult)
@@ -60,7 +61,7 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
     if (!startResult) {
       const errorResult = {
         success: false,
-        op: "taskCreateCommand",
+        op,
         errorMessage: `Invalid start date format: "${flags.start}"`,
       }
       console.error(errorResult)
@@ -79,7 +80,7 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
     if (!endResult) {
       const errorResult = {
         success: false,
-        op: "taskCreateCommand",
+        op,
         errorMessage: `Invalid completed-at date format: "${flags.completedAt}"`,
       }
       console.error(errorResult)
@@ -93,6 +94,28 @@ export async function taskCreateFunc(this: CommandContext, flags: CreateFlags) {
   }
 
   const projectPath = flags.projectPath ?? process.cwd()
+
+  const projectDir = new URL("file://" + projectPath)
+  if (!Bun.file(projectDir).exists()) {
+    const errorResult = {
+      success: false,
+      op,
+      errorMessage: `Project path does not exist: "${projectPath}"`,
+    }
+    console.error(errorResult)
+    process.exit(1)
+  }
+
+  const gitDir = new URL(".git", "file://" + projectPath)
+  if (!Bun.file(gitDir).exists()) {
+    const errorResult = {
+      success: false,
+      op,
+      errorMessage: `Project path is not a git repository: "${projectPath}"`,
+    }
+    console.error(errorResult)
+    process.exit(1)
+  }
 
   const { id, idNumber } = taskIdGenerate(config, projectPath)
 

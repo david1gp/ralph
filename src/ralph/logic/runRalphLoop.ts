@@ -40,13 +40,12 @@ export async function runRalphLoop(config: RalphConfig): Promise<void> {
 
     await runOpencode(prompt)
 
-    process.stdout.write(`: completed`)
+    process.stdout.write(": completed")
 
     const taskEndTime = performance.now()
     const taskDuration = taskEndTime - taskStartTime
 
-    const gitDiffRaw = execSync("git diff --shortstat", { cwd: task.projectPath, encoding: "utf-8" })
-    const gitDiff = gitDiffRaw.trim() || "No changes"
+    const gitDiff = getGitDiff(task.projectPath)
 
     console.log(" - " + gitDiff + ", duration: " + ms(taskDuration))
 
@@ -63,4 +62,18 @@ export async function runRalphLoop(config: RalphConfig): Promise<void> {
 
   console.log("")
   console.log(`Ralph completed ${completedTasks} task${completedTasks !== 1 ? "s" : ""} in ${ms(loopDuration)}.`)
+}
+
+function getGitDiff(projectPath: string): string {
+  const gitDir = new URL(".git", "file://" + projectPath)
+  if (!Bun.file(gitDir).exists()) {
+    return "Not a git repository"
+  }
+
+  try {
+    const gitDiffRaw = execSync("git diff --shortstat", { cwd: projectPath, encoding: "utf-8" })
+    return gitDiffRaw.trim() || "No changes"
+  } catch {
+    return "No changes"
+  }
 }
