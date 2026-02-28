@@ -65,6 +65,10 @@ export async function runRalphLoop(config: RalphConfig): Promise<void> {
 }
 
 function getGitDiff(projectPath: string): string {
+  if (typeof projectPath !== "string" || !projectPath || !projectPath.startsWith("/")) {
+    return "No project path"
+  }
+
   const gitDir = new URL(".git", "file://" + projectPath)
   if (!Bun.file(gitDir).exists()) {
     return "Not a git repository"
