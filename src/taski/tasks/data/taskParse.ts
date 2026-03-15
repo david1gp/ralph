@@ -1,7 +1,7 @@
-import type { TaskType } from "@/taski/tasks/data/TaskType";
-import { taskSchema } from "@/taski/tasks/data/taskSchema";
-import { safeParse } from "valibot";
-import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty";
+import type { TaskType } from "@/taski/tasks/data/TaskType"
+import { taskSchema } from "@/taski/tasks/data/taskSchema"
+import { safeParse } from "valibot"
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 export function taskParse(data: unknown): { success: true; data: TaskType } | { success: false; issues: string } {
   const result = safeParse(taskSchema, data)

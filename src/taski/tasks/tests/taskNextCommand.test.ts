@@ -1,12 +1,12 @@
 import { taskNextFunc } from "@/taski/tasks/cli/taskNextCommand"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
 import {
-    getTestConfig,
-    projectRoot,
-    resetTasksFile,
-    testAfterAll,
-    testBeforeAll,
-    testTaskiDir,
+  getTestConfig,
+  projectRoot,
+  resetTasksFile,
+  testAfterAll,
+  testBeforeAll,
+  testTaskiDir,
 } from "@/taski/utils/test/testHelpers"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import { parseJson, pipe, safeParse, string } from "valibot"

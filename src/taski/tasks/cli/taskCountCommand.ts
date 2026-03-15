@@ -25,11 +25,11 @@ export const taskCountCommand = buildCommand({
     let tasks = tasksResult.data
 
     if (flags.story !== undefined) {
-      tasks = tasks.filter(task => task.story === flags.story)
+      tasks = tasks.filter((task) => task.story === flags.story)
     }
 
     if (flags.projectPath !== undefined) {
-      tasks = tasks.filter(task => task.projectPath === flags.projectPath)
+      tasks = tasks.filter((task) => task.projectPath === flags.projectPath)
     }
 
     this.process.stdout.write(String(tasks.length))

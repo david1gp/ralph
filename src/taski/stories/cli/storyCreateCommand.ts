@@ -38,13 +38,23 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
   let content = flags.content
   if (flags.fromFile) {
     if (!existsSync(flags.fromFile)) {
-      console.error({ op, success: false, errorMessage: `File not found: ${flags.fromFile}`, errorData: flags.fromFile })
+      console.error({
+        op,
+        success: false,
+        errorMessage: `File not found: ${flags.fromFile}`,
+        errorData: flags.fromFile,
+      })
       process.exit(1)
     }
     try {
       content = readFileSync(flags.fromFile, "utf-8")
     } catch {
-      console.error({ op, success: false, errorMessage: `Failed to read file: ${flags.fromFile}`, errorData: flags.fromFile })
+      console.error({
+        op,
+        success: false,
+        errorMessage: `Failed to read file: ${flags.fromFile}`,
+        errorData: flags.fromFile,
+      })
       process.exit(1)
     }
   }
