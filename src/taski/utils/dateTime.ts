@@ -1,6 +1,6 @@
 import { safeParse } from "valibot"
 import { dateTimeSchema } from "~utils/valibot/dateTimeSchema"
-import { createResult, createError, type Result } from "~utils/result/Result"
+import { createResult, createError, type Result } from "~result"
 
 export function parseDateTime(value: string): Result<string> | undefined {
   if (value === "now") {

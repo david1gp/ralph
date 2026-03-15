@@ -5,7 +5,7 @@ import { tasksArchivedRead } from "@/taski/tasks/logic/archive/tasksArchivedRead
 import { tasksArchivedWrite } from "@/taski/tasks/logic/archive/tasksArchivedWrite"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
 import { tasksWrite } from "@/taski/tasks/logic/tasksWrite"
-import { createError, createResult, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~result"
 
 export async function taskArchive(config: ConfigType, taskId: string): PromiseResult<TaskType> {
   const tasksResult = await tasksRead(config)

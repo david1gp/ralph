@@ -1,7 +1,7 @@
 import type { ConfigType } from "@/taski/config/ConfigType"
 import { storyPathGet } from "@/taski/stories/logic/storyPathGet"
 import { existsSync } from "node:fs"
-import { createError, type PromiseResult } from "~utils/result/Result"
+import { createError, type PromiseResult } from "~result"
 
 export async function storyExists(config: ConfigType, storyValue: string): PromiseResult<string> {
   if (storyValue === "") {

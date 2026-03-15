@@ -4,7 +4,7 @@ import { taskArchivedDirPathGet } from "@/taski/tasks/logic/archive/taskArchived
 import { existsSync, mkdirSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
-import { createResult, type PromiseResult } from "~utils/result/Result"
+import { createResult, type PromiseResult } from "~result"
 
 export async function tasksArchivedWrite(
   config: ConfigType,

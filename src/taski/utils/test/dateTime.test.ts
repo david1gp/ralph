@@ -1,6 +1,6 @@
 import { parseDateTime } from "@/taski/utils/dateTime"
 import { expect, test } from "bun:test"
-import type { Result } from "~utils/result/Result"
+import type { Result } from "~result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
   if (!result.success) {

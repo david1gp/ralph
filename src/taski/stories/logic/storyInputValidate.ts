@@ -1,5 +1,5 @@
 import { stat } from "node:fs/promises"
-import type { PromiseResult, Result } from "~utils/result/Result"
+import type { PromiseResult, Result } from "~result"
 
 export interface StoryTitleResult {
   success: boolean

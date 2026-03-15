@@ -2,7 +2,7 @@ import type { ConfigType } from "@/taski/config/ConfigType"
 import { taskFilePathGet } from "@/taski/tasks/logic/taskFilePathGet"
 import { writeFileSync } from "node:fs"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
-import { type PromiseResult } from "~utils/result/Result"
+import { type PromiseResult } from "~result"
 
 export async function tasksWrite(config: ConfigType, tasks: unknown[]): PromiseResult<void> {
   const tasksPathResult = await taskFilePathGet(config)

@@ -7,32 +7,35 @@
     "test": "bun test",
     "test:w": "bun test --watch"
   },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@adaptive-ds/utils": "link:@adaptive-ds/utils",
+    "@adaptive-ds/result": "^0.3.0",
+    "@adaptive-ds/utils": "^0.10.0",
     "@stricli/core": "^1.2.5",
     "ms": "^2.1.3",
     "valibot": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "repository": {
+    "url": "git+https://github.com/david1gp/ralph.git"
   },
   "bin": {
     "ralph": "./src/ralph/ralph.ts",
     "taski": "./src/taski/taski.ts"
   },
-  "prettier": {
-    "semi": false,
-    "printWidth": 120,
-    "trailingComma": "all"
-  },
-  "type": "module",
-  "private": false,
-  "license": "MIT",
-  "homepage": "https://github.com/david1gp/ralph",
   "description": "Your personal task manager, built for AI agents.",
+  "engines": {
+    "bun": ">=1.1"
+  },
+  "files": [
+    "src/ralph",
+    "src/taski"
+  ],
+  "homepage": "https://github.com/david1gp/ralph",
   "keywords": [
     "taski",
     "task-management",
@@ -40,14 +43,12 @@
     "cli",
     "ralph"
   ],
-  "repository": {
-    "url": "git+https://github.com/david1gp/ralph.git"
+  "license": "MIT",
+  "prettier": {
+    "semi": false,
+    "printWidth": 120,
+    "trailingComma": "all"
   },
-  "files": [
-    "src/ralph",
-    "src/taski"
-  ],
-  "engines": {
-    "bun": ">=1.1"
-  }
+  "private": false,
+  "type": "module"
 }

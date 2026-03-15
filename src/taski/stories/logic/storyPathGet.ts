@@ -1,7 +1,7 @@
 import type { ConfigType } from "@/taski/config/ConfigType"
 import { storyFolderPathGet } from "@/taski/stories/logic/storyFolderPathGet"
 import { join } from "node:path"
-import { createResult, type PromiseResult } from "~utils/result/Result"
+import { createResult, type PromiseResult } from "~result"
 
 export async function storyPathGet(config: ConfigType, filename: string): PromiseResult<string> {
   if (filename === "") {

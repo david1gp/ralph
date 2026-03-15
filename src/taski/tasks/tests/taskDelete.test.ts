@@ -2,7 +2,7 @@ import { taskDelete } from "@/taski/tasks/logic/taskDelete"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
 import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "@/taski/utils/test/testHelpers"
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import type { Result } from "~utils/result/Result"
+import type { Result } from "~result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
   if (!result.success) {

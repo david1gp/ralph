@@ -4,7 +4,7 @@ import { taskSchema } from "@/taski/tasks/data/taskSchema"
 import { taskFilePathGet } from "@/taski/tasks/logic/taskFilePathGet"
 import { existsSync, readFileSync } from "node:fs"
 import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
-import { createError, createResult, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~result"
 
 export async function tasksRead(config: ConfigType): PromiseResult<TaskType[]> {
   const tasksPathResult = await taskFilePathGet(config)

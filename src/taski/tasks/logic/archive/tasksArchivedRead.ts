@@ -5,7 +5,7 @@ import { taskArchivedDirPathGet } from "@/taski/tasks/logic/archive/taskArchived
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
-import { createError, createResult, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~result"
 
 export async function tasksArchivedRead(config: ConfigType, yearMonth: string): PromiseResult<TaskType[]> {
   const dirResult = await taskArchivedDirPathGet(config)

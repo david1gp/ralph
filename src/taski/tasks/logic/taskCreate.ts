@@ -3,7 +3,7 @@ import type { TaskType } from "@/taski/tasks/data/TaskType"
 import { taskValidate } from "@/taski/tasks/data/taskValidate"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
 import { tasksWrite } from "@/taski/tasks/logic/tasksWrite"
-import { createError, createResult, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~result"
 
 export async function taskCreate(config: ConfigType, task: TaskType): PromiseResult<TaskType> {
   const tasksResult = await tasksRead(config)

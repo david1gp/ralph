@@ -1,7 +1,7 @@
 import type { ConfigType } from "@/taski/config/ConfigType"
 import { storyFolderPathGet } from "@/taski/stories/logic/storyFolderPathGet"
 import { existsSync, readdirSync } from "node:fs"
-import { createResult, type PromiseResult } from "~utils/result/Result"
+import { createResult, type PromiseResult } from "~result"
 
 export async function storiesList(config: ConfigType): PromiseResult<string[]> {
   const storiesPathResult = await storyFolderPathGet(config)

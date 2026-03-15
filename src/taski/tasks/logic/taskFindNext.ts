@@ -1,7 +1,7 @@
 import type { ConfigType } from "@/taski/config/ConfigType"
 import type { TaskType } from "@/taski/tasks/data/TaskType"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
-import { createResult, type PromiseResult } from "~utils/result/Result"
+import { createResult, type PromiseResult } from "~result"
 
 export async function taskFindNext(config: ConfigType): PromiseResult<TaskType | undefined> {
   const tasksResult = await tasksRead(config)

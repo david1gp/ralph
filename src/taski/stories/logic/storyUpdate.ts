@@ -1,7 +1,7 @@
 import type { ConfigType } from "@/taski/config/ConfigType"
 import { storyFolderPathGet } from "@/taski/stories/logic/storyFolderPathGet"
 import { existsSync, writeFileSync } from "node:fs"
-import { createError, createResult, type PromiseResult } from "~utils/result/Result"
+import { createError, createResult, type PromiseResult } from "~result"
 
 export async function storyUpdate(
   config: ConfigType,
