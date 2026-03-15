@@ -5,7 +5,9 @@
     "ralph": "bun run ./src/ralph/ralph.ts",
     "taski": "bun run ./src/cli/taski.ts",
     "test": "bun test",
-    "test:w": "bun test --watch"
+    "test:w": "bun test --watch",
+    "release": "bash ./ops/release.sh",
+    "format": "bunx prettier --write src/"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
