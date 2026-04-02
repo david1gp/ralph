@@ -40,8 +40,6 @@ export async function runRalphLoop(config: RalphConfig): Promise<void> {
 
     await runOpencode(prompt)
 
-    process.stdout.write(": completed")
-
     const taskEndTime = performance.now()
     const taskDuration = taskEndTime - taskStartTime
 
