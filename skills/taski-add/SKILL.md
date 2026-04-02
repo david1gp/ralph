@@ -13,8 +13,9 @@ Create a new feature story and generate all its tasks as new entries in the task
 
 1. Understand Story: Ask clarifying questions to reach 100% clarity
 2. Generate Tasks: Divide the user story in isolated and actionable implementation tasks
-3. Save the story via `taski stories create`
-4. Create each task via `taski tasks create`
+3. Save story md description in projects docs dir
+4. Create user story via `taski stories create --fromFile`
+5. Create each task via `taski tasks create`
 
 ---
 
