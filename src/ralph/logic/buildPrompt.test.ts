@@ -9,7 +9,7 @@ You are an autonomous coding agent working on a software project.
 
 1. Implement the task in the directory specified above
 2. Run quality checks
-3. Mark task as complete`
+3. Mark task as complete then finished`
 
 async function mockBuildPrompt(task: TaskType, promptContent: string): Promise<string> {
   const acceptanceCriteria = task.acceptanceCriteria.map((c) => `- ${c}`).join("\n")

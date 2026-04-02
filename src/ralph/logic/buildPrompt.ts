@@ -30,17 +30,17 @@ ${task.story}
 2. Implement the task
 3. Check that all acceptance criteria pass
 4. Append progress report to \`${task.story}\`
-5. Mark task as complete
+5. Mark task as complete then finished
 
 ## Quality Requirements
 
-- ALL changes must pass your project's quality checks (bun run tsc, bun test)
+- ALL changes must pass your project's quality checks (bun run tsgo, bun test)
 - Follow existing code patterns
 - Keep changes focused and minimal
 
 ## Acceptance criteria
 
-- ALL changes must pass your project's quality checks (bun run tsc, bun test)
+- ALL changes must pass your project's quality checks (bun run tsgo, bun test)
 
 ---
 
@@ -60,7 +60,7 @@ APPEND to \`${task.story}\` (never replace, always append):
 ---
 \`\`\`
 
-## Mark task as complete
+## Mark task as complete then finished
 
 \`\`\`bash
 taski tasks update \
