@@ -1,6 +1,6 @@
+import { afterAll, beforeAll, expect, test } from "bun:test"
 import { storiesList } from "@/taski/stories/logic/storiesList"
 import { assertOk, getTestConfig, testAfterAll, testBeforeAll } from "@/taski/utils/test/testHelpers"
-import { afterAll, beforeAll, expect, test } from "bun:test"
 
 const testConfig = getTestConfig()
 const testStoriesPath = testConfig.storiesFolder

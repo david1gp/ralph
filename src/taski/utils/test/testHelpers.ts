@@ -1,7 +1,7 @@
-import type { ConfigType } from "@/taski/config/ConfigType"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+import type { ConfigType } from "@/taski/config/ConfigType"
 import type { Result } from "~result"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))

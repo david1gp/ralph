@@ -1,9 +1,9 @@
-import { configSchema } from "@/taski/config/configSchema"
-import type { ConfigType } from "@/taski/config/ConfigType"
 import { dirname, join, relative } from "node:path"
 import { safeParse, summarize } from "valibot"
-import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
+import type { ConfigType } from "@/taski/config/ConfigType"
+import { configSchema } from "@/taski/config/configSchema"
 import { createError, type PromiseResult } from "~result"
+import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 export async function configSave(config: ConfigType): PromiseResult<void> {
   const taskiDir = dirname(config.tasksFile)

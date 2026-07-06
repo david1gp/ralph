@@ -1,4 +1,4 @@
-import { object, record, string, number, optional, boolean } from "valibot"
+import { boolean, number, object, optional, record, string } from "valibot"
 
 export const configSchema = object({
   tasksFile: string(),

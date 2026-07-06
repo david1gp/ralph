@@ -1,3 +1,5 @@
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
+import { parseJson, pipe, safeParse, string } from "valibot"
 import { taskNextFunc } from "@/taski/tasks/cli/taskNextCommand"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
 import {
@@ -8,8 +10,6 @@ import {
   testBeforeAll,
   testTaskiDir,
 } from "@/taski/utils/test/testHelpers"
-import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import { parseJson, pipe, safeParse, string } from "valibot"
 
 beforeAll(testBeforeAll)
 afterAll(testAfterAll)
@@ -40,7 +40,10 @@ test("taskNextCommand with --start now sets startedAt to current time", async ()
 
     const beforeTest = new Date().toISOString()
 
-    await taskNextFunc.call(mockContext, { start: "now", config: testTaskiDir })
+    await taskNextFunc.call(mockContext, {
+      start: "now",
+      config: testTaskiDir,
+    })
 
     expect(stdout.length).toBe(1)
     const output = stdout[0]!
@@ -101,7 +104,10 @@ test("taskNextCommand with --start '2025-01-17T10:00:00.000Z' sets specific time
     const mockContext = { process: mockProcess } as any
 
     const timestamp = "2025-01-17T10:00:00.000Z"
-    await taskNextFunc.call(mockContext, { start: timestamp, config: testTaskiDir })
+    await taskNextFunc.call(mockContext, {
+      start: timestamp,
+      config: testTaskiDir,
+    })
 
     expect(stdout.length).toBe(1)
     const output = stdout[0]!
@@ -141,7 +147,10 @@ test("taskNextCommand with --start 'invalid' prints error", async () => {
       process.exit = originalExit
     }) as typeof process.exit
 
-    await taskNextFunc.call(mockContext, { start: "invalid", config: testTaskiDir })
+    await taskNextFunc.call(mockContext, {
+      start: "invalid",
+      config: testTaskiDir,
+    })
 
     expect(errorCalls.length).toBeGreaterThan(0)
     console.error = consoleError

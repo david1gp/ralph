@@ -1,6 +1,6 @@
-import { taskSchema } from "@/taski/tasks/data/taskSchema"
-import type { TaskType } from "@/taski/tasks/data/TaskType"
 import { parseJson, pipe, safeParse, string } from "valibot"
+import type { TaskType } from "@/taski/tasks/data/TaskType"
+import { taskSchema } from "@/taski/tasks/data/taskSchema"
 
 export async function getNextTask(): Promise<TaskType | null> {
   const proc = Bun.spawn(["taski", "tasks", "next", "--start", "now"], {

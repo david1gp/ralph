@@ -1,6 +1,6 @@
+import { buildCommand, type CommandContext } from "@stricli/core"
 import { configLoad } from "@/taski/config/configLoad"
 import { storyUpdate } from "@/taski/stories/logic/storyUpdate"
-import { buildCommand, type CommandContext } from "@stricli/core"
 
 interface UpdateFlags {
   content: string

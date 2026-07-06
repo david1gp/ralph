@@ -8,7 +8,7 @@ export interface StoryTitleResult {
 }
 
 export function shortTitleFormat(title: string): Result<string> {
-  const allowedPattern = /^[a-zA-Z0-9 _\-]+$/
+  const allowedPattern = /^[a-zA-Z0-9 _-]+$/
   if (!allowedPattern.test(title)) {
     return {
       op: "shortTitleFormat",
@@ -36,6 +36,11 @@ export async function projectPathExists(projectPath: string): PromiseResult<bool
     }
     return { success: true, data: true }
   } catch {
-    return { op, success: false, errorMessage: "Directory does not exist", errorData: projectPath }
+    return {
+      op,
+      success: false,
+      errorMessage: "Directory does not exist",
+      errorData: projectPath,
+    }
   }
 }

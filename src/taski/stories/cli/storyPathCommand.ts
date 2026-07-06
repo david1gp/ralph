@@ -1,7 +1,7 @@
+import { join } from "node:path"
+import { buildCommand, type CommandContext } from "@stricli/core"
 import { configLoad } from "@/taski/config/configLoad"
 import { storyFolderPathGet } from "@/taski/stories/logic/storyFolderPathGet"
-import { buildCommand, type CommandContext } from "@stricli/core"
-import { join } from "node:path"
 
 interface PathFlags {
   config?: string

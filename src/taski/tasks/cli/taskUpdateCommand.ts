@@ -1,3 +1,5 @@
+import { buildCommand, type CommandContext } from "@stricli/core"
+import { array, safeParse, string } from "valibot"
 import { configLoad } from "@/taski/config/configLoad"
 import type { TaskType } from "@/taski/tasks/data/TaskType"
 import { taskArchive } from "@/taski/tasks/logic/archive/taskArchive"
@@ -5,8 +7,6 @@ import { taskUpdate } from "@/taski/tasks/logic/taskUpdate"
 import { parseDateTime } from "@/taski/utils/dateTime"
 import { markdownRestoreWhitespaces } from "@/taski/utils/markdownRestoreWhitespaces"
 import { storyExists } from "@/taski/utils/storyExists"
-import { buildCommand, type CommandContext } from "@stricli/core"
-import { array, safeParse, string } from "valibot"
 
 interface UpdateFlags {
   archive?: boolean

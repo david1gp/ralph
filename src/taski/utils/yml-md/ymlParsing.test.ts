@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
-import { parseMarkdownWithFrontmatter } from "./ymlParsing"
 import { join } from "path"
+import { parseMarkdownWithFrontmatter } from "./ymlParsing"
 
 test("parse markdown with frontmatter", async () => {
   const testDir = import.meta.dirname

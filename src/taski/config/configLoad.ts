@@ -1,8 +1,8 @@
-import { configSchema } from "@/taski/config/configSchema"
-import type { ConfigType } from "@/taski/config/ConfigType"
 import { dirname, join } from "node:path"
 import { homedir } from "os"
 import { parseJson, pipe, safeParse, string, summarize } from "valibot"
+import type { ConfigType } from "@/taski/config/ConfigType"
+import { configSchema } from "@/taski/config/configSchema"
 import { createError, createResult, type PromiseResult } from "~result"
 
 export async function configLoad(configPath?: string): PromiseResult<ConfigType> {

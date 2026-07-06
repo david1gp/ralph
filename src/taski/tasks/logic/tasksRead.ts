@@ -1,9 +1,9 @@
+import { existsSync, readFileSync } from "node:fs"
+import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
 import type { ConfigType } from "@/taski/config/ConfigType"
 import type { TaskType } from "@/taski/tasks/data/TaskType"
 import { taskSchema } from "@/taski/tasks/data/taskSchema"
 import { taskFilePathGet } from "@/taski/tasks/logic/taskFilePathGet"
-import { existsSync, readFileSync } from "node:fs"
-import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
 import { createError, createResult, type PromiseResult } from "~result"
 
 export async function tasksRead(config: ConfigType): PromiseResult<TaskType[]> {

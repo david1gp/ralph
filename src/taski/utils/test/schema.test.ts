@@ -1,6 +1,6 @@
+import { expect, test } from "bun:test"
 import { storyValidate } from "@/taski/stories/data/storyValidate"
 import { taskValidate } from "@/taski/tasks/data/taskValidate"
-import { expect, test } from "bun:test"
 
 test("taskSchema validates correct task data", () => {
   const validTask = {

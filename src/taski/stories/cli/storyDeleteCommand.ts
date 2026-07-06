@@ -1,6 +1,6 @@
+import { buildCommand, type CommandContext } from "@stricli/core"
 import { configLoad } from "@/taski/config/configLoad"
 import { storyDelete } from "@/taski/stories/logic/storyDelete"
-import { buildCommand, type CommandContext } from "@stricli/core"
 
 interface DeleteFlags {
   config?: string

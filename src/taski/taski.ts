@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
+import { buildApplication, buildRouteMap, run } from "@stricli/core"
 import { initCommand } from "@/taski/init/initCommand"
 import { storyCommands } from "@/taski/stories/cli/storyCommands"
 import { taskCommands } from "@/taski/tasks/cli/taskCommands"
-import { buildApplication, buildRouteMap, run } from "@stricli/core"
 
 const routes = buildRouteMap({
   routes: {

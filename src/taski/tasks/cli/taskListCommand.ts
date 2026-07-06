@@ -1,6 +1,6 @@
+import { buildCommand, type CommandContext } from "@stricli/core"
 import { configLoad } from "@/taski/config/configLoad"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
-import { buildCommand, type CommandContext } from "@stricli/core"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 interface ListFlags {

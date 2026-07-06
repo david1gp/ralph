@@ -1,5 +1,5 @@
-import type { ConfigType } from "@/taski/config/ConfigType"
 import { basename } from "node:path"
+import type { ConfigType } from "@/taski/config/ConfigType"
 
 export interface StoryIdResult {
   globalId: number

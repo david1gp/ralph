@@ -1,7 +1,7 @@
+import { writeFileSync } from "node:fs"
 import type { ConfigType } from "@/taski/config/ConfigType"
 import { storyFolderPathGet } from "@/taski/stories/logic/storyFolderPathGet"
-import { storyIdGenerate, type StoryIdResult } from "@/taski/stories/logic/storyIdGenerate"
-import { writeFileSync } from "node:fs"
+import { type StoryIdResult, storyIdGenerate } from "@/taski/stories/logic/storyIdGenerate"
 import { createResult, type PromiseResult } from "~result"
 
 export interface StoryCreateParams {

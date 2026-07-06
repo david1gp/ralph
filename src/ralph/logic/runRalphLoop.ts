@@ -1,10 +1,10 @@
+import { execSync } from "node:child_process"
+import ms from "ms"
 import { buildPrompt } from "@/ralph/logic/buildPrompt"
 import { getNextTask } from "@/ralph/logic/getNextTask"
 import { runOpencode } from "@/ralph/logic/runOpencode"
 import { configLoad } from "@/taski/config/configLoad"
 import { taskUpdate } from "@/taski/tasks/logic/taskUpdate"
-import ms from "ms"
-import { execSync } from "node:child_process"
 import type { RalphConfig } from "../data/RalphConfig"
 
 export async function runRalphLoop(config: RalphConfig): Promise<void> {
@@ -73,7 +73,10 @@ function getGitDiff(projectPath: string): string {
   }
 
   try {
-    const gitDiffRaw = execSync("git diff --shortstat", { cwd: projectPath, encoding: "utf-8" })
+    const gitDiffRaw = execSync("git diff --shortstat", {
+      cwd: projectPath,
+      encoding: "utf-8",
+    })
     return gitDiffRaw.trim() || "No changes"
   } catch {
     return "No changes"

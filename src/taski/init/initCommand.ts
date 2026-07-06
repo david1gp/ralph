@@ -1,7 +1,7 @@
-import type { ConfigType } from "@/taski/config/ConfigType"
-import { buildCommand, type CommandContext } from "@stricli/core"
 import { mkdirSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { buildCommand, type CommandContext } from "@stricli/core"
+import type { ConfigType } from "@/taski/config/ConfigType"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 interface InitFlags {

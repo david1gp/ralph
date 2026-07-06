@@ -1,8 +1,8 @@
+import { buildCommand, type CommandContext } from "@stricli/core"
 import { configLoad } from "@/taski/config/configLoad"
 import { taskFindNext } from "@/taski/tasks/logic/taskFindNext"
 import { taskUpdate } from "@/taski/tasks/logic/taskUpdate"
 import { parseDateTime } from "@/taski/utils/dateTime"
-import { buildCommand, type CommandContext } from "@stricli/core"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 interface NextFlags {
@@ -37,7 +37,9 @@ export async function taskNextFunc(this: CommandContext, flags: NextFlags) {
     console.error(startResult)
     process.exit(1)
   }
-  const updateResult = await taskUpdate(config, next.id, { startedAt: startResult?.data })
+  const updateResult = await taskUpdate(config, next.id, {
+    startedAt: startResult?.data,
+  })
   if (!updateResult.success) {
     console.error(updateResult)
     process.exit(1)

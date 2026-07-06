@@ -1,3 +1,5 @@
+import { buildCommand, type CommandContext } from "@stricli/core"
+import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
 import { configLoad } from "@/taski/config/configLoad"
 import { configSave } from "@/taski/config/configSave"
 import type { TaskType } from "@/taski/tasks/data/TaskType"
@@ -7,8 +9,6 @@ import { tasksRead } from "@/taski/tasks/logic/tasksRead"
 import { parseDateTime } from "@/taski/utils/dateTime"
 import { markdownRestoreWhitespaces } from "@/taski/utils/markdownRestoreWhitespaces"
 import { storyExists } from "@/taski/utils/storyExists"
-import { buildCommand, type CommandContext } from "@stricli/core"
-import { array, parseJson, pipe, safeParse, string, summarize } from "valibot"
 
 interface CreateFlags {
   title: string

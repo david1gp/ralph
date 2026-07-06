@@ -1,6 +1,6 @@
+import { safeParse } from "valibot"
 import type { StoryType } from "@/taski/stories/data/StoryType"
 import { storySchema } from "@/taski/stories/data/storySchema"
-import { safeParse } from "valibot"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 export function storyParse(data: unknown): { success: true; data: StoryType } | { success: false; issues: string } {

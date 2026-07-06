@@ -1,10 +1,10 @@
+import { existsSync, readFileSync } from "node:fs"
+import { buildCommand, type CommandContext } from "@stricli/core"
 import { configLoad } from "@/taski/config/configLoad"
 import { configSave } from "@/taski/config/configSave"
 import { storyCreate } from "@/taski/stories/logic/storyCreate"
 import { projectPathExists, shortTitleFormat } from "@/taski/stories/logic/storyInputValidate"
 import { markdownRestoreWhitespaces } from "@/taski/utils/markdownRestoreWhitespaces"
-import { buildCommand, type CommandContext } from "@stricli/core"
-import { existsSync, readFileSync } from "node:fs"
 
 interface CreateFlags {
   shortTitle: string
@@ -60,7 +60,11 @@ export async function storyCreateFunc(this: CommandContext, flags: CreateFlags) 
   }
 
   if (content === undefined) {
-    console.error({ op, success: false, errorMessage: "Either --content or --from-file is required" })
+    console.error({
+      op,
+      success: false,
+      errorMessage: "Either --content or --from-file is required",
+    })
     process.exit(1)
   }
 

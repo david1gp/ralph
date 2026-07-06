@@ -1,7 +1,7 @@
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
 import { taskUpdate } from "@/taski/tasks/logic/taskUpdate"
 import { getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "@/taski/utils/test/testHelpers"
-import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
 import type { Result } from "~result"
 
 function assertOk<T>(result: Result<T>): asserts result is Extract<typeof result, { success: true }> {
@@ -51,14 +51,18 @@ test("taskUpdate updates existing task", async () => {
 })
 
 test("taskUpdate returns error for non-existent task", async () => {
-  const result = await taskUpdate(testConfig, "NON-EXISTENT", { title: "Test" })
+  const result = await taskUpdate(testConfig, "NON-EXISTENT", {
+    title: "Test",
+  })
   expect(result.success).toBe(false)
   assertErr(result)
   expect(result.errorMessage).toContain('Task with id "NON-EXISTENT" not found')
 })
 
 test("taskUpdate sets startedAt field", async () => {
-  const result = await taskUpdate(testConfig, "TEST-001", { startedAt: "2025-01-17T10:00:00.000Z" })
+  const result = await taskUpdate(testConfig, "TEST-001", {
+    startedAt: "2025-01-17T10:00:00.000Z",
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.startedAt).toBe("2025-01-17T10:00:00.000Z")
@@ -71,7 +75,9 @@ test("taskUpdate sets startedAt field", async () => {
 })
 
 test("taskUpdate sets completedAt field", async () => {
-  const result = await taskUpdate(testConfig, "TEST-002", { completedAt: "2025-01-17T12:00:00.000Z" })
+  const result = await taskUpdate(testConfig, "TEST-002", {
+    completedAt: "2025-01-17T12:00:00.000Z",
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.completedAt).toBe("2025-01-17T12:00:00.000Z")
@@ -84,7 +90,9 @@ test("taskUpdate sets completedAt field", async () => {
 })
 
 test("taskUpdate sets note field", async () => {
-  const result = await taskUpdate(testConfig, "TEST-002", { note: "Test note content" })
+  const result = await taskUpdate(testConfig, "TEST-002", {
+    note: "Test note content",
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.note).toBe("Test note content")
@@ -97,8 +105,12 @@ test("taskUpdate sets note field", async () => {
 })
 
 test("taskUpdate clears startedAt field when set to undefined", async () => {
-  await taskUpdate(testConfig, "TEST-001", { startedAt: "2025-01-17T10:00:00.000Z" })
-  const result = await taskUpdate(testConfig, "TEST-001", { startedAt: undefined })
+  await taskUpdate(testConfig, "TEST-001", {
+    startedAt: "2025-01-17T10:00:00.000Z",
+  })
+  const result = await taskUpdate(testConfig, "TEST-001", {
+    startedAt: undefined,
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.startedAt).toBeUndefined()
@@ -111,8 +123,12 @@ test("taskUpdate clears startedAt field when set to undefined", async () => {
 })
 
 test("taskUpdate clears completedAt field when set to undefined", async () => {
-  await taskUpdate(testConfig, "TEST-002", { completedAt: "2025-01-17T12:00:00.000Z" })
-  const result = await taskUpdate(testConfig, "TEST-002", { completedAt: undefined })
+  await taskUpdate(testConfig, "TEST-002", {
+    completedAt: "2025-01-17T12:00:00.000Z",
+  })
+  const result = await taskUpdate(testConfig, "TEST-002", {
+    completedAt: undefined,
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.completedAt).toBeUndefined()
@@ -153,7 +169,9 @@ test("taskUpdate updates multiple fields at once", async () => {
 })
 
 test("taskUpdate updates title field", async () => {
-  const result = await taskUpdate(testConfig, "TEST-001", { title: "New Title" })
+  const result = await taskUpdate(testConfig, "TEST-001", {
+    title: "New Title",
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.title).toBe("New Title")
@@ -179,7 +197,9 @@ test("taskUpdate clears title field when set to empty string", async () => {
 })
 
 test("taskUpdate updates description field", async () => {
-  const result = await taskUpdate(testConfig, "TEST-002", { description: "New description" })
+  const result = await taskUpdate(testConfig, "TEST-002", {
+    description: "New description",
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.description).toBe("New description")
@@ -205,7 +225,9 @@ test("taskUpdate clears description field when set to empty string", async () =>
 })
 
 test("taskUpdate sets acceptanceCriteria from JSON array", async () => {
-  const result = await taskUpdate(testConfig, "TEST-002", { acceptanceCriteria: ["Test 1", "Test 2", "Test 3"] })
+  const result = await taskUpdate(testConfig, "TEST-002", {
+    acceptanceCriteria: ["Test 1", "Test 2", "Test 3"],
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.acceptanceCriteria).toEqual(["Test 1", "Test 2", "Test 3"])
@@ -218,7 +240,9 @@ test("taskUpdate sets acceptanceCriteria from JSON array", async () => {
 })
 
 test("taskUpdate clears acceptanceCriteria when set to empty array", async () => {
-  const result = await taskUpdate(testConfig, "TEST-002", { acceptanceCriteria: [] })
+  const result = await taskUpdate(testConfig, "TEST-002", {
+    acceptanceCriteria: [],
+  })
   expect(result.success).toBe(true)
   assertOk(result)
   expect(result.data.acceptanceCriteria).toEqual([])

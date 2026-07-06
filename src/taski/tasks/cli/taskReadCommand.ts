@@ -1,6 +1,6 @@
+import { buildCommand, type CommandContext } from "@stricli/core"
 import { configLoad } from "@/taski/config/configLoad"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
-import { buildCommand, type CommandContext } from "@stricli/core"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 interface ReadFlags {
@@ -26,7 +26,11 @@ export const taskReadCommand = buildCommand({
     if (task) {
       this.process.stdout.write(jsonStringifyPretty(task))
     } else {
-      const errorResult = { success: false, op: "taskRead", errorMessage: `Task "${id}" not found` }
+      const errorResult = {
+        success: false,
+        op: "taskRead",
+        errorMessage: `Task "${id}" not found`,
+      }
       console.error(errorResult)
       process.exit(1)
     }

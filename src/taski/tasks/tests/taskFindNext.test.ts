@@ -1,10 +1,10 @@
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
+import { writeFileSync } from "node:fs"
 import type { ConfigType } from "@/taski/config/ConfigType"
 import { taskFindNext } from "@/taski/tasks/logic/taskFindNext"
 import { tasksRead } from "@/taski/tasks/logic/tasksRead"
 import { taskUpdate } from "@/taski/tasks/logic/taskUpdate"
 import { assertOk, getTestConfig, resetTasksFile, testAfterAll, testBeforeAll } from "@/taski/utils/test/testHelpers"
-import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test"
-import { writeFileSync } from "node:fs"
 import { jsonStringifyPretty } from "~utils/json/jsonStringifyPretty"
 
 beforeAll(testBeforeAll)
@@ -29,7 +29,9 @@ test("taskFindNext returns undefined when all tasks are completed", async () => 
   assertOk(tasksResult)
   const tasks = tasksResult.data
   for (const task of tasks) {
-    await taskUpdate(testConfig, task.id, { completedAt: "2025-01-17T12:00:00.000Z" })
+    await taskUpdate(testConfig, task.id, {
+      completedAt: "2025-01-17T12:00:00.000Z",
+    })
   }
   const result = await taskFindNext(testConfig)
   expect(result.success).toBe(true)

@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
-import type { RalphConfig } from "@/ralph/data/RalphConfig"
-import { runRalphLoop } from "@/ralph/logic/runRalphLoop"
-import { buildApplication, buildCommand, run, type CommandContext } from "@stricli/core"
 import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
+import { buildApplication, buildCommand, type CommandContext, run } from "@stricli/core"
+import type { RalphConfig } from "@/ralph/data/RalphConfig"
+import { runRalphLoop } from "@/ralph/logic/runRalphLoop"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -22,7 +22,11 @@ const ralphCommand = buildCommand({
       verbose: flags.verbose ?? false,
     }
 
-    console.log({ ...config, msg: "Starting ralph", startedAt: new Date().toISOString() })
+    console.log({
+      ...config,
+      msg: "Starting ralph",
+      startedAt: new Date().toISOString(),
+    })
 
     await runRalphLoop(config)
   },
