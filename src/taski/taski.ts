@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 import { buildApplication, buildRouteMap, run } from "@stricli/core"
+import { packageVersion } from "@/packageVersion"
 import { initCommand } from "@/taski/init/initCommand"
 import { storyCommands } from "@/taski/stories/cli/storyCommands"
 import { taskCommands } from "@/taski/tasks/cli/taskCommands"
@@ -17,6 +18,9 @@ const routes = buildRouteMap({
 
 export const taskiCommand = buildApplication(routes, {
   name: "taski",
+  versionInfo: {
+    currentVersion: packageVersion,
+  },
 })
 
 await run(taskiCommand, process.argv.slice(2), { process })

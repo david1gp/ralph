@@ -2,6 +2,7 @@
 import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 import { buildApplication, buildCommand, type CommandContext, run } from "@stricli/core"
+import { packageVersion } from "@/packageVersion"
 import type { RalphConfig } from "@/ralph/data/RalphConfig"
 import { runRalphLoop } from "@/ralph/logic/runRalphLoop"
 
@@ -52,6 +53,9 @@ const ralphCommand = buildCommand({
 
 export const app = buildApplication(ralphCommand, {
   name: "ralph",
+  versionInfo: {
+    currentVersion: packageVersion,
+  },
 })
 
 await run(app, process.argv.slice(2), { process })
