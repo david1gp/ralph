@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
-import { buildApplication, buildCommand, type CommandContext, run } from "@stricli/core"
+import { buildApplication, buildChoiceParser, buildCommand, type CommandContext, run } from "@stricli/core"
+import { cliVersionOutputRender } from "@/cliVersionOutputRender"
 import { packageVersion } from "@/packageVersion"
 import type { RalphConfig } from "@/ralph/data/RalphConfig"
-import { runRalphLoop } from "@/ralph/logic/runRalphLoop"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -14,7 +14,13 @@ interface Flags {
 }
 
 const ralphCommand = buildCommand({
-  async func(this: CommandContext, flags: Flags) {
+  async func(this: CommandContext, flags: Flags, command?: string) {
+    if (command === "version") {
+      this.process.stdout.write(cliVersionOutputRender("ralph", flags.verbose ?? false))
+      return
+    }
+
+    const { runRalphLoop } = await import("@/ralph/logic/runRalphLoop")
     const maxIterations = flags.maxIterations ?? 50
 
     const config: RalphConfig = {
@@ -32,6 +38,17 @@ const ralphCommand = buildCommand({
     await runRalphLoop(config)
   },
   parameters: {
+    positional: {
+      kind: "tuple",
+      parameters: [
+        {
+          brief: "Command",
+          optional: true,
+          parse: buildChoiceParser(["version"]),
+          placeholder: "command",
+        },
+      ],
+    },
     flags: {
       verbose: {
         kind: "boolean",
