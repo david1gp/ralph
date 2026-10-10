@@ -87,7 +87,7 @@ Each criterion must be verifiable, not vague.
 ### Always include acceptance criterias:
 
 ```
-"bun run tsc passes"
+"bun --check passes"
 "bun test passes"
 ```
 
@@ -149,7 +149,7 @@ Ralph spawns a fresh opencode instance per iteration with no memory of previous 
 taski tasks create \
   --title "{title}" \
   --description "{description}" \
-  --acceptanceCriteria '["criterion1", "criterion2", "bun run tsc passes"]' \
+  --acceptanceCriteria '["criterion1", "criterion2", "bun --check passes"]' \
   --story "{story-filename-from-taski-stories-create}"
 ```
 
@@ -161,7 +161,7 @@ Each criterion must be verifiable, not vague.
 - "Add `status` column to tasks table with default 'pending'"
 - "Filter dropdown has options: All, Active, Completed"
 - "Clicking delete shows confirmation dialog"
-- "bun run tsc passes"
+- "bun --check passes"
 
 ### Bad criteria (vague):
 - "Works correctly"
@@ -170,5 +170,5 @@ Each criterion must be verifiable, not vague.
 
 ### Always include:
 
-- `bun run tsc` passes
+- `bun --check` passes
 - `bun test` passes

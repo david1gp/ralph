@@ -33,13 +33,13 @@ ${task.story}
 
 ## Quality Requirements
 
-- ALL changes must pass your project's quality checks (bun run tsgo, bun test)
+- ALL changes must pass your project's quality checks (bun --check, bun test)
 - Follow existing code patterns
 - Keep changes focused and minimal
 
 ## Acceptance criteria
 
-- ALL changes must pass your project's quality checks (bun run tsgo, bun test)
+- ALL changes must pass your project's quality checks (bun --check, bun test)
 
 ## Mark task as complete then finished
 
