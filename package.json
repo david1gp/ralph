@@ -31,9 +31,6 @@
     "taski": "./src/taski/taski.ts"
   },
   "description": "Your personal task manager, built for AI agents.",
-  "engines": {
-    "bun": ">=1.1"
-  },
   "files": [
     "src/ralph",
     "src/taski"
